@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% import 'bootstrap/wtf.html' as wtf %}
+{% block app_content %}
+
+    <h1>{{ title }}</h1>
+
+    <div class="row">
+        <div class="col-md-4">
+            {{ wtf.quick_form(form) }}
+        </div>
+        <div id="displacy">
+           {{ visu | safe}}
+        </div>
+        <div class="col-md-4"  >
+            <table width="2000px">
+            {% for achado in achados %}
+                <tr><td width="170px">
+                    {{ achado.ente }}
+                </td>
+                <td width="35px">
+                    {{ achado.tipo }}
+                </td>
+                <td width="1000px">
+                    {{ achado.contexto }}
+                </td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+
+    </div>
+{% endblock %}

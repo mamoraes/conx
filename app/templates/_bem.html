@@ -1,0 +1,15 @@
+    <table class="table table-hover">
+        <tr>
+            <td width="70px">
+                <a href="{{ url_for('main.caso', id=caso.id) }}">
+
+                    {{ bem.nome }}
+                </a>
+            </td>
+            <td>
+                <a href="{{ url_for('main.caso', id=caso.id) }}">
+                    {{ caso.descricao}}
+                </a>
+            </td>
+        </tr>
+    </table>

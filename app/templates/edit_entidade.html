@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block app_content %}
+    <h1>{{ title }} </h1>
+    <div class="row" >
+        <div class="col-md-4" id="obj_div" style="width: 250px; heigth: 350px;">
+            {{entidade.indicadores_macros|safe}}{{entidade.indicador_pep|safe}}{{entidade.indicador_rif|safe}}
+            {{ wtf.quick_form(form) }}
+        </div>
+        {% if id %}
+        <div class="col-md-4" id="casos_div" style="width: 250px; heigth: 350px;">
+            CASOS <a href="{{ url_for('main.selec_casosentidade', id=id) }}" title="Selecionar casos"> &#x1F4DA;
+            <a href="{{ url_for('main.selec_casosentidade', id=id) }}" title="importar"> &#x1F53B;
+            {% for caso in casos %}
+               <p> <a href="{{ url_for('main.edit_caso', id=caso.caso.id) }}"> {{ caso.caso.nome }} ({{caso.obs}})</p> </a>
+            {% endfor %}
+        </div>
+        <div class="col-md-4" id="rifs_div" style="width: 250px; heigth: 350px;">RINFS
+            {% for rf, val in ris.items() %}
+               <p>  {{rf}} (
+                    {% for key, indexador in val.items() %}
+                    <a href="{{ url_for('main.edit_envolvidosrinf',id=key) }}" >{{indexador}}
+                   {% endfor %}
+)</p> </a>
+            {% endfor %}
+        </div>
+        <div class="col-md-4" id="rifs_div" style="width: 250px; heigth: 350px;">VÍNCULOS
+            {% for vinco in vincos %}
+               <p> <a href="{{ url_for('main.edit_entidade', id=vinco.vinculado_dest.id) }}">{{vinco.tipo_od.descricao}} {{ vinco.vinculado_dest.nome }}</p> </a>
+            {% endfor %}
+            {% for vincd in vincds %}
+               <p> <a href="{{ url_for('main.edit_entidade', id=vincd.vinculado_orig.id) }}">{{vincd.tipo_do.descricao}} {{ vincd.vinculado_orig.nome }} </p> </a>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+
+{% endblock %}

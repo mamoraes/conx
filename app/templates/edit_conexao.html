@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block app_content %}
+    <h1>{{ title }}</h1>
+<table>
+    <tr>
+	<td>
+    <div class="row">
+        <div class="col-md-4" id="obj_div" style="width: 250px; heigth: 350px;">
+            {{ wtf.quick_form(form) }}
+			Conexão {{ resultado}}
+        </div>
+        {% if id %}
+
+        <div class="col-md-4" id="consultas_ente_div" style="width: 450px; heigth: 350px; ">
+            <p>CONSULTAS DE ENTES <a class="ferramentaslinhabtn_azul" href="{{ url_for('main.add_consulta_ente', id=id) }}" title="Adicionar consultas de Entes" ></a> &#x2795;</p>
+            <table>
+            {% for consulta in conexao.consultas_ente %}
+            <tr>
+                <td width="17px">
+                   <a class="ferramentaslinhabtn_verde" href="{{ url_for('main.edit_consulta_ente', id=consulta.id) }}" title="Alterar Consulta de entes">✎</a>
+                </td>
+                <td width="17px">
+                    <a class="ferramentaslinhabtn_vermelho" href="{{ url_for('main.del_consulta_ente', id=conexao.id) }}" title="Excluir">&#x1F5D1;</a>
+                </td>
+                   <td width="140px">
+                       <a href="{{ url_for('main.edit_consulta_ente', id=conexao.id) }}" title="Alterar consulta"> {{ consulta.nome }}</a>
+                   </td>
+                   <td width="500px">
+                   <a href="{{ url_for('main.edit_consulta_ente', id=conexao.id) }}" title="Alterar consulta"> {{ consulta.descricao }} </a>
+                   </td>
+                   <td width="17px">
+                    <a href="{{ url_for('main.edit_consulta_ente', id=consulta.id) }}"title="Alterar consulta"> {{ consulta.fonte }} </a>
+                   </td>
+                   <td width="100px">
+                       <a href="{{ url_for('main.edit_consulta_ente', id=consulta.id) }}"title="Alterar consulta"> {{ consulta.cmd_sql }} </a>
+                   </td>
+                   <td width="400px">
+                     <a href="{{ url_for('main.edit_consulta_ente', id=consulta.id) }}"> {{ consulta.em_producao }} </a>
+                   </td>
+            </tr>
+
+            {% endfor %}
+                </table>
+        </div>
+
+        <div class="col-md-4" id="consultas_vinc_div" style="width: 450px; heigth: 350px; ">
+            <p>CONSULTAS DE RELACIONAMENTOS <a class="ferramentaslinhabtn_azul" href="{{ url_for('main.add_consulta_vinc', id=id) }}" title="Adicionar consultas de relacionamentos"></a> &#x2795;</a></p>
+            <table>
+            {% for consulta in conexao.consultas_vinc %}
+                <td width="17px">
+                   <a class="ferramentaslinhabtn_verde" href="{{ url_for('main.edit_consulta_vinc', id=consulta.id) }}" title="Alterar Consulta de relacionamentos">✎</a>
+                </td>
+                <td width="17px">
+                    <a class="ferramentaslinhabtn_vermelho" href="{{ url_for('main.del_consulta_ente', id=conexao.id) }}" title="Excluir">&#x1F5D1;</a>
+                </td>
+                   <td width="140px">
+                       <a href="{{ url_for('main.edit_consulta_vinc', id=conexao.id) }}" title="Alterar consulta"> {{ consulta.nome }}</a>
+                   </td>
+                   <td width="500px">
+                   <a href="{{ url_for('main.edit_consulta_vinc', id=conexao.id) }}" title="Alterar consulta"> {{ consulta.descricao }} </a>
+                   </td>
+                   <td width="17px">
+                    <a href="{{ url_for('main.edit_consulta_vinc', id=consulta.id) }}"title="Alterar consulta"> {{ consulta.fonte }} </a>
+                   </td>
+                   <td width="100px">
+                       <a href="{{ url_for('main.edit_consulta_vinc', id=consulta.id) }}"title="Alterar consulta"> {{ consulta.cmd_sql }} </a>
+                   </td>
+                   <td width="400px">
+                     <a href="{{ url_for('main.edit_consulta_vinc', id=consulta.id) }}"> {{ consulta.em_producao }} </a>
+                   </td>
+            </tr>
+            {% endfor %}
+                </table>
+        </div>
+        {% endif %}
+    </div>
+	</td>
+
+    </tr>
+</table>
+{% endblock %}

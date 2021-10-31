@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% import 'bootstrap/wtf.html' as wtf %}
+{% block app_content %}
+<style>
+    .central {
+      position: relative;}
+
+</style>
+    <h1>{{ title }}</h1>
+<section>
+    <div class="row" style="heigth: 350px;">
+        <div class="col-md-4" >
+            <!--{{ wtf.quick_form(form) }}-->
+            {{ wtf.quick_form(form,enctype="multipart/form-data") }}
+        </div>
+    <!--article-->
+
+        {% if id %}
+       <div  class="col-md-8" id="casos_div" style="width: 450px; heigth: 350px;"  >
+               ENTES MENCIONADOS <a class="ferramentaslinhabtn_azul" href="{{ url_for('main.add_entesfonte', id=id) }}" title="Adicionar entes mencionados">  &#x2795;</a>
+               <!--a class="ferramentaslinhabtn_azul" href="{{ url_for('main.scantexto', id=id) }}" title="Identificar entidades envolvidas no texto" target="iframe_spacy" id="link_spacy" >&#x1F578; </a-->
+         <table style="width: 450px">
+            {% for ente in entes %}
+                <tr>
+                   <td width="17px">
+                   <a class="ferramentaslinhabtn_verde" href="{{ url_for('main.edit_entesfonte', id=ente.id) }}" title="Alterar ente mencionado">✎</a>
+                   </td>
+                   <td width="17px">
+                       <a class="ferramentaslinhabtn_vermelho" href="{{ url_for('main.del_entefonte', id=ente.id) }}" title="Excluir">✀</a>
+                   </td>
+                   <td width="170px">
+                   <a href="{{ url_for('main.edit_entesfonte', id=ente.id) }}" title="Alterar ente mencionado"> {{ ente.nome }} </a>
+                   </td>
+                   <td width="290px">
+                   <a href="{{ url_for('main.edit_entesfonte', id=ente.id) }}" title="Alterar ente mencionado"> {{ ente.cpfcnpj }}</a>
+                   </td>
+                   <td width="400px">
+                   <a href="{{ url_for('main.edit_entesfonte', id=ente.id) }}" title="Alterar ente mencionado"> {{ente.outras_ids}}</a>
+                   </td>
+
+                </tr>
+            {% endfor %}
+           </table>
+        </div>
+        {% endif %}
+
+    <!--/article-->
+    </div>
+
+</section>
+
+{% endblock %}
+

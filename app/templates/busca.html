@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block app_content %}
+<!-- Search Bar -->
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-
+        scale=1">
+        <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-
+        awesome/4.7.0/css/font-awesome.min.css">
+        <link rel="stylesheet" href="/static/busca.css">
+    </head>
+    <body>
+        <h1><center>Buscar</center></h1>
+        <form class="example" method="post" action=""
+         style="margin:auto;max-width:600px">
+            <input type="text" placeholder="Busca genérica" name="termo">
+            <button type="submit" ><i class="fa fa-search"></i> &#x1F50E;
+            </button>
+        </form>
+        <p></p>
+        <center>
+ <table class="table table-hover">
+        {% for entidade in entidades%}
+            <tr>
+              {% include '_entidade.html' %}
+            </tr>
+        {% endfor %}
+        {% for rinf in rinfs%}
+            <tr>
+              {% include '_rinf.html' %}
+            </tr>
+        {% endfor %}
+ </table>
+        </center>
+    </body>
+</html>
+{% endblock %}

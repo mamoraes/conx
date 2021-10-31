@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=windows-1252"><meta name="viewport" content="width=device-width"><title>file:///home/pais/.cache/.fr-Z2pPON/Macros/cgu-svn/Dossie/dossieweb/templates/dossie/grafico/base/base_macro_grafo.html</title><link rel="stylesheet" type="text/css" href="resource://content-accessible/viewsource.css"></head><body id="viewsource" class="highlight" style="-moz-tab-size: 4" contextmenu="actions"><pre id="line1"><span>{% if not ajax %}
+<span id="line2"></span></span><span class="error doctype" title="Stray doctype.">&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"&gt;</span><span>
+<span id="line3"></span></span><span class="error" title="Stray start tag “html”.">&lt;<span class="start-tag">html</span> <span class="attribute-name">xmlns</span>="<a class="attribute-value">http://www.w3.org/1999/xhtml</a>"&gt;</span><span>
+<span id="line4"></span>  </span><span class="error" title="Stray start tag “head”.">&lt;<span class="start-tag">head</span>&gt;</span><span>
+<span id="line5"></span>  </span><span>&lt;<span class="start-tag">meta</span> <span class="attribute-name">charset</span>="<a class="attribute-value">utf-8</a>"&gt;</span><span>
+<span id="line6"></span>	</span><span>&lt;<span class="start-tag">meta</span> <span class="attribute-name">http-equiv</span>='<a class="attribute-value">cache-control</a>' <span class="attribute-name">content</span>='<a class="attribute-value">no-cache</a>'&gt;</span><span>
+<span id="line7"></span>	</span><span>&lt;<span class="start-tag">meta</span> <span class="attribute-name">http-equiv</span>='<a class="attribute-value">pragma</a>' <span class="attribute-name">content</span>='<a class="attribute-value">no-cache</a>'&gt;</span><span>	
+<span id="line8"></span>	</span><span class="comment">&lt;!-- &lt;meta http-equiv='expires' content='0'&gt; --&gt;</span><span>
+<span id="line9"></span>    </span><span>&lt;<span class="start-tag">title</span>&gt;</span><span>{% block title %}{{titulo}}{% endblock %}</span><span>&lt;/<span class="end-tag">title</span>&gt;</span><span>
+<span id="line10"></span>	</span><span>&lt;<span class="start-tag">script</span> <span class="attribute-name">type</span>="<a class="attribute-value">text/javascript</a>" <span class="attribute-name">src</span>="<a class="attribute-value" href="view-source:file:///macros/static/js/grafico/vivagraph.js?n=0.7">/macros/static/js/grafico/vivagraph.js?n=0.7</a>"&gt;</span><span></span><span>&lt;/<span class="end-tag">script</span>&gt;</span><span>
+<span id="line11"></span>    </span><span>&lt;<span class="start-tag">link</span> <span class="attribute-name">rel</span>="<a class="attribute-value">stylesheet</a>" <span class="attribute-name">href</span>="<a class="attribute-value" href="view-source:file:///macros/static/dojoroot/dijit/themes/claro/claro.css">/macros/static/dojoroot/dijit/themes/claro/claro.css</a>"&gt;</span><span>
+<span id="line12"></span>	</span><span>&lt;<span class="start-tag">link</span> <span class="attribute-name">rel</span>="<a class="attribute-value">stylesheet</a>" <span class="attribute-name">type</span>="<a class="attribute-value">text/css</a>" <span class="attribute-name">href</span>="<a class="attribute-value" href="view-source:file:///macros/static/dojoroot/dojox/grid/resources/Grid.css">/macros/static/dojoroot/dojox/grid/resources/Grid.css</a>" <span>/</span>&gt;</span><span>
+<span id="line13"></span>	</span><span>&lt;<span class="start-tag">link</span> <span class="attribute-name">rel</span>="<a class="attribute-value">stylesheet</a>" <span class="attribute-name">type</span>="<a class="attribute-value">text/css</a>" <span class="attribute-name">href</span>="<a class="attribute-value" href="view-source:file:///macros/static/dojoroot/dojox/grid/resources/claroGrid.css">/macros/static/dojoroot/dojox/grid/resources/claroGrid.css</a>" <span>/</span>&gt;</span><span>
+<span id="line14"></span>	</span><span>&lt;<span class="start-tag">link</span> <span class="attribute-name">rel</span>="<a class="attribute-value">stylesheet</a>" <span class="attribute-name">type</span>="<a class="attribute-value">text/css</a>" <span class="attribute-name">href</span>="<a class="attribute-value" href="view-source:file:///macros/static/dojoroot/dojo/resources/dojo.css">/macros/static/dojoroot/dojo/resources/dojo.css</a>" <span>/</span>&gt;</span><span>
+<span id="line15"></span>	</span><span>&lt;<span class="start-tag">link</span> <span class="attribute-name">rel</span>="<a class="attribute-value">stylesheet</a>" <span class="attribute-name">type</span>="<a class="attribute-value">text/css</a>" <span class="attribute-name">href</span>="<a class="attribute-value" href="view-source:file:///macros/static/dojoroot/dojox/image/resources/image.css">/macros/static/dojoroot/dojox/image/resources/image.css</a>" <span>/</span>&gt;</span><span>
+<span id="line16"></span>	</span><span>&lt;<span class="start-tag">link</span> <span class="attribute-name">rel</span>="<a class="attribute-value">stylesheet</a>" <span class="attribute-name">type</span>="<a class="attribute-value">text/css</a>" <span class="attribute-name">href</span>="<a class="attribute-value" href="view-source:file:///macros/static/dojoroot/dojox/layout/resources/ExpandoPane.css">/macros/static/dojoroot/dojox/layout/resources/ExpandoPane.css</a>" <span>/</span>&gt;</span><span>
+<span id="line17"></span>	</span><span>&lt;<span class="start-tag">link</span> <span class="attribute-name">rel</span>="<a class="attribute-value">stylesheet</a>" <span class="attribute-name">type</span>="<a class="attribute-value">text/css</a>" <span class="attribute-name">href</span>="<a class="attribute-value" href="view-source:file:///macros/static/css/dossie.css">/macros/static/css/dossie.css</a>" <span>/</span>&gt;</span><span>
+<span id="line18"></span>    </span><span>&lt;<span class="start-tag">script</span> <span class="attribute-name">type</span>="<a class="attribute-value">text/javascript</a>" <span class="attribute-name">src</span>="<a class="attribute-value" href="view-source:file:///macros/static/js/util.js?n={{versao_macros}}">/macros/static/js/util.js?n={{versao_macros}}</a>" <span class="attribute-name">charset</span>="<a class="attribute-value">utf-8</a>" &gt;</span><span></span><span>&lt;/<span class="end-tag">script</span>&gt;</span><span>     
+<span id="line19"></span>	</span><span class="comment">&lt;!-- &lt;script type="text/javascript" src="/macros/static/js/util.js"  charset="ISO-8859-1"&gt;&lt;/script&gt; --&gt;</span><span>
+<span id="line20"></span>
+<span id="line21"></span>    </span><span>&lt;<span class="start-tag">script</span> <span class="attribute-name">type</span>="<a class="attribute-value">text/javascript</a>" <span class="attribute-name">src</span>="<a class="attribute-value" href="view-source:file:///macros/static/dojoroot/dojo/dojo.js?n={{versao_macros}}">/macros/static/dojoroot/dojo/dojo.js?n={{versao_macros}}</a>" 	<span class="attribute-name">djConfig</span>="<a class="attribute-value">isDebug:{{debug}}</a>" 	<span class="attribute-name">data-dojo-config</span>="<a class="attribute-value">parseOnLoad:true, gfxRenderer: 'svg,silverlight,vml'</a>"&gt;</span><span>
+<span id="line22"></span>    </span><span>&lt;/<span class="end-tag">script</span>&gt;</span><span>
+<span id="line23"></span>{% endif %}
+<span id="line24"></span>	</span><span class="comment">&lt;!-- biblioteca para exibir alerta 	http://labs.abeautifulsite.net/archived/jquery-alerts/demo/ --&gt;</span><span>
+<span id="line25"></span>	</span><span>&lt;<span class="start-tag">script</span> <span class="attribute-name">src</span>="<a class="attribute-value" href="view-source:file:///macros/static/jquery/jquery.min.js">/macros/static/jquery/jquery.min.js</a>" <span class="attribute-name">type</span>="<a class="attribute-value">text/javascript</a>"&gt;</span><span></span><span>&lt;/<span class="end-tag">script</span>&gt;</span><span>
+<span id="line26"></span>	</span><span>&lt;<span class="start-tag">script</span> <span class="attribute-name">src</span>="<a class="attribute-value" href="view-source:file:///macros/static/jquery/jquery.ui.draggable.js">/macros/static/jquery/jquery.ui.draggable.js</a>" <span class="attribute-name">type</span>="<a class="attribute-value">text/javascript</a>"&gt;</span><span></span><span>&lt;/<span class="end-tag">script</span>&gt;</span><span>
+<span id="line27"></span>	</span><span>&lt;<span class="start-tag">script</span> <span class="attribute-name">src</span>="<a class="attribute-value" href="view-source:file:///macros/static/jquery/jquery.alerts.js">/macros/static/jquery/jquery.alerts.js</a>" <span class="attribute-name">type</span>="<a class="attribute-value">text/javascript</a>"&gt;</span><span></span><span>&lt;/<span class="end-tag">script</span>&gt;</span><span>
+<span id="line28"></span>	</span><span>&lt;<span class="start-tag">link</span> <span class="attribute-name">href</span>="<a class="attribute-value" href="view-source:file:///macros/static/jquery/jquery.alerts.css">/macros/static/jquery/jquery.alerts.css</a>" <span class="attribute-name">rel</span>="<a class="attribute-value">stylesheet</a>" <span class="attribute-name">type</span>="<a class="attribute-value">text/css</a>" <span class="attribute-name">media</span>="<a class="attribute-value">screen</a>" <span>/</span>&gt;</span><span>
+<span id="line29"></span>		
+<span id="line30"></span>	</span><span class="comment">&lt;!-- &lt;script type="text/javascript" src="/macros/static/js/grafico/jquery.min.js"&gt;&lt;/script&gt; --&gt;</span><span>
+<span id="line31"></span>	</span><span>&lt;<span class="start-tag">script</span> <span class="attribute-name">type</span>="<a class="attribute-value">text/javascript</a>" <span class="attribute-name">src</span>="<a class="attribute-value" href="view-source:file:///macros/static/jquery/jquery.contextMenu.js">/macros/static/jquery/jquery.contextMenu.js</a>"&gt;</span><span></span><span>&lt;/<span class="end-tag">script</span>&gt;</span><span> 
+<span id="line32"></span>
+<span id="line33"></span>	</span><span>&lt;<span class="start-tag">link</span> <span class="attribute-name">href</span>="<a class="attribute-value" href="view-source:file:///macros/static/css/jquery.contextMenu.css">/macros/static/css/jquery.contextMenu.css</a>" <span class="attribute-name">rel</span>="<a class="attribute-value">stylesheet</a>" <span class="attribute-name">type</span>="<a class="attribute-value">text/css</a>" <span>/</span>&gt;</span><span>
+<span id="line34"></span>	
+<span id="line35"></span>	</span><span>&lt;<span class="start-tag">style</span> <span class="attribute-name">type</span>="<a class="attribute-value">text/css</a>"&gt;</span><span>
+<span id="line36"></span>		html, body, svg  {
+<span id="line37"></span>			width: 100%;
+<span id="line38"></span>			height: 100%;
+<span id="line39"></span>			margin: 0;
+<span id="line40"></span>			overflow:hidden;
+<span id="line41"></span>			position:absolute;
+<span id="line42"></span>			
+<span id="line43"></span>		}
+<span id="line44"></span>		#borderContainer {
+<span id="line45"></span>			width: 100%;
+<span id="line46"></span>			height: 100%;
+<span id="line47"></span>		}
+<span id="line48"></span>		.centralizado {
+<span id="line49"></span>			margin: 0 auto;
+<span id="line50"></span>			text-align: left;
+<span id="line51"></span>		}
+<span id="line52"></span>
+<span id="line53"></span>		.graph-overlay {
+<span id="line54"></span>		  position: absolute;
+<span id="line55"></span>		  left: 0;
+<span id="line56"></span>		  top: 0;
+<span id="line57"></span>		  width: 100%;
+<span id="line58"></span>		  height: 100%;
+<span id="line59"></span>		  display: none;
+<span id="line60"></span>		}
+<span id="line61"></span>		.graph-selection-indicator {
+<span id="line62"></span>		  position: absolute;
+<span id="line63"></span>		  		  left: 0;
+<span id="line64"></span>		  top: 0;
+<span id="line65"></span>		  background: transparent;
+<span id="line66"></span>		  border: 1px solid orange;
+<span id="line67"></span>		}
+<span id="line68"></span>	</span><span>&lt;/<span class="end-tag">style</span>&gt;</span><span>
+<span id="line69"></span>	</span><span class="error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error comment" title="Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.">&lt;!------------------------ Define vari&#65533;veis iniciais do gr&#65533;fico --------------&gt;</span><span>
+<span id="line70"></span>	</span><span>&lt;<span class="start-tag">script</span> <span class="attribute-name">type</span>="<a class="attribute-value">text/javascript</a>" <span class="attribute-name">src</span>="<a class="attribute-value" href="view-source:file:///macros/static/js/grafico/grafoVariaveis.js?n={{versao_macros}}">/macros/static/js/grafico/grafoVariaveis.js?n={{versao_macros}}</a>" <span class="attribute-name">charset</span>="<a class="attribute-value">utf-8</a>"&gt;</span><span></span><span>&lt;/<span class="end-tag">script</span>&gt;</span><span> 
+<span id="line71"></span>	</span><span class="error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error comment" title="Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.">&lt;!------------------------ Define fun&#65533;&#65533;es que criam marcadores, links e n&#65533;s -----------------------------------------------------------------&gt;</span><span>
+<span id="line72"></span>	</span><span>&lt;<span class="start-tag">script</span> <span class="attribute-name">type</span>="<a class="attribute-value">text/javascript</a>" <span class="attribute-name">src</span>="<a class="attribute-value" href="view-source:file:///macros/static/js/grafico/grafoConfiguraElementos.js?n={{versao_macros}}">/macros/static/js/grafico/grafoConfiguraElementos.js?n={{versao_macros}}</a>" <span class="attribute-name">charset</span>="<a class="attribute-value">utf-8</a>"&gt;</span><span></span><span>&lt;/<span class="end-tag">script</span>&gt;</span><span> 
+<span id="line73"></span>	</span><span class="error error error error error error error error error error error error error error error error error error error error error error comment" title="Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.">&lt;!------------------------ Define fun&#65533;&#65533;es do Gr&#65533;fico ---&gt;</span><span>
+<span id="line74"></span>	</span><span>&lt;<span class="start-tag">script</span> <span class="attribute-name">type</span>="<a class="attribute-value">text/javascript</a>" <span class="attribute-name">src</span>="<a class="attribute-value" href="view-source:file:///macros/static/js/grafico/grafoFuncoes.js?n={{versao_macros}}">/macros/static/js/grafico/grafoFuncoes.js?n={{versao_macros}}</a>" <span class="attribute-name">charset</span>="<a class="attribute-value">utf-8</a>"&gt;</span><span></span><span>&lt;/<span class="end-tag">script</span>&gt;</span><span> 
+<span id="line75"></span>
+<span id="line76"></span>	{% block script %}{% endblock %}
+<span id="line77"></span>{% if not ajax %}
+<span id="line78"></span></span><span class="error" title="Stray end tag “head”.">&lt;/<span class="end-tag">head</span>&gt;</span><span>
+<span id="line79"></span>
+<span id="line80"></span></span><span class="error" title="An “body” start tag seen but an element of the same type was already open.">&lt;<span class="start-tag">body</span> <span class="attribute-name">class</span>="<a class="attribute-value">claro</a>" <span class="attribute-name">onload</span>="<a class="attribute-value">mainGrafo()</a>"&gt;</span><span>
+<span id="line81"></span>{% endif %}
+<span id="line82"></span>{% if noLigacao %}
+<span id="line83"></span>	</span><span>&lt;<span class="start-tag">div</span> <span class="attribute-name">data-dojo-type</span>="<a class="attribute-value">dijit.layout.BorderContainer</a>" <span class="attribute-name">data-dojo-props</span>="<a class="attribute-value">design:'sidebar', gutters:true, liveSplitters:true</a>" <span class="attribute-name">id</span>="<a class="attribute-value">borderContainer</a>" <span class="attribute-name">style</span>="<a class="attribute-value">height: 100%</a>"&gt;</span><span>
+<span id="line84"></span>		</span><span class="comment">&lt;!--&lt;div data-dojo-type="dijit.layout.ContentPane" data-dojo-props="splitter:true, region:'leading'" style="width: 150px"&gt;
+<span id="line85"></span>		--&gt;</span><span>
+<span id="line86"></span>		</span><span>&lt;<span class="start-tag">div</span> <span class="attribute-name">data-dojo-type</span>="<a class="attribute-value">dojox.layout.ExpandoPane</a>" <span class="attribute-name">data-dojo-props</span>="<a class="attribute-value">splitter:true, region:'leading'</a>" <span class="attribute-name">style</span>="<a class="attribute-value">width: 150px</a>"&gt;</span><span>
+<span id="line87"></span>		    </span><span>&lt;<span class="start-tag">div</span>&gt;</span><span></span><span>&lt;<span class="start-tag">center</span>&gt;</span><span></span><span>&lt;<span class="start-tag">b</span>&gt;</span><span>{{tituloBarraLateral}}</span><span>&lt;/<span class="end-tag">b</span>&gt;</span><span></span><span>&lt;/<span class="end-tag">center</span>&gt;</span><span></span><span>&lt;/<span class="end-tag">div</span>&gt;</span><span>
+<span id="line88"></span>		    </span><span>&lt;<span class="start-tag">div</span>&gt;</span><span></span><span>&lt;<span class="start-tag">center</span>&gt;</span><span></span><span>&lt;<span class="start-tag">b</span>&gt;</span><span></span><span>&lt;<span class="start-tag">span</span> <span class="attribute-name">id</span>='<a class="attribute-value">informacaoGrupos</a>'&gt;</span><span></span><span>&lt;/<span class="end-tag">span</span>&gt;</span><span></span><span>&lt;/<span class="end-tag">b</span>&gt;</span><span></span><span>&lt;/<span class="end-tag">center</span>&gt;</span><span></span><span>&lt;/<span class="end-tag">div</span>&gt;</span><span>
+<span id="line89"></span>		    </span><span>&lt;<span class="start-tag">div</span>&gt;</span><span></span><span>&lt;<span class="start-tag">center</span>&gt;</span><span></span><span>&lt;<span class="start-tag">b</span>&gt;</span><span></span><span>&lt;<span class="start-tag">span</span> <span class="attribute-name">id</span>='<a class="attribute-value">informacaoItens</a>'&gt;</span><span></span><span>&lt;/<span class="end-tag">span</span>&gt;</span><span></span><span>&lt;/<span class="end-tag">b</span>&gt;</span><span></span><span>&lt;/<span class="end-tag">center</span>&gt;</span><span></span><span>&lt;/<span class="end-tag">div</span>&gt;</span><span>
+<span id="line90"></span>			</span><span class="comment">&lt;!--&lt;div class="divisor"&gt;&lt;/div&gt;--&gt;</span><span>
+<span id="line91"></span>			</span><span>&lt;<span class="start-tag">div</span> <span class="attribute-name">class</span>="<a class="attribute-value">centralizado</a>" <span class="attribute-name">style</span>="<a class="attribute-value">width:100%;</a>"&gt;</span><span></span><span>&lt;<span class="start-tag">hr</span> <span>/</span>&gt;</span><span></span><span>&lt;/<span class="end-tag">div</span>&gt;</span><span>
+<span id="line92"></span>			</span><span>&lt;<span class="start-tag">div</span>&gt;</span><span> </span><span class="comment">&lt;!-- &lt;div style="height: 5%"&gt;--&gt;</span><span>
+<span id="line93"></span>				</span><span>&lt;<span class="start-tag">div</span> <span class="attribute-name">align</span>="<a class="attribute-value">center</a>" <span class="attribute-name">id</span>="<a class="attribute-value">menu_leiaute_titulo</a>" <span class="attribute-name">title</span>="<a class="attribute-value">Ativa/desativa o algoritmo de posicionamento</a>"&gt;</span><span></span><span>&lt;<span class="start-tag">b</span>&gt;</span><span>Leiaute</span><span>&lt;/<span class="end-tag">b</span>&gt;</span><span>					</span><span>&lt;<span class="start-tag">input</span> <span class="attribute-name">onclick</span>="<a class="attribute-value">javascript:rendererContinuarPausar(!bEstaRenderizando());</a>" <span class="attribute-name">id</span>="<a class="attribute-value">botao_leiaute_continuar_pausar</a>" <span class="attribute-name">type</span>="<a class="attribute-value">submit</a>" <span class="attribute-name">value</span>="<a class="attribute-value">Pausar</a>" <span class="attribute-name">alt</span>="<a class="attribute-value">Leiaute Autom&#65533;tico</a>"&gt;</span><span>
+<span id="line94"></span></span><span>&lt;/<span class="end-tag">div</span>&gt;</span><span>
+<span id="line95"></span>				</span><span>&lt;<span class="start-tag">div</span> <span class="attribute-name">align</span>="<a class="attribute-value">center</a>"&gt;</span><span>
+<span id="line96"></span></span><span class="comment">&lt;!--
+<span id="line97"></span>					&lt;input onclick="javascript:renderer.resume();" id="botao_leiaute_continuar" type="submit" value="Continuar" alt="Leiaute Autom&#65533;tico"&gt;
+<span id="line98"></span>					&lt;input onclick="javascript:renderer.pause();" id="botao_leiaute_parar" type="submit" value=" Pausar " alt="Suspende Leiaute Autom&#65533;tico"&gt;
+<span id="line99"></span>--&gt;</span><span>
+<span id="line100"></span>					</span><span>&lt;/<span class="end-tag">div</span>&gt;</span><span>
+<span id="line101"></span>			</span><span>&lt;/<span class="end-tag">div</span>&gt;</span><span>
+<span id="line102"></span>
+<span id="line103"></span>			</span><span>&lt;<span class="start-tag">div</span> <span class="attribute-name">class</span>="<a class="attribute-value">centralizado</a>" <span class="attribute-name">style</span>="<a class="attribute-value">width:100%;</a>"&gt;</span><span></span><span>&lt;<span class="start-tag">hr</span> <span>/</span>&gt;</span><span></span><span>&lt;/<span class="end-tag">div</span>&gt;</span><span>
+<span id="line104"></span>			</span><span>&lt;<span class="start-tag">div</span>&gt;</span><span> </span><span class="comment">&lt;!-- &lt;div style="height: 14%"&gt;--&gt;</span><span>
+<span id="line105"></span>			</span><span class="comment">&lt;!--
+<span id="line106"></span>				&lt;div align="center" id="menu_pesquisa_titulo" title="Marca em vermelho os elementos encontrados."&gt;&lt;b&gt;Pesquisa no Gr&#65533;fico:&lt;/b&gt;
+<span id="line107"></span>					&lt;img src="/macros/static/images/icone-help.jpg" style="height:1em"/&gt;
+<span id="line108"></span>				&lt;/div&gt;
+<span id="line109"></span>			--&gt;</span><span>
+<span id="line110"></span>				</span><span>&lt;<span class="start-tag">div</span>&gt;</span><span>
+<span id="line111"></span>					</span><span>&lt;<span class="start-tag">span</span>  <span class="attribute-name">title</span>="<a class="attribute-value">Busca por nome ou por cpf/cpnj no gr&#65533;fico.</a>"&gt;</span><span></span><span>&lt;<span class="start-tag">b</span>&gt;</span><span>Busca Nome/CPF/CNPJ</span><span>&lt;/<span class="end-tag">b</span>&gt;</span><span>: </span><span>&lt;/<span class="end-tag">span</span>&gt;</span><span></span><span>&lt;<span class="start-tag">br</span><span>/</span>&gt;</span><span>
+<span id="line112"></span>					</span><span>&lt;<span class="start-tag">input</span> <span class="attribute-name">id</span>="<a class="attribute-value">nome_a_pesquisar</a>" <span class="attribute-name">type</span>="<a class="attribute-value">text</a>" <span class="attribute-name">name</span>="<a class="attribute-value">nome</a>" <span class="attribute-name">title</span>="<a class="attribute-value">digite mais de um nome ou cpf/cnpj separando-os por espa&#65533;o ou ponto-e-virgula</a>"&gt;</span><span></span><span>&lt;<span class="start-tag">br</span><span>/</span>&gt;</span><span>
+<span id="line113"></span>					</span><span class="comment">&lt;!-- &lt;span  title="Marca em vermelho os elementos encontrados."&gt;   Por CPF/CNPJ: &lt;/span&gt;&lt;br/&gt;
+<span id="line114"></span>					&lt;input id="id_a_pesquisar" type="text" name="cpfcnpj" title="digite mais de um cpf/cnpj separando-os por espa&#65533;o ou ponto-e-virgula"&gt;&lt;br/&gt; --&gt;</span><span>
+<span id="line115"></span>					</span><span>&lt;<span class="start-tag">div</span> <span class="attribute-name">align</span>="<a class="attribute-value">center</a>"&gt;</span><span>
+<span id="line116"></span>						</span><span>&lt;<span class="start-tag">input</span> <span class="attribute-name">onclick</span>="<a class="attribute-value">javascript:{$('#nome_a_pesquisar').attr('value','');$('#id_a_pesquisar').attr('value','');}</a>" <span class="attribute-name">id</span>="<a class="attribute-value">botao_limpar</a>" <span class="attribute-name">type</span>="<a class="attribute-value">submit</a>" <span class="attribute-name">value</span>="<a class="attribute-value">Limpar</a>" <span class="attribute-name">title</span>="<a class="attribute-value">Apaga os valores digitados.</a>"&gt;</span><span>
+<span id="line117"></span>						</span><span>&lt;<span class="start-tag">input</span> <span class="attribute-name">onclick</span>="<a class="attribute-value">javascript:pesquisar();</a>" <span class="attribute-name">id</span>="<a class="attribute-value">botao_pesquisar</a>" <span class="attribute-name">type</span>="<a class="attribute-value">submit</a>" <span class="attribute-name">value</span>="<a class="attribute-value">Buscar</a>" <span class="attribute-name">title</span>="<a class="attribute-value">Procura e marca em vermelho os elementos encontrados.</a>"&gt;</span><span>
+<span id="line118"></span>					</span><span>&lt;/<span class="end-tag">div</span>&gt;</span><span>
+<span id="line119"></span>				</span><span>&lt;/<span class="end-tag">div</span>&gt;</span><span>
+<span id="line120"></span>			</span><span>&lt;/<span class="end-tag">div</span>&gt;</span><span>
+<span id="line121"></span>
+<span id="line122"></span>			</span><span>&lt;<span class="start-tag">div</span> <span class="attribute-name">class</span>="<a class="attribute-value">centralizado</a>" <span class="attribute-name">style</span>="<a class="attribute-value">width:100%;</a>"&gt;</span><span></span><span>&lt;<span class="start-tag">hr</span> <span>/</span>&gt;</span><span></span><span>&lt;/<span class="end-tag">div</span>&gt;</span><span> 
+<span id="line123"></span>			</span><span>&lt;<span class="start-tag">div</span> <span class="attribute-name">title</span>="<a class="attribute-value">Insere CPF/CNPJ.</a>"&gt;</span><span> </span><span class="comment">&lt;!-- &lt;div style="height: 5%"&gt;--&gt;</span><span>
+<span id="line124"></span>				</span><span class="comment">&lt;!--
+<span id="line125"></span>				&lt;div align="center" id="menu_inserir_CPF_CNPJ"&gt;&lt;b&gt;Inserir:&lt;/b&gt;
+<span id="line126"></span>					&lt;img src="/macros/static/images/icone-help.jpg" style="height:1em"/&gt;
+<span id="line127"></span>				&lt;/div&gt;
+<span id="line128"></span>				--&gt;</span><span>
+<span id="line129"></span>				</span><span>&lt;<span class="start-tag">div</span> <span class="attribute-name">align</span>="<a class="attribute-value">center</a>"&gt;</span><span>
+<span id="line130"></span>					</span><span>&lt;<span class="start-tag">input</span> <span class="attribute-name">onclick</span>="<a class="attribute-value">javascript:inserirNo();</a>" <span class="attribute-name">id</span>="<a class="attribute-value">inserir_CPF_CNPJ</a>" <span class="attribute-name">type</span>="<a class="attribute-value">submit</a>" <span class="attribute-name">value</span>="<a class="attribute-value">Inserir CPF/CNPJ</a>" <span class="attribute-name">title</span>="<a class="attribute-value">Digite cpf/cnpj para incluir no gr&#65533;fico. Se desejar colocar mais de 1 cpf/cnpj, separe-os por ponto e v&#65533;rgula (;)</a>"&gt;</span><span>
+<span id="line131"></span>				</span><span>&lt;/<span class="end-tag">div</span>&gt;</span><span>
+<span id="line132"></span>			</span><span>&lt;/<span class="end-tag">div</span>&gt;</span><span>
+<span id="line133"></span>			
+<span id="line134"></span>			</span><span>&lt;<span class="start-tag">div</span> <span class="attribute-name">class</span>="<a class="attribute-value">centralizado</a>" <span class="attribute-name">style</span>="<a class="attribute-value">width:100%;</a>"&gt;</span><span></span><span>&lt;<span class="start-tag">hr</span> <span>/</span>&gt;</span><span></span><span>&lt;/<span class="end-tag">div</span>&gt;</span><span>
+<span id="line135"></span>			</span><span>&lt;<span class="start-tag">div</span>&gt;</span><span> </span><span class="comment">&lt;!-- &lt;div style="height: 5%"&gt;--&gt;</span><span>
+<span id="line136"></span>				</span><span>&lt;<span class="start-tag">div</span> <span class="attribute-name">align</span>="<a class="attribute-value">center</a>" <span class="attribute-name">id</span>="<a class="attribute-value">menu_exibir_ocultar_titulo</a>" <span class="attribute-name">title</span>='<a class="attribute-value">Op&#65533;&#65533;es para Exibir ou Ocultar a "Primeira Camada", R&#65533;tulo (cpf/cnpj e o nome) e o Texto das Liga&#65533;&#65533;es(desativando esse texto fica mais f&#65533;cil movimentar o gr&#65533;fico).</a>'&gt;</span><span></span><span>&lt;<span class="start-tag">b</span>&gt;</span><span>Exibir/Ocultar:</span><span>&lt;/<span class="end-tag">b</span>&gt;</span><span>
+<span id="line137"></span>					</span><span>&lt;<span class="start-tag">img</span> <span class="attribute-name">src</span>="<a class="attribute-value" href="view-source:file:///macros/static/images/icone-help.jpg">/macros/static/images/icone-help.jpg</a>" <span class="attribute-name">style</span>="<a class="attribute-value">height:1em</a>"<span>/</span>&gt;</span><span>
+<span id="line138"></span>				</span><span>&lt;/<span class="end-tag">div</span>&gt;</span><span>
+<span id="line139"></span>				</span><span>&lt;<span class="start-tag">select</span> <span class="attribute-name">id</span>="<a class="attribute-value">selExibirOcultar</a>" <span class="attribute-name">onChange</span>="<a class="attribute-value">javascript:selecaoExibirOcultar(this);</a>"&gt;</span><span>
+<span id="line140"></span>				  </span><span>&lt;<span class="start-tag">option</span> <span class="attribute-name">value</span>="<a class="attribute-value"></a>"  <span class="attribute-name">title</span>="<a class="attribute-value">Selecione um tipo de relacionamento ou de elementos para excluir</a>" &gt;</span><span>Selecione...</span><span>&lt;/<span class="end-tag">option</span>&gt;</span><span>          
+<span id="line141"></span>				  </span><span>&lt;<span class="start-tag">option</span> <span class="attribute-name">id</span>="<a class="attribute-value">opRotulo</a>"&gt;</span><span>Ocultar R&#65533;tulo</span><span>&lt;/<span class="end-tag">option</span>&gt;</span><span> 
+<span id="line142"></span>				  </span><span>&lt;<span class="start-tag">option</span> <span class="attribute-name">id</span>="<a class="attribute-value">opTextoLigacao</a>"&gt;</span><span>Ocultar Texto Liga&#65533;&#65533;o</span><span>&lt;/<span class="end-tag">option</span>&gt;</span><span> 
+<span id="line143"></span>				  </span><span>&lt;<span class="start-tag">option</span> <span class="attribute-name">id</span>="<a class="attribute-value">op1Camada</a>"&gt;</span><span>Ocultar 1a Camada</span><span>&lt;/<span class="end-tag">option</span>&gt;</span><span> 
+<span id="line144"></span>				  </span><span>&lt;<span class="start-tag">option</span> <span class="attribute-name">id</span>="<a class="attribute-value">op2Camada</a>"&gt;</span><span>Ocultar 2a Camada</span><span>&lt;/<span class="end-tag">option</span>&gt;</span><span> 
+<span id="line145"></span>				  </span><span>&lt;<span class="start-tag">option</span> <span class="attribute-name">id</span>="<a class="attribute-value">op3Camada</a>"&gt;</span><span>Ocultar 3a Camada</span><span>&lt;/<span class="end-tag">option</span>&gt;</span><span> 
+<span id="line146"></span>				  </span><span>&lt;<span class="start-tag">option</span> <span class="attribute-name">id</span>="<a class="attribute-value">opOutrasCamadas</a>"&gt;</span><span>Ocultar Outras Camadas</span><span>&lt;/<span class="end-tag">option</span>&gt;</span><span> 
+<span id="line147"></span>				  </span><span>&lt;<span class="start-tag">option</span> <span class="attribute-name">id</span>="<a class="attribute-value">opEscala</a>" <span class="attribute-name">title</span>="<a class="attribute-value">Retorna para a escala inicial</a>"&gt;</span><span>Escala Original</span><span>&lt;/<span class="end-tag">option</span>&gt;</span><span> 
+<span id="line148"></span>				</span><span>&lt;/<span class="end-tag">select</span>&gt;</span><span>					
+<span id="line149"></span>			</span><span>&lt;/<span class="end-tag">div</span>&gt;</span><span>
+<span id="line150"></span>
+<span id="line151"></span>			</span><span>&lt;<span class="start-tag">div</span> <span class="attribute-name">class</span>="<a class="attribute-value">centralizado</a>" <span class="attribute-name">style</span>="<a class="attribute-value">width:100%;</a>"&gt;</span><span></span><span>&lt;<span class="start-tag">hr</span> <span>/</span>&gt;</span><span></span><span>&lt;/<span class="end-tag">div</span>&gt;</span><span> 			
+<span id="line152"></span>			</span><span>&lt;<span class="start-tag">div</span> <span class="attribute-name">align</span>="<a class="attribute-value">center</a>" <span class="attribute-name">id</span>="<a class="attribute-value">menu_excluir_incluir_relacionamentos</a>" <span class="attribute-name">title</span>="<a class="attribute-value">Elimina relacionamentos(liga&#65533;&#65533;es) que cont&#65533;m apenas o tipo selecionado, ou elementos sem ou com 1 liga&#65533;&#65533;o.</a>"&gt;</span><span></span><span>&lt;<span class="start-tag">b</span>&gt;</span><span>Excluir:</span><span>&lt;/<span class="end-tag">b</span>&gt;</span><span>
+<span id="line153"></span>				</span><span>&lt;<span class="start-tag">img</span> <span class="attribute-name">src</span>="<a class="attribute-value" href="view-source:file:///macros/static/images/icone-help.jpg">/macros/static/images/icone-help.jpg</a>" <span class="attribute-name">style</span>="<a class="attribute-value">height:1em</a>"<span>/</span>&gt;</span><span>
+<span id="line154"></span>			</span><span>&lt;/<span class="end-tag">div</span>&gt;</span><span>
+<span id="line155"></span>			</span><span class="comment">&lt;!-- select id="selFiltro"  maxHeight="200" data-dojo-type="dijit.form.Select" onChange="javascript:eliminaRelacionamento();"&gt; dijit n&#65533;o funciona offline--&gt;</span><span>
+<span id="line156"></span>			</span><span>&lt;<span class="start-tag">div</span>&gt;</span><span>
+<span id="line157"></span>				</span><span>&lt;<span class="start-tag">select</span> <span class="attribute-name">id</span>="<a class="attribute-value">selFiltro</a>"  <span class="attribute-name">onChange</span>="<a class="attribute-value">javascript:eliminaRelacionamento(this);</a>"&gt;</span><span>
+<span id="line158"></span>				  </span><span>&lt;<span class="start-tag">option</span> <span class="attribute-name">value</span>="<a class="attribute-value"></a>"  <span class="attribute-name">title</span>="<a class="attribute-value">Selecione um tipo de relacionamento ou de elementos para excluir</a>" &gt;</span><span>Elemento/Liga&#65533;&#65533;o...</span><span>&lt;/<span class="end-tag">option</span>&gt;</span><span>       
+<span id="line159"></span>				  </span><span>&lt;<span class="start-tag">option</span> <span class="attribute-name">value</span>="<a class="attribute-value">ESC</a>" <span class="attribute-name">title</span>="<a class="attribute-value">Exclui PF(s)/PJ(s) que n&#65533;o estejam relacionadas com outras PF(s)/PJ(s).</a>"&gt;</span><span>Elementos sem liga&#65533;&#65533;o</span><span>&lt;/<span class="end-tag">option</span>&gt;</span><span> 
+<span id="line160"></span>				  </span><span>&lt;<span class="start-tag">option</span> <span class="attribute-name">value</span>="<a class="attribute-value">E1C</a>" <span class="attribute-name">title</span>="<a class="attribute-value">Exclui PF(s)/PJ(s) que tenham apenas um relacionamento com outras PF(s)/PJ(s),que n&#65533;o seja origem da consulta (camada 0) ou que n&#65533;o tenham informa&#65533;&#65533;o relevante, destacados em vermelho.</a>"&gt;</span><span>Elementos com 1 liga&#65533;&#65533;o</span><span>&lt;/<span class="end-tag">option</span>&gt;</span><span> 			  
+<span id="line161"></span>				  </span><span>&lt;<span class="start-tag">option</span> <span class="attribute-name">value</span>="<a class="attribute-value">EPoda</a>" <span class="attribute-name">title</span>="<a class="attribute-value">Utiliza a rotina 'Excluir Elementos com 1 liga&#65533;&#65533;o' repetidamente at&#65533; que reste apenas os items que tenham mais de uma liga&#65533;&#65533;o, que sejam origem da consulta (camada 0), que tenham marcador ou informa&#65533;&#65533;o relevante.</a>"&gt;</span><span>Podar &#65533;rvore</span><span>&lt;/<span class="end-tag">option</span>&gt;</span><span> 			  
+<span id="line162"></span>				  </span><span>&lt;<span class="start-tag">option</span> <span class="attribute-name">value</span>="<a class="attribute-value">102</a>"&gt;</span><span>Liga&#65533;&#65533;o contador</span><span>&lt;/<span class="end-tag">option</span>&gt;</span><span> 
+<span id="line163"></span>				  </span><span>&lt;<span class="start-tag">option</span> <span class="attribute-name">value</span>="<a class="attribute-value">160</a>"&gt;</span><span>Liga&#65533;&#65533;o depend. SIAPE</span><span>&lt;/<span class="end-tag">option</span>&gt;</span><span> 
+<span id="line164"></span>				  </span><span>&lt;<span class="start-tag">option</span> <span class="attribute-name">value</span>="<a class="attribute-value">127</a>"&gt;</span><span>Liga&#65533;&#65533;o empregado</span><span>&lt;/<span class="end-tag">option</span>&gt;</span><span>          
+<span id="line165"></span>				  </span><span>&lt;<span class="start-tag">option</span> <span class="attribute-name">value</span>="<a class="attribute-value">106</a>"&gt;</span><span>Liga&#65533;&#65533;o ex-socio</span><span>&lt;/<span class="end-tag">option</span>&gt;</span><span>          
+<span id="line166"></span>				  </span><span>&lt;<span class="start-tag">option</span> <span class="attribute-name">value</span>="<a class="attribute-value">128</a>"&gt;</span><span>Liga&#65533;&#65533;o ex-empregado</span><span>&lt;/<span class="end-tag">option</span>&gt;</span><span>          
+<span id="line167"></span>				  </span><span>&lt;<span class="start-tag">option</span> <span class="attribute-name">value</span>="<a class="attribute-value">100</a>"&gt;</span><span>Liga&#65533;&#65533;o filial</span><span>&lt;/<span class="end-tag">option</span>&gt;</span><span> 	
+<span id="line168"></span>				  </span><span>&lt;<span class="start-tag">option</span> <span class="attribute-name">value</span>="<a class="attribute-value">162</a>"&gt;</span><span>Liga&#65533;&#65533;o poss&#65533;vel m&#65533;e (CPF)</span><span>&lt;/<span class="end-tag">option</span>&gt;</span><span> 
+<span id="line169"></span>				  </span><span>&lt;<span class="start-tag">option</span> <span class="attribute-name">value</span>="<a class="attribute-value">305</a>"&gt;</span><span>Liga&#65533;&#65533;o poss&#65533;vel m&#65533;e (Renach)</span><span>&lt;/<span class="end-tag">option</span>&gt;</span><span> 
+<span id="line170"></span>				  </span><span>&lt;<span class="start-tag">option</span> <span class="attribute-name">value</span>="<a class="attribute-value">304</a>"&gt;</span><span>Liga&#65533;&#65533;o poss&#65533;vel pai (Renach)</span><span>&lt;/<span class="end-tag">option</span>&gt;</span><span> 
+<span id="line171"></span>				  </span><span>&lt;<span class="start-tag">option</span> <span class="attribute-name">value</span>="<a class="attribute-value">350</a>" <span class="attribute-name">title</span>="<a class="attribute-value">Exclui liga&#65533;&#65533;o sucessor_ve&#65533;culo (autom&#65533;veis e aeronaves)</a>"&gt;</span><span>Liga&#65533;&#65533;o sucessor_veiculo</span><span>&lt;/<span class="end-tag">option</span>&gt;</span><span> 
+<span id="line172"></span>				  </span><span>&lt;<span class="start-tag">option</span> <span class="attribute-name">value</span>="<a class="attribute-value">ExcluiValor</a>"&gt;</span><span>Liga&#65533;&#65533;o com valor...</span><span>&lt;/<span class="end-tag">option</span>&gt;</span><span> 		  
+<span id="line173"></span>				  </span><span>&lt;<span class="start-tag">option</span> <span class="attribute-name">value</span>="<a class="attribute-value">ExcluiSemMarcadores</a>" <span class="attribute-name">title</span>="<a class="attribute-value">Exclui &#65533;cones sem marcadores</a>"&gt;</span><span>Itens sem marcadores</span><span>&lt;/<span class="end-tag">option</span>&gt;</span><span> 			  
+<span id="line174"></span>				  </span><span>&lt;<span class="start-tag">option</span> <span class="attribute-name">value</span>="<a class="attribute-value">ExcluiContaCorrente</a>" <span class="attribute-name">title</span>="<a class="attribute-value">Exclui &#65533;cones de conta-correntes.</a>"&gt;</span><span>Conta-Corrente</span><span>&lt;/<span class="end-tag">option</span>&gt;</span><span> 			  
+<span id="line175"></span>				  </span><span>&lt;<span class="start-tag">option</span> <span class="attribute-name">value</span>="<a class="attribute-value">ExcluiEndereco</a>" <span class="attribute-name">title</span>="<a class="attribute-value">Exclui &#65533;cones de endere&#65533;os.</a>"&gt;</span><span>Endereco</span><span>&lt;/<span class="end-tag">option</span>&gt;</span><span> 			  
+<span id="line176"></span>				  </span><span>&lt;<span class="start-tag">option</span> <span class="attribute-name">value</span>="<a class="attribute-value">ExcluiTelefone</a>" <span class="attribute-name">title</span>="<a class="attribute-value">Exclui &#65533;cones de telefones</a>"&gt;</span><span>Telefone</span><span>&lt;/<span class="end-tag">option</span>&gt;</span><span>			  
+<span id="line177"></span>				  </span><span>&lt;<span class="start-tag">option</span> <span class="attribute-name">value</span>="<a class="attribute-value">ExcluiPFInativo</a>" <span class="attribute-name">title</span>="<a class="attribute-value">Exclui &#65533;cones de pessoas f&#65533;sicas em situa&#65533;&#65533;o n&#65533;o ativa.</a>"&gt;</span><span>PF Inativo</span><span>&lt;/<span class="end-tag">option</span>&gt;</span><span> 			  
+<span id="line178"></span>				  </span><span>&lt;<span class="start-tag">option</span> <span class="attribute-name">value</span>="<a class="attribute-value">ExcluiPJInativo</a>" <span class="attribute-name">title</span>="<a class="attribute-value">Exclui &#65533;cones de pessoas jur&#65533;dicas em situa&#65533;&#65533;o n&#65533;o ativa.</a>"&gt;</span><span>PJ Inativo</span><span>&lt;/<span class="end-tag">option</span>&gt;</span><span> 
+<span id="line179"></span>				  </span><span>&lt;<span class="start-tag">option</span> <span class="attribute-name">value</span>="<a class="attribute-value">ExcluiPJFilial</a>" <span class="attribute-name">title</span>="<a class="attribute-value">Exclui &#65533;cones de filiais.</a>"&gt;</span><span>PJ Filial</span><span>&lt;/<span class="end-tag">option</span>&gt;</span><span> 			  
+<span id="line180"></span>				  </span><span>&lt;<span class="start-tag">option</span> <span class="attribute-name">value</span>="<a class="attribute-value">ExcluiTudo</a>" <span class="attribute-name">title</span>="<a class="attribute-value">Exclui todos os N&#65533;s.</a>"&gt;</span><span>Excluir Tudo</span><span>&lt;/<span class="end-tag">option</span>&gt;</span><span> 			  
+<span id="line181"></span>				</span><span>&lt;/<span class="end-tag">select</span>&gt;</span><span>
+<span id="line182"></span>				</span><span>&lt;<span class="start-tag">span</span> <span class="attribute-name">title</span>="<a class="attribute-value">Selecione se a Exclus&#65533;o deve ser aplicada apenas nos itens inseridos na &#65533;ltima inclus&#65533;o</a>"&gt;</span><span></span><span>&lt;<span class="start-tag">input</span> <span class="attribute-name">type</span>="<a class="attribute-value">checkbox</a>" <span class="attribute-name">id</span>="<a class="attribute-value">cbFiltraApenasUltimaInclusao</a>"&gt;</span><span>S&#65533; na &#65533;ltima Inclus&#65533;o</span><span>&lt;/<span class="end-tag">span</span>&gt;</span><span>
+<span id="line183"></span>			</span><span>&lt;/<span class="end-tag">div</span>&gt;</span><span>
+<span id="line184"></span>			
+<span id="line185"></span>			</span><span>&lt;<span class="start-tag">div</span> <span class="attribute-name">class</span>="<a class="attribute-value">centralizado</a>" <span class="attribute-name">style</span>="<a class="attribute-value">width:100%;</a>"&gt;</span><span></span><span>&lt;<span class="start-tag">hr</span> <span>/</span>&gt;</span><span></span><span>&lt;/<span class="end-tag">div</span>&gt;</span><span> 
+<span id="line186"></span>			</span><span>&lt;<span class="start-tag">div</span> <span class="attribute-name">title</span>="<a class="attribute-value">Op&#65533;&#65533;es para baixar arquivo XLS/JSON com os elementos do gr&#65533;fico atual.</a>"&gt;</span><span> 
+<span id="line187"></span>				</span><span>&lt;<span class="start-tag">center</span>&gt;</span><span></span><span>&lt;<span class="start-tag">b</span>&gt;</span><span>Download da Rede:</span><span>&lt;/<span class="end-tag">b</span>&gt;</span><span></span><span>&lt;/<span class="end-tag">center</span>&gt;</span><span>
+<span id="line188"></span>				</span><span>&lt;<span class="start-tag">select</span> <span class="attribute-name">id</span>="<a class="attribute-value">selFormatoDownload</a>"  <span class="attribute-name">onChange</span>="<a class="attribute-value">javascript:selecaoDownloadGrafo(this);</a>" &gt;</span><span>
+<span id="line189"></span>				  </span><span class="error error comment" title="Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.">&lt;!--&lt;option value=''&gt;-- Download da Rede --&lt;/option&gt;  --&gt;</span><span>        
+<span id="line190"></span>				  </span><span>&lt;<span class="start-tag">option</span> <span class="attribute-name">value</span>='<a class="attribute-value"></a>'&gt;</span><span>Selecione Formato </span><span>&lt;/<span class="end-tag">option</span>&gt;</span><span>       
+<span id="line191"></span>				  </span><span>&lt;<span class="start-tag">option</span> <span class="attribute-name">value</span>='<a class="attribute-value">xls</a>' <span class="attribute-name">title</span>="<a class="attribute-value">Arquivo XLS</a>"&gt;</span><span>Formato Excel (XLS)</span><span>&lt;/<span class="end-tag">option</span>&gt;</span><span>          
+<span id="line192"></span>				  </span><span>&lt;<span class="start-tag">option</span> <span class="attribute-name">value</span>='<a class="attribute-value">xlsx</a>' <span class="attribute-name">title</span>="<a class="attribute-value">Arquivo formato do Excel 2010</a>"&gt;</span><span>Formato Excel (XLSX)</span><span>&lt;/<span class="end-tag">option</span>&gt;</span><span>  
+<span id="line193"></span>				  </span><span>&lt;<span class="start-tag">option</span> <span class="attribute-name">value</span>='<a class="attribute-value">svg</a>' <span class="attribute-name">title</span>='<a class="attribute-value">Arquivo SVG &#65533; um gr&#65533;fico vetorial, em que pode ser aplicado zoom sem perda de qualidade. Pode ser aberto no Internet Explorer</a>'&gt;</span><span>Formato Imagem (SVG)</span><span>&lt;/<span class="end-tag">option</span>&gt;</span><span> 			 
+<span id="line194"></span>				  </span><span>&lt;<span class="start-tag">option</span> <span class="attribute-name">value</span>='<a class="attribute-value">json</a>' <span class="attribute-name">title</span>='<a class="attribute-value">Arquivo de texto com a descri&#65533;&#65533;o das liga&#65533;&#65533;es. Pode ser carregado posteriormente com a op&#65533;&#65533;o "Importar JSON"</a>'&gt;</span><span>Formato JSON (JSON)</span><span>&lt;/<span class="end-tag">option</span>&gt;</span><span>
+<span id="line195"></span>				  </span><span>&lt;<span class="start-tag">option</span> <span class="attribute-name">value</span>='<a class="attribute-value">anx</a>' <span class="attribute-name">title</span>="<a class="attribute-value">Arquivo com visualiza&#65533;&#65533;o no i2 IBM Analyst's Notebook</a>"&gt;</span><span>Formato i2 (ANX)</span><span>&lt;/<span class="end-tag">option</span>&gt;</span><span>
+<span id="line196"></span>				</span><span>&lt;/<span class="end-tag">select</span>&gt;</span><span>	
+<span id="line197"></span>			</span><span>&lt;/<span class="end-tag">div</span>&gt;</span><span>
+<span id="line198"></span>			
+<span id="line199"></span>			</span><span>&lt;<span class="start-tag">div</span> <span class="attribute-name">class</span>="<a class="attribute-value">centralizado</a>" <span class="attribute-name">style</span>="<a class="attribute-value">width:100%;</a>"&gt;</span><span></span><span>&lt;<span class="start-tag">hr</span> <span>/</span>&gt;</span><span></span><span>&lt;/<span class="end-tag">div</span>&gt;</span><span> 
+<span id="line200"></span>			</span><span>&lt;<span class="start-tag">div</span> <span class="attribute-name">title</span>="<a class="attribute-value">Adiciona arquivo no formato JSON salvo anteriormente pela op&#65533;&#65533;o 'Download de Rede'. JSON &#65533; um arquivo de texto com a descri&#65533;&#65533;o das liga&#65533;&#65533;es do gr&#65533;fico de relacionamentos.</a>"&gt;</span><span>
+<span id="line201"></span>				</span><span>&lt;<span class="start-tag">center</span>&gt;</span><span></span><span>&lt;<span class="start-tag">b</span>&gt;</span><span>Importar JSON / CSV:</span><span>&lt;/<span class="end-tag">b</span>&gt;</span><span></span><span>&lt;/<span class="end-tag">center</span>&gt;</span><span>
+<span id="line202"></span>				</span><span class="comment">&lt;!--&lt;input type="file" id="fileImportJSON" name="files[]" /&gt; --&gt;</span><span>
+<span id="line203"></span>				</span><span>&lt;<span class="start-tag">input</span> <span class="attribute-name">value</span>="<a class="attribute-value">Importar</a>" <span class="attribute-name">type</span>="<a class="attribute-value">file</a>" <span class="attribute-name">id</span>="<a class="attribute-value">fileImportJSON</a>" <span class="attribute-name">title</span>="<a class="attribute-value">Adiciona grafico no formato JSON salvo anteriormente pela op&#65533;&#65533;o 'Download de Rede', ou um arquivo CSV. JSON &#65533; um arquivo de texto com a descri&#65533;&#65533;o das liga&#65533;&#65533;es do gr&#65533;fico de relacionamentos. O arquivo CSV deve ter tr&#65533;s campos: cpf/cnpj de origem da liga&#65533;&#65533;o, cpf/cnpj destino da liga&#65533;&#65533;o e texto com descri&#65533;&#65533;o da liga&#65533;&#65533;o, separados por tabula&#65533;&#65533;o ou ponto e v&#65533;rgula (;)</a>"<span>/</span>&gt;</span><span>
+<span id="line204"></span>				</span><span>&lt;<span class="start-tag">script</span>&gt;</span><span>
+<span id="line205"></span>				  document.getElementById('fileImportJSON').addEventListener('change', importarJSONHandleFileSelect, false);
+<span id="line206"></span>				</span><span>&lt;/<span class="end-tag">script</span>&gt;</span><span>			
+<span id="line207"></span>			</span><span>&lt;/<span class="end-tag">div</span>&gt;</span><span>
+<span id="line208"></span>			
+<span id="line209"></span>			</span><span>&lt;<span class="start-tag">div</span> <span class="attribute-name">class</span>="<a class="attribute-value">centralizado</a>" <span class="attribute-name">style</span>="<a class="attribute-value">width:100%;</a>"&gt;</span><span></span><span>&lt;<span class="start-tag">hr</span> <span>/</span>&gt;</span><span></span><span>&lt;/<span class="end-tag">div</span>&gt;</span><span> 
+<span id="line210"></span>			</span><span>&lt;<span class="start-tag">div</span> <span class="attribute-name">align</span>="<a class="attribute-value">center</a>" <span class="attribute-name">id</span>="<a class="attribute-value">menu_destaca</a>" <span class="attribute-name">title</span>='<a class="attribute-value">Destaca os n&#65533;s selecionados com a cor ao lado.</a>'&gt;</span><span>
+<span id="line211"></span>			</span><span>&lt;<span class="start-tag">button</span> <span class="attribute-name">onclick</span>="<a class="attribute-value">javascript:colorirNo()</a>" <span class="attribute-name">title</span>='<a class="attribute-value">Aplique a cor nos N&#65533;s selecionados.Vc pode selecionar v&#65533;rios N&#65533;s pressionando SHIFT + clique, com CTRL + Arrastar regi&#65533;o ou colocando v&#65533;rios cpfs/cnpj na caixa "Pesquisa no Gr&#65533;fico"</a>'&gt;</span><span></span><span>&lt;<span class="start-tag">b</span>&gt;</span><span>Colorir</span><span>&lt;/<span class="end-tag">b</span>&gt;</span><span></span><span>&lt;/<span class="end-tag">button</span>&gt;</span><span>
+<span id="line212"></span>				</span><span>&lt;<span class="start-tag">input</span> <span class="attribute-name">type</span>="<a class="attribute-value">color</a>" <span class="attribute-name">id</span>='<a class="attribute-value">palheta</a>' <span class="attribute-name">title</span>='<a class="attribute-value">Selecione uma cor</a>'&gt;</span><span>
+<span id="line213"></span>			</span><span>&lt;/<span class="end-tag">div</span>&gt;</span><span>
+<span id="line214"></span>
+<span id="line215"></span>			</span><span>&lt;<span class="start-tag">div</span> <span class="attribute-name">class</span>="<a class="attribute-value">centralizado</a>" <span class="attribute-name">style</span>="<a class="attribute-value">width:100%;</a>"&gt;</span><span></span><span>&lt;<span class="start-tag">hr</span> <span>/</span>&gt;</span><span></span><span>&lt;/<span class="end-tag">div</span>&gt;</span><span>			
+<span id="line216"></span>			</span><span>&lt;<span class="start-tag">div</span>&gt;</span><span> </span><span class="comment">&lt;!-- style="height: 30%"&gt; --&gt;</span><span>
+<span id="line217"></span>				</span><span>&lt;<span class="start-tag">div</span> <span class="attribute-name">id</span> = "<a class="attribute-value">menu_foto</a>" <span class="attribute-name">class</span>="<a class="attribute-value">centralizado</a>"&gt;</span><span>
+<span id="line218"></span>					</span><span>&lt;<span class="start-tag">img</span> <span class="attribute-name">src</span>="<a class="attribute-value" href="view-source:file:///macros/static/images/icone-grafo-desconhecido.png">/macros/static/images/icone-grafo-desconhecido.png</a>" <span class="attribute-name">style</span>="<a class="attribute-value">width: 150px;</a>"&gt;</span><span>
+<span id="line219"></span>				</span><span>&lt;/<span class="end-tag">div</span>&gt;</span><span>
+<span id="line220"></span>				</span><span>&lt;<span class="start-tag">div</span> <span class="attribute-name">id</span>="<a class="attribute-value">menu_nome_cpfcnpj</a>" <span class="attribute-name">onclick</span>="<a class="attribute-value">javascript:copiaElemento('menu_nome_cpfcnpj');</a>" <span class="attribute-name">title</span>='<a class="attribute-value">Clicando voc&#65533; copia o nome e o identificador para a &#65533;rea de transfer&#65533;ncia</a>'&gt;</span><span>
+<span id="line221"></span>					</span><span>&lt;<span class="start-tag">div</span> <span class="attribute-name">id</span> = "<a class="attribute-value">menu_nome</a>"&gt;</span><span></span><span>&lt;/<span class="end-tag">div</span>&gt;</span><span>
+<span id="line222"></span>					</span><span>&lt;<span class="start-tag">div</span> <span class="attribute-name">id</span> = "<a class="attribute-value">menu_cpfcnpj</a>"&gt;</span><span>
+<span id="line223"></span>				</span><span>&lt;/<span class="end-tag">div</span>&gt;</span><span>
+<span id="line224"></span>				</span><span>&lt;/<span class="end-tag">div</span>&gt;</span><span>
+<span id="line225"></span>			</span><span>&lt;/<span class="end-tag">div</span>&gt;</span><span>
+<span id="line226"></span>			</span><span>&lt;<span class="start-tag">div</span> <span class="attribute-name">class</span>="<a class="attribute-value">centralizado</a>" <span class="attribute-name">style</span>="<a class="attribute-value">width:100%;</a>"&gt;</span><span></span><span>&lt;<span class="start-tag">hr</span> <span>/</span>&gt;</span><span></span><span>&lt;/<span class="end-tag">div</span>&gt;</span><span>
+<span id="line227"></span>			</span><span>&lt;<span class="start-tag">div</span> <span class="attribute-name">title</span>="<a class="attribute-value">Abre uma aba com p&#65533;gina de ajuda, com o significado de cada marcador e instru&#65533;&#65533;es sobre a Rede de Relacionamentos.</a>"&gt;</span><span>
+<span id="line228"></span>				</span><span>&lt;<span class="start-tag">div</span> <span class="attribute-name">align</span>="<a class="attribute-value">center</a>" <span class="attribute-name">id</span>="<a class="attribute-value">menu_Legenda</a>" <span class="attribute-name">onclick</span>="<a class="attribute-value">javascript:abrirJanela('/macros/static/ajudaHtml.html?k={{versao_macros}}');</a>"&gt;</span><span></span><span>&lt;<span class="start-tag">b</span>&gt;</span><span>Ajuda:</span><span>&lt;/<span class="end-tag">b</span>&gt;</span><span>
+<span id="line229"></span>					</span><span>&lt;<span class="start-tag">img</span> <span class="attribute-name">src</span>="<a class="attribute-value" href="view-source:file:///macros/static/images/icone-help.jpg">/macros/static/images/icone-help.jpg</a>" <span class="attribute-name">style</span>="<a class="attribute-value">height:1em</a>"<span>/</span>&gt;</span><span>
+<span id="line230"></span>				</span><span>&lt;/<span class="end-tag">div</span>&gt;</span><span>
+<span id="line231"></span>				</span><span>&lt;<span class="start-tag">div</span> <span class="attribute-name">ALIGN</span>=<a class="attribute-value">CENTER</a>&gt;</span><span></span><span class="comment">&lt;!-- &lt;div style="height: 5%"&gt;--&gt;</span><span>
+<span id="line232"></span>					</span><span>&lt;<span class="start-tag">a</span> <span class="attribute-name">href</span>="<a class="attribute-value">javascript:abrirJanela('/macros/static/ajudaHtml.html?k={{versao_macros}}');</a>"&gt;</span><span>
+<span id="line233"></span>						</span><span>&lt;<span class="start-tag">IMG</span> <span class="attribute-name">SRC</span>="<a class="attribute-value" href="view-source:file:///macros/static/images/marcadores_PF.png">/macros/static/images/marcadores_PF.png</a>" <span class="attribute-name">ALT</span>="<a class="attribute-value">Legenda</a>" <span class="attribute-name">NAME</span>="<a class="attribute-value">Legenda</a>" <span class="attribute-name">WIDTH</span>=<a class="attribute-value">50</a> <span class="attribute-name">HEIGHT</span>=<a class="attribute-value">50</a> <span class="attribute-name">BORDER</span>=<a class="attribute-value">0</a>&gt;</span><span></span><span class="error" title="Stray end tag “span”.">&lt;/<span class="end-tag">SPAN</span>&gt;</span><span>
+<span id="line234"></span>					</span><span>&lt;/<span class="end-tag">a</span>&gt;</span><span>
+<span id="line235"></span>				</span><span>&lt;/<span class="end-tag">div</span>&gt;</span><span>
+<span id="line236"></span>			</span><span>&lt;/<span class="end-tag">div</span>&gt;</span><span>
+<span id="line237"></span>			</span><span>&lt;<span class="start-tag">div</span> <span class="attribute-name">align</span>="<a class="attribute-value">center</a>" <span class="attribute-name">id</span>="<a class="attribute-value">ajuda</a>"&gt;</span><span>	
+<span id="line238"></span>				</span><span>&lt;<span class="start-tag">b</span>&gt;</span><span>Cores das Legendas:</span><span>&lt;/<span class="end-tag">b</span>&gt;</span><span>
+<span id="line239"></span>				</span><span>&lt;<span class="start-tag">table</span> <span class="attribute-name">align</span>="<a class="attribute-value">center</a>"&gt;</span><span>
+<span id="line240"></span>				</span><span>&lt;<span class="start-tag">tbody</span>&gt;</span><span>
+<span id="line241"></span>					</span><span>&lt;<span class="start-tag">tr</span>&gt;</span><span></span><span>&lt;<span class="start-tag">td</span> <span class="attribute-name">bgcolor</span>="<a class="attribute-value">red</a>" <span class="attribute-name">width</span>=<a class="attribute-value">50</a>&gt;</span><span></span><span>&lt;/<span class="end-tag">td</span>&gt;</span><span></span><span>&lt;<span class="start-tag">td</span>&gt;</span><span>Camada 0</span><span>&lt;/<span class="end-tag">td</span>&gt;</span><span></span><span>&lt;/<span class="end-tag">tr</span>&gt;</span><span>
+<span id="line242"></span>					</span><span>&lt;<span class="start-tag">tr</span>&gt;</span><span></span><span>&lt;<span class="start-tag">td</span> <span class="attribute-name">bgcolor</span>="<a class="attribute-value">gold</a>" <span class="attribute-name">width</span>=<a class="attribute-value">50</a>&gt;</span><span></span><span>&lt;/<span class="end-tag">td</span>&gt;</span><span></span><span>&lt;<span class="start-tag">td</span>&gt;</span><span>Camada 1</span><span>&lt;/<span class="end-tag">td</span>&gt;</span><span></span><span>&lt;/<span class="end-tag">tr</span>&gt;</span><span>
+<span id="line243"></span>					</span><span>&lt;<span class="start-tag">tr</span>&gt;</span><span></span><span>&lt;<span class="start-tag">td</span> <span class="attribute-name">bgcolor</span>="<a class="attribute-value">green</a>" <span class="attribute-name">width</span>=<a class="attribute-value">50</a>&gt;</span><span></span><span>&lt;/<span class="end-tag">td</span>&gt;</span><span></span><span>&lt;<span class="start-tag">td</span>&gt;</span><span>Camada 2</span><span>&lt;/<span class="end-tag">td</span>&gt;</span><span></span><span>&lt;/<span class="end-tag">tr</span>&gt;</span><span>
+<span id="line244"></span>					</span><span>&lt;<span class="start-tag">tr</span>&gt;</span><span></span><span>&lt;<span class="start-tag">td</span> <span class="attribute-name">bgcolor</span>="<a class="attribute-value">blue</a>" <span class="attribute-name">width</span>=<a class="attribute-value">50</a>&gt;</span><span></span><span>&lt;/<span class="end-tag">td</span>&gt;</span><span></span><span>&lt;<span class="start-tag">td</span>&gt;</span><span>Camada 3</span><span>&lt;/<span class="end-tag">td</span>&gt;</span><span></span><span>&lt;/<span class="end-tag">tr</span>&gt;</span><span>
+<span id="line245"></span>					</span><span>&lt;<span class="start-tag">tr</span>&gt;</span><span></span><span>&lt;<span class="start-tag">td</span> <span class="attribute-name">bgcolor</span>="<a class="attribute-value">brown</a>" <span class="attribute-name">width</span>=<a class="attribute-value">50</a>&gt;</span><span></span><span>&lt;/<span class="end-tag">td</span>&gt;</span><span></span><span>&lt;<span class="start-tag">td</span>&gt;</span><span>Camada 4</span><span>&lt;/<span class="end-tag">td</span>&gt;</span><span></span><span>&lt;/<span class="end-tag">tr</span>&gt;</span><span>
+<span id="line246"></span>					</span><span>&lt;<span class="start-tag">tr</span>&gt;</span><span></span><span>&lt;<span class="start-tag">td</span> <span class="attribute-name">bgcolor</span>="<a class="attribute-value">gray</a>" <span class="attribute-name">width</span>=<a class="attribute-value">50</a>&gt;</span><span></span><span>&lt;/<span class="end-tag">td</span>&gt;</span><span></span><span>&lt;<span class="start-tag">td</span>&gt;</span><span>Outras</span><span>&lt;/<span class="end-tag">td</span>&gt;</span><span></span><span>&lt;/<span class="end-tag">tr</span>&gt;</span><span>
+<span id="line247"></span>				</span><span>&lt;/<span class="end-tag">tbody</span>&gt;</span><span>
+<span id="line248"></span>				</span><span>&lt;/<span class="end-tag">table</span>&gt;</span><span>
+<span id="line249"></span>			</span><span>&lt;/<span class="end-tag">div</span>&gt;</span><span>			
+<span id="line250"></span>			</span><span>&lt;<span class="start-tag">div</span> <span class="attribute-name">style</span>="<a class="attribute-value">display:none</a>" <span class="attribute-name">id</span>='<a class="attribute-value">frameImagens</a>'&gt;</span><span>
+<span id="line251"></span>				</span><span class="comment">&lt;!-- solu&#65533;&#65533;o para o firefox precarregar as imagens dos &#65533;cones. quando se fizer "salvar como", essas imagens v&#65533;o para a pasta local --&gt;</span><span>
+<span id="line252"></span>				</span><span>&lt;<span class="start-tag">img</span> <span class="attribute-name">id</span>='<a class="attribute-value">icone-grafo-conta.png</a>' <span class="attribute-name">src</span>="<a class="attribute-value" href="view-source:file:///macros/static/images/icone-grafo-conta.png">/macros/static/images/icone-grafo-conta.png</a>"&gt;</span><span>
+<span id="line253"></span>				</span><span>&lt;<span class="start-tag">img</span> <span class="attribute-name">id</span>='<a class="attribute-value">icone-grafo-desconhecido.png</a>' <span class="attribute-name">src</span>="<a class="attribute-value" href="view-source:file:///macros/static/images/icone-grafo-desconhecido.png">/macros/static/images/icone-grafo-desconhecido.png</a>"&gt;</span><span>
+<span id="line254"></span>				</span><span>&lt;<span class="start-tag">img</span> <span class="attribute-name">id</span>='<a class="attribute-value">icone-grafo-empresa.png</a>' <span class="attribute-name">src</span>="<a class="attribute-value" href="view-source:file:///macros/static/images/icone-grafo-empresa.png">/macros/static/images/icone-grafo-empresa.png</a>"&gt;</span><span>
+<span id="line255"></span>				</span><span>&lt;<span class="start-tag">img</span> <span class="attribute-name">id</span>='<a class="attribute-value">icone-grafo-empresafilial-inativo.png</a>' <span class="attribute-name">src</span>="<a class="attribute-value" href="view-source:file:///macros/static/images/icone-grafo-empresafilial-inativo.png">/macros/static/images/icone-grafo-empresafilial-inativo.png</a>"&gt;</span><span>
+<span id="line256"></span>				</span><span>&lt;<span class="start-tag">img</span> <span class="attribute-name">id</span>='<a class="attribute-value">icone-grafo-empresafilial.png</a>' <span class="attribute-name">src</span>="<a class="attribute-value" href="view-source:file:///macros/static/images/icone-grafo-empresafilial.png">/macros/static/images/icone-grafo-empresafilial.png</a>"&gt;</span><span>
+<span id="line257"></span>				</span><span>&lt;<span class="start-tag">img</span> <span class="attribute-name">id</span>='<a class="attribute-value">icone-grafo-empresa-inativo.png</a>' <span class="attribute-name">src</span>="<a class="attribute-value" href="view-source:file:///macros/static/images/icone-grafo-empresa-inativo.png">/macros/static/images/icone-grafo-empresa-inativo.png</a>"&gt;</span><span>
+<span id="line258"></span>				</span><span>&lt;<span class="start-tag">img</span> <span class="attribute-name">id</span>='<a class="attribute-value">icone-grafo-empresa-1.png</a>' <span class="attribute-name">src</span>="<a class="attribute-value" href="view-source:file:///macros/static/images/icone-grafo-empresa-1.png">/macros/static/images/icone-grafo-empresa-1.png</a>"&gt;</span><span>
+<span id="line259"></span>				</span><span>&lt;<span class="start-tag">img</span> <span class="attribute-name">id</span>='<a class="attribute-value">icone-grafo-empresa-2.png</a>' <span class="attribute-name">src</span>="<a class="attribute-value" href="view-source:file:///macros/static/images/icone-grafo-empresa-2.png">/macros/static/images/icone-grafo-empresa-2.png</a>"&gt;</span><span>
+<span id="line260"></span>				</span><span>&lt;<span class="start-tag">img</span> <span class="attribute-name">id</span>='<a class="attribute-value">icone-grafo-empresa-3.png</a>' <span class="attribute-name">src</span>="<a class="attribute-value" href="view-source:file:///macros/static/images/icone-grafo-empresa-3.png">/macros/static/images/icone-grafo-empresa-3.png</a>"&gt;</span><span>
+<span id="line261"></span>				</span><span>&lt;<span class="start-tag">img</span> <span class="attribute-name">id</span>='<a class="attribute-value">icone-grafo-empresa-4.png</a>' <span class="attribute-name">src</span>="<a class="attribute-value" href="view-source:file:///macros/static/images/icone-grafo-empresa-4.png">/macros/static/images/icone-grafo-empresa-4.png</a>"&gt;</span><span>
+<span id="line262"></span>				</span><span>&lt;<span class="start-tag">img</span> <span class="attribute-name">id</span>='<a class="attribute-value">icone-grafo-empresa-5.png</a>' <span class="attribute-name">src</span>="<a class="attribute-value" href="view-source:file:///macros/static/images/icone-grafo-empresa-5.png">/macros/static/images/icone-grafo-empresa-5.png</a>"&gt;</span><span>
+<span id="line263"></span>				</span><span>&lt;<span class="start-tag">img</span> <span class="attribute-name">id</span>='<a class="attribute-value">icone-grafo-empresa-1-inativo.png</a>' <span class="attribute-name">src</span>="<a class="attribute-value" href="view-source:file:///macros/static/images/icone-grafo-empresa-1-inativo.png">/macros/static/images/icone-grafo-empresa-1-inativo.png</a>"&gt;</span><span>
+<span id="line264"></span>				</span><span>&lt;<span class="start-tag">img</span> <span class="attribute-name">id</span>='<a class="attribute-value">icone-grafo-empresa-2-inativo.png</a>' <span class="attribute-name">src</span>="<a class="attribute-value" href="view-source:file:///macros/static/images/icone-grafo-empresa-2-inativo.png">/macros/static/images/icone-grafo-empresa-2-inativo.png</a>"&gt;</span><span>
+<span id="line265"></span>				</span><span>&lt;<span class="start-tag">img</span> <span class="attribute-name">id</span>='<a class="attribute-value">icone-grafo-empresa-3-inativo.png</a>' <span class="attribute-name">src</span>="<a class="attribute-value" href="view-source:file:///macros/static/images/icone-grafo-empresa-3-inativo.png">/macros/static/images/icone-grafo-empresa-3-inativo.png</a>"&gt;</span><span>
+<span id="line266"></span>				</span><span>&lt;<span class="start-tag">img</span> <span class="attribute-name">id</span>='<a class="attribute-value">icone-grafo-empresa-4-inativo.png</a>' <span class="attribute-name">src</span>="<a class="attribute-value" href="view-source:file:///macros/static/images/icone-grafo-empresa-4-inativo.png">/macros/static/images/icone-grafo-empresa-4-inativo.png</a>"&gt;</span><span>
+<span id="line267"></span>				</span><span>&lt;<span class="start-tag">img</span> <span class="attribute-name">id</span>='<a class="attribute-value">icone-grafo-empresa-5-inativo.png</a>' <span class="attribute-name">src</span>="<a class="attribute-value" href="view-source:file:///macros/static/images/icone-grafo-empresa-5-inativo.png">/macros/static/images/icone-grafo-empresa-5-inativo.png</a>"&gt;</span><span>
+<span id="line268"></span>				</span><span>&lt;<span class="start-tag">img</span> <span class="attribute-name">id</span>='<a class="attribute-value">icone-grafo-endereco.png</a>' <span class="attribute-name">src</span>="<a class="attribute-value" href="view-source:file:///macros/static/images/icone-grafo-endereco.png">/macros/static/images/icone-grafo-endereco.png</a>"&gt;</span><span>
+<span id="line269"></span>				</span><span>&lt;<span class="start-tag">img</span> <span class="attribute-name">id</span>='<a class="attribute-value">icone-grafo-feminino.png</a>' <span class="attribute-name">src</span>="<a class="attribute-value" href="view-source:file:///macros/static/images/icone-grafo-feminino.png">/macros/static/images/icone-grafo-feminino.png</a>"&gt;</span><span>
+<span id="line270"></span>				</span><span>&lt;<span class="start-tag">img</span> <span class="attribute-name">id</span>='<a class="attribute-value">icone-grafo-feminino-inativo.png</a>' <span class="attribute-name">src</span>="<a class="attribute-value" href="view-source:file:///macros/static/images/icone-grafo-feminino-inativo.png">/macros/static/images/icone-grafo-feminino-inativo.png</a>"&gt;</span><span>
+<span id="line271"></span>				</span><span>&lt;<span class="start-tag">img</span> <span class="attribute-name">id</span>='<a class="attribute-value">icone-grafo-masculino.png</a>' <span class="attribute-name">src</span>="<a class="attribute-value" href="view-source:file:///macros/static/images/icone-grafo-masculino.png">/macros/static/images/icone-grafo-masculino.png</a>"&gt;</span><span>
+<span id="line272"></span>				</span><span>&lt;<span class="start-tag">img</span> <span class="attribute-name">id</span>='<a class="attribute-value">icone-grafo-masculino-inativo.png</a>' <span class="attribute-name">src</span>="<a class="attribute-value" href="view-source:file:///macros/static/images/icone-grafo-masculino-inativo.png">/macros/static/images/icone-grafo-masculino-inativo.png</a>"&gt;</span><span>
+<span id="line273"></span>				</span><span>&lt;<span class="start-tag">img</span> <span class="attribute-name">id</span>='<a class="attribute-value">icone-grafo-telefone.png</a>' <span class="attribute-name">src</span>="<a class="attribute-value" href="view-source:file:///macros/static/images/icone-grafo-telefone.png">/macros/static/images/icone-grafo-telefone.png</a>"&gt;</span><span>				
+<span id="line274"></span>				</span><span>&lt;<span class="start-tag">img</span> <span class="attribute-name">id</span>='<a class="attribute-value">icone-grafo-empresa-estrangeira.png</a>' <span class="attribute-name">src</span>="<a class="attribute-value" href="view-source:file:///macros/static/images/icone-grafo-empresa-estrangeira.png">/macros/static/images/icone-grafo-empresa-estrangeira.png</a>"&gt;</span><span>		
+<span id="line275"></span>				</span><span>&lt;<span class="start-tag">img</span> <span class="attribute-name">id</span>='<a class="attribute-value">icone-grafo-informacaoRelevante.png</a>' <span class="attribute-name">src</span>="<a class="attribute-value" href="view-source:file:///macros/static/images/icone-grafo-informacaoRelevante.png">/macros/static/images/icone-grafo-informacaoRelevante.png</a>"&gt;</span><span>		
+<span id="line276"></span>			</span><span>&lt;/<span class="end-tag">div</span>&gt;</span><span>
+<span id="line277"></span>			
+<span id="line278"></span>			{% block content %}{% endblock %}
+<span id="line279"></span>		</span><span>&lt;/<span class="end-tag">div</span>&gt;</span><span>
+<span id="line280"></span>		</span><span>&lt;<span class="start-tag">div</span>  <span class="attribute-name">data-dojo-type</span>="<a class="attribute-value">dijit.layout.ContentPane</a>" <span class="attribute-name">data-dojo-props</span>="<a class="attribute-value">splitter:true, region:'center'</a>" <span class="attribute-name">contextmenu</span>="<a class="attribute-value">menuContextualGrafo</a>"&gt;</span><span> 
+<span id="line281"></span>			</span><span>&lt;<span class="start-tag">div</span> <span class="attribute-name">id</span>="<a class="attribute-value">principal</a>" <span class="attribute-name">style</span>="<a class="attribute-value">width: 100%; height: 100%; position: absolute;  left: 0; top: 0;</a>" <span class="attribute-name">charset</span>="<a class="attribute-value">utf-8</a>"&gt;</span><span></span><span>&lt;/<span class="end-tag">div</span>&gt;</span><span>
+<span id="line282"></span>			</span><span>&lt;<span class="start-tag">div</span> <span class="attribute-name">class</span>="<a class="attribute-value">graph-overlay</a>" <span class="attribute-name">style</span>="<a class="attribute-value">cursor:crosshair;</a>"&gt;</span><span></span><span>&lt;/<span class="end-tag">div</span>&gt;</span><span>
+<span id="line283"></span>			</span><span class="comment">&lt;!-- &lt;script type="text/javascript"&gt; 
+<span id="line284"></span>				mainGrafo();
+<span id="line285"></span>			&lt;/script&gt; --&gt;</span><span>
+<span id="line286"></span>
+<span id="line287"></span>      </span><span>&lt;<span class="start-tag">div</span> <span class="attribute-name">id</span>="<a class="attribute-value">zoom</a>" <span class="attribute-name">style</span>="<a class="attribute-value">position:absolute;right:5px;bottom:5px;</a>"&gt;</span><span>
+<span id="line288"></span>          </span><span>&lt;<span class="start-tag">button</span> <span class="attribute-name">class</span>="<a class="attribute-value">zoom in</a>"&gt;</span><span> + </span><span>&lt;/<span class="end-tag">button</span>&gt;</span><span>
+<span id="line289"></span>          </span><span>&lt;<span class="start-tag">button</span> <span class="attribute-name">class</span>="<a class="attribute-value">zoom out</a>"&gt;</span><span> - </span><span>&lt;/<span class="end-tag">button</span>&gt;</span><span>
+<span id="line290"></span>      </span><span>&lt;/<span class="end-tag">div</span>&gt;</span><span>
+<span id="line291"></span>
+<span id="line292"></span>		</span><span>&lt;/<span class="end-tag">div</span>&gt;</span><span>
+<span id="line293"></span>	</span><span>&lt;/<span class="end-tag">div</span>&gt;</span><span>
+<span id="line294"></span>
+<span id="line295"></span></span><span>&lt;<span class="start-tag">script</span> <span class="attribute-name">type</span>="<a class="attribute-value">text/javascript</a>"&gt;</span><span>
+<span id="line296"></span>$('.zoom').click(function (e) {
+<span id="line297"></span>  e.preventDefault();
+<span id="line298"></span>  if ($(this).hasClass('in')) {
+<span id="line299"></span>     renderer.zoomIn();
+<span id="line300"></span>  } else {
+<span id="line301"></span>    renderer.zoomOut();
+<span id="line302"></span>  }
+<span id="line303"></span>});
+<span id="line304"></span></span><span>&lt;/<span class="end-tag">script</span>&gt;</span><span>
+<span id="line305"></span>
+<span id="line306"></span>	</span><span class="error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error comment" title="Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.">&lt;!------------------------ Define a estrutura do Menu Chamado quando o bot&#65533;o direito do mouse &#65533; pressionado --------------------&gt;</span><span>
+<span id="line307"></span>	{% include "dossie/grafico/includes/htmlMenu.html" %}
+<span id="line308"></span>	</span><span class="error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error error comment" title="Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.
+Consecutive hyphens did not terminate a comment. “--” is not permitted inside a comment, but e.g. “- -” is.">&lt;!------------------------------------------------------------------------------------------------------------------------------&gt;</span><span>	
+<span id="line309"></span>	</span><span>&lt;<span class="start-tag">iframe</span> <span class="attribute-name">id</span>="<a class="attribute-value">iframeDownload</a>" <span class="attribute-name">src</span>="<a class="attribute-value" href="view-source:file:///home/pais/.cache/.fr-Z2pPON/Macros/cgu-svn/Dossie/dossieweb/templates/dossie/grafico/base/base_macro_grafo.html"></a>" <span class="attribute-name">onload</span>="<a class="attribute-value"></a>" <span class="attribute-name">style</span>="<a class="attribute-value">display:none</a>"&gt;</span><span></span><span>&lt;/<span class="end-tag">iframe</span>&gt;</span><span>
+<span id="line310"></span>	
+<span id="line311"></span>{%endif%}
+<span id="line312"></span>
+<span id="line313"></span>{% if not ajax %}
+<span id="line314"></span></span><span>&lt;/<span class="end-tag">body</span>&gt;</span><span>
+<span id="line315"></span></span><span>&lt;/<span class="end-tag">html</span>&gt;</span><span class="error" title="Non-space character in page trailer.">
+<span id="line316"></span>{% endif %}
+<span id="line317"></span></span></pre><menu type="context" id="actions"><menuitem id="goToLine" label="Ir para a linha…" accesskey="l"></menuitem><menuitem id="wrapLongLines" label="Quebrar linhas" type="checkbox"></menuitem><menuitem id="highlightSyntax" label="Realce de sintaxe" type="checkbox" checked="true"></menuitem></menu></body></html>

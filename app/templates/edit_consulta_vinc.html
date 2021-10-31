@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block app_content %}
+    <h1>{{ title }}</h1>
+<div class="col-md-4" id="obj_div" ">
+    <form action="" method="post" novalidate>
+        {{ form.hidden_tag() }}
+        <p>
+            {{ form.fonte.label }}<br>
+            {{ form.fonte(size=32) }}
+        </p>
+        <p><div style="width: 100%">
+            {{ form.cmd_sql.label }}<br>
+        </div>
+        <div style="width: 100%; textarea=90%">
+            {{ form.cmd_sql(cols="50", rows="10") }}
+            </div>
+        </p>
+        <p>
+            {{ form.em_producao.label }}<br>
+            {{ form.em_producao() }}
+        </p>
+        <p>{{ form.submit() }}</p>
+</div>
+<div id="amostra_tabela"  >
+    {{ mensagem }}
+    {% for verificacao in verificacoes %}
+        <p>{{ verificacao[0]}} {{ verificacao[1]}}</p>
+    {% endfor %}
+
+    {% for table in tables %}
+            {{titles[loop.index]}}
+            {{ table|safe }}
+{% endfor %}
+</div>
+
+{% endblock %}
