@@ -21,11 +21,5 @@ def init_db():
 
     Base.metadata.create_all(bind=engine)
 
-def eh_conexao_ativa(cnx_str: str) -> bool:
-    conexao_usuario = sqlalchemy.create_engine(cnx_str) # , execution_options=gEngineExecutionOptions
-    try:
-        conexao_usuario.execute('select 1')
-        return (True)
-    except:
-        return (False)
+
 

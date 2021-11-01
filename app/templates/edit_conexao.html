@@ -10,7 +10,11 @@
     <div class="row">
         <div class="col-md-4" id="obj_div" style="width: 250px; heigth: 350px;">
             {{ wtf.quick_form(form) }}
-			Conexão {{ resultado}}
+            {% if conexao.ativa %}
+            <p style="background-color:LightGreen; transparency=0.1" >Conexão disponível</p>
+            {% else %}
+            <p style="background-color:Tomato; transparency=0.1" >Conexão INDISPONÍVEL</p>
+            {% endif %}
         </div>
         {% if id %}
 
@@ -25,28 +29,23 @@
                 <td width="17px">
                     <a class="ferramentaslinhabtn_vermelho" href="{{ url_for('main.del_consulta_ente', id=conexao.id) }}" title="Excluir">&#x1F5D1;</a>
                 </td>
-                   <td width="140px">
+                   <td width="240px">
                        <a href="{{ url_for('main.edit_consulta_ente', id=conexao.id) }}" title="Alterar consulta"> {{ consulta.nome }}</a>
                    </td>
                    <td width="500px">
                    <a href="{{ url_for('main.edit_consulta_ente', id=conexao.id) }}" title="Alterar consulta"> {{ consulta.descricao }} </a>
                    </td>
-                   <td width="17px">
+                   <td width="240px">
                     <a href="{{ url_for('main.edit_consulta_ente', id=consulta.id) }}"title="Alterar consulta"> {{ consulta.fonte }} </a>
                    </td>
-                   <td width="100px">
-                       <a href="{{ url_for('main.edit_consulta_ente', id=consulta.id) }}"title="Alterar consulta"> {{ consulta.cmd_sql }} </a>
-                   </td>
-                   <td width="400px">
+                   <td width="20px">
                      <a href="{{ url_for('main.edit_consulta_ente', id=consulta.id) }}"> {{ consulta.em_producao }} </a>
                    </td>
             </tr>
 
             {% endfor %}
                 </table>
-        </div>
-
-        <div class="col-md-4" id="consultas_vinc_div" style="width: 450px; heigth: 350px; ">
+            <p></p>
             <p>CONSULTAS DE RELACIONAMENTOS <a class="ferramentaslinhabtn_azul" href="{{ url_for('main.add_consulta_vinc', id=id) }}" title="Adicionar consultas de relacionamentos"></a> &#x2795;</a></p>
             <table>
             {% for consulta in conexao.consultas_vinc %}
@@ -56,19 +55,16 @@
                 <td width="17px">
                     <a class="ferramentaslinhabtn_vermelho" href="{{ url_for('main.del_consulta_ente', id=conexao.id) }}" title="Excluir">&#x1F5D1;</a>
                 </td>
-                   <td width="140px">
+                   <td width="240px">
                        <a href="{{ url_for('main.edit_consulta_vinc', id=conexao.id) }}" title="Alterar consulta"> {{ consulta.nome }}</a>
                    </td>
                    <td width="500px">
                    <a href="{{ url_for('main.edit_consulta_vinc', id=conexao.id) }}" title="Alterar consulta"> {{ consulta.descricao }} </a>
                    </td>
-                   <td width="17px">
+                   <td width="240px">
                     <a href="{{ url_for('main.edit_consulta_vinc', id=consulta.id) }}"title="Alterar consulta"> {{ consulta.fonte }} </a>
                    </td>
-                   <td width="100px">
-                       <a href="{{ url_for('main.edit_consulta_vinc', id=consulta.id) }}"title="Alterar consulta"> {{ consulta.cmd_sql }} </a>
-                   </td>
-                   <td width="400px">
+                   <td width="20px">
                      <a href="{{ url_for('main.edit_consulta_vinc', id=consulta.id) }}"> {{ consulta.em_producao }} </a>
                    </td>
             </tr>

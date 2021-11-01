@@ -14,7 +14,6 @@ from app.translate import translate
 from app.main import bp
 from sqlalchemy.exc import SQLAlchemyError
 
-from app.main.database import eh_conexao_ativa
 import logging
 log = logging.getLogger(__name__)
 #from  app.main import nlp
@@ -132,12 +131,11 @@ def edit_conexao(id):
     if form.validate_on_submit():
         form.populate_obj(conexao)
         db.session.commit()
-        conexao_ativa = 'DISPONÍVEL' if eh_conexao_ativa(conexao.string) else 'INDISPONÍVEL'
         testartemp(conexao)
         flash(_('Your changes have been saved.'))
-        return redirect(url_for('main.edit_conexao', id=id, conexao_ativa=conexao_ativa))
+        return redirect(url_for('main.edit_conexao', id=id))
     return render_template('edit_conexao.html', title=_('Conexão'), id=id, form=form,
-                           conexao=conexao, conexao_ativa='')
+                           conexao=conexao)
 
 @bp.route('/addconsultaente/<id>', methods=['GET', 'POST'])
 @login_required
@@ -261,11 +259,10 @@ def edit_consulta_ente(id):
     if form.validate_on_submit():
         form.populate_obj(consulta)
         db.session.commit()
-        conexao_ativa  = 'DISPONÍVEL' # if eh_conexao_ativa(conexao.string) else 'INDISPONÍVEL'
         flash(_('Your changes have been saved.'))
         return redirect(url_for('main.edit_consulta_ente', id=id , conexao_ativa=conexao_ativa))
     return render_template('edit_consulta.html', title=_('Consulta de Entes'), id=id,
-                           form=form, conexao_ativa='', consulta_entes=consulta,
+                           form=form, consulta_entes=consulta,
                            tables=[df.head(5).to_html()], titles=df.columns.values, mensagem=mensagem, verificacoes=verificacoes)
 #tables = [df.head(5).to_html(classes='data')], titles = df.columns.values, mensagem = mensagem)
 @bp.route('/delconsultaente/<id>', methods=['GET', 'POST'])
@@ -304,19 +301,11 @@ def edit_consulta_vinc(id):
     if form.validate_on_submit():
         form.populate_obj(consulta)
         db.session.commit()
-        conexao_ativa  = 'DISPONÍVEL' # if eh_conexao_ativa(conexao.string) else 'INDISPONÍVEL'
         flash(_('Your changes have been saved.'))
         return redirect(url_for('main.edit_consultavinc', id=id , conexao_ativa=conexao_ativa))
     return render_template('edit_consulta.html', title=_('Consulta de Relacionamentos'), id=id,
-                           form=form, conexao_ativa='', consulta_entes=consulta,
+                           form=form, consulta_entes=consulta,
                            tables=[df.head(5).to_html()], titles=df.columns.values, mensagem=mensagem, verificacoes=verificacoes)
-
-
-@bp.route('/testaconexao/<id>', methods=['GET', 'POST'])
-@login_required
-def testa_conexao(id):
-    conexao = Conexao.query.filter_by(id=id).first_or_404()
-    resultado = eh_conexao_ativa(conexao.string)
 
 
 

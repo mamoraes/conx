@@ -71,8 +71,24 @@ class Conexao(db.Model):
     consultas_ente = db.relationship("ConsultaEnte", back_populates="conexao")
     consultas_vinc = db.relationship("ConsultaVinculo", back_populates="conexao")
 
+    @hybrid_property
+    def ativa(self) -> bool:
+        try:
+            conexao_usuario = sqlalchemy.create_engine(self.string)  # , execution_options=gEngineExecutionOptions
+        except:
+            return False
+
+        try:
+            conexao_usuario.execute('select 1') # apenas para testar a conexão
+            return True
+        except:
+            return False
+
     def __repr__(self):
         return '{}-{}:{}'.format(self.nome,self.string,self.em_producao)
+
+
+
 
 class ConsultaEnte(db.Model):
     __tablename__ = 'consulta_ente'
