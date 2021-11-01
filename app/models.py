@@ -9,6 +9,7 @@ from app import db, login
 import sqlalchemy
 from sqlalchemy import BigInteger, Column, Integer, String, text, Date
 from sqlalchemy.ext.hybrid import hybrid_property, hybrid_method
+import pandas as pd
 
 from app.database_aux import dbaux as dbx
 from app.database_aux import *
@@ -59,6 +60,88 @@ def load_user(id):
 
 ###########################
 
+def testartemp(conexao):
+    ok = True
+    try:
+        df = pd.read_sql(sql=f'select * from {temp_entes.__tablename__}', con=config.SQLALCHEMY_DATABASE_URI)
+    except:
+        ok = False
+        flash(_(f'Não encontrou modelo de tabela temporária {temp_entes.__tablename__} em {conexao.string}.'))
+    if not ok:
+        return ok
+    try:
+        df.to_sql(temp_entes.__tablename__, con=conexao.string, if_exists='replace', index=False, index_label='ident')
+    except:
+        ok = False
+        flash(_(f'Não gravou modelo de tabela temporária no bd {conexao.string}'))
+
+
+
+def valoresunicos(df,campo:str):
+    tipos = ['NAO']
+    campo = campo.lower()
+    if campo in df.columns.values:
+        tipos = df[campo].unique()
+        tipos = ','.join(tipos)
+    return tipos
+
+def jsonificar(atrib: str = '') -> dict:
+    if atrib == None or atrib == '':
+        return ({})
+    d = json.loads('{' + atrib + '}')
+    return (d)
+
+def verificaatributos(df):
+    atrib = []
+    if len(df) == 0:
+        atrib=[]
+    elif 'atributos' in df.columns.values:
+        atrb = df.head(1).iloc[0]['atributos']
+        atributos = jsonificar(atrb)
+        for k in atributos:
+            atrib.append(k)
+    return ','.join(atrib)
+
+
+def verificar_consulta(consulta, tipo_consulta='E'):
+    def verificar_consulta_ente(df):
+        campos_obrigatorios={}
+        for campo_nome in ['tipo','ident', 'atributos']:
+            campos_obrigatorios[campo_nome] = 'ok' if campo_nome in df.columns.values else 'NÃO'
+        verificacoes = []
+        verificacoes.append(['Campo TIPO', valoresunicos(df,'tipo')])
+        verificacoes.append(['Campo ATRIBUTOS', verificaatributos(df)])
+        return campos_obrigatorios, verificacoes
+    def verificar_consulta_vinc(df):
+        campos_obrigatorios={}
+        for campo_nome in ['tipo_destino','subtipo_destino','ident_destino', 'tipo_origem','subtipo_origem','ident_origem', 'descricao','atributos']:
+            campos_obrigatorios[campo_nome] = 'ok' if campo_nome in df.columns.values else 'NÃO'
+        verificacoes = []
+        for campo_nome in ['tipo_destino','subtipo_destino','tipo_origem','subtipo_origem']:
+            verificacoes.append(['Campo '+campo_nome.upper(), valoresunicos(df,campo_nome.lower())])
+        verificacoes.append(['Campo ATRIBUTOS', verificaatributos(df)])
+        return campos_obrigatorios, verificacoes
+    verificacoes=[]
+    campos_obrigatorios = {'campo':'obrigatorio'}
+    try:
+        df=pd.read_sql(sql=consulta.cmd_sql, con=consulta.conexao.string)
+        mensagem = 'Consulta retornou ' + str(len(df)) + ' registro'+('' if len(df) == 1 else 's')+'!'
+        if tipo_consulta == 'E':
+            campos_obrigatorios, verificacoes = verificar_consulta_ente(df)
+        else:
+            campos_obrigatorios, verificacoes = verificar_consulta_vinc(df)
+
+
+    except SQLAlchemyError as e:
+        error = str(e.__dict__['orig'])
+        mensagem = error
+        df=pd.DataFrame({'Coluna':['ERRO']})
+
+    return mensagem, campos_obrigatorios, verificacoes, df
+
+
+
+
 class Conexao(db.Model):
     __tablename__ = 'conexao'
 
@@ -67,7 +150,7 @@ class Conexao(db.Model):
     string = db.Column(db.String(50), nullable=True)
     usuario = db.Column(db.String(50), nullable=True)
     senha = db.Column(db.String(50), nullable=True)
-    em_producao = db.Column(db.String(1), nullable=False)
+    habilitada = db.Column(db.String(1), nullable=False)
     consultas_ente = db.relationship("ConsultaEnte", back_populates="conexao")
     consultas_vinc = db.relationship("ConsultaVinculo", back_populates="conexao")
 
@@ -96,12 +179,15 @@ class ConsultaEnte(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement='auto')
     conx_id = db.Column(db.BigInteger, db.ForeignKey('conexao.id'), index=True, nullable=False)
     nome = db.Column(db.String(50), nullable=False, doc='Nome da consulta')
-    descricao = db.Column(db.String(500), nullable=False)
-    fonte = db.Column(db.String(15), nullable=False)
-    cmd_sql = db.Column(db.String(2500), nullable=True)
-    em_producao = db.Column(db.String(1), nullable=False, default='S')
+    descricao = db.Column(db.String(500), nullable=False, doc='Descriçao da finalidade da consulta')
+    fonte = db.Column(db.String(15), nullable=False, doc='Nome da fonte de dados para rastrear o resultado')
+    cmd_sql = db.Column(db.String(2500), nullable=True, doc='Comando SQL')
+    habilitada = db.Column(db.String(1), nullable=False, default='S', doc='Define se a consulta está habilitada')
     conexao = db.relationship("Conexao", back_populates="consultas_ente")
 
+    @hybrid_property
+    def verificacoes(self):
+        return verificar_consulta(self, 'E')
     def __repr__(self):
         return '{}-{}:{}'.format(self.id,self.cmd_sql,self.em_producao)
 
@@ -110,13 +196,16 @@ class ConsultaVinculo(db.Model):
 
     id = db.Column(db.Integer, primary_key=True, autoincrement='auto')
     conx_id = db.Column(db.BigInteger, db.ForeignKey('conexao.id'), index=True, nullable=False)
-    nome = db.Column(db.String(50), nullable=False)
-    descricao = db.Column(db.String(500), nullable=False)
-    fonte = db.Column(db.String(15), nullable=False)
-    cmd_sql = db.Column(db.String(2500), nullable=True)
-    em_producao = db.Column(db.String(1), nullable=False, default='S')
+    nome = db.Column(db.String(50), nullable=False, doc='Nome da consulta')
+    descricao = db.Column(db.String(500), nullable=False, doc='Descriçao da finalidade da consulta')
+    fonte = db.Column(db.String(15), nullable=False, doc='Nome da fonte de dados para rastrear o resultado')
+    cmd_sql = db.Column(db.String(2500), nullable=True, doc='Comando SQL')
+    habilitada = db.Column(db.String(1), nullable=False, default='S', doc='Define se a consulta está habilitada')
     conexao = db.relationship("Conexao", back_populates="consultas_vinc")
 
+    @hybrid_property
+    def verificacoes(self):
+        return verificar_consulta(self, 'V')
     def __repr__(self):
         return '{}-{}:{}'.format(self.id,self.cmd_sql,self.em_producao)
 

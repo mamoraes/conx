@@ -28,7 +28,7 @@ class EditConexaoForm(FlaskForm):
     string = TextAreaField('Dados conexão', validators=[DataRequired()])
     usuario = StringField('Usuário')
     senha = StringField('Senha')
-    em_producao = SelectField('Em produção', validators=[InputRequired()], description="Disponível",choices=['S','N'])
+    habilitada = SelectField('Habilitada?', validators=[InputRequired()], description="Disponível",choices=['S','N'])
     StringField('Em produção?', validators=[DataRequired()])
 
     submit = SubmitField(_l('OK'))
@@ -40,7 +40,7 @@ class EditConexaoForm(FlaskForm):
 class EditConsultaEnteForm(FlaskForm):
     fonte = StringField('fonte', validators=[DataRequired()])
     cmd_sql = TextAreaField('Comando SQL', validators=[DataRequired()])
-    em_producao = SelectField('Em produção?', validators=[InputRequired()], description="Disponível",choices=['S','N'])
+    habilitada = SelectField('Habilitada?', validators=[InputRequired()], description="Disponível",choices=['S','N'])
     StringField('Em produção', validators=[DataRequired()])
 
     submit = SubmitField(_l('OK'))
@@ -54,7 +54,7 @@ class EditConsultaForm(FlaskForm):
     descricao = StringField('Descrição',validators=[DataRequired()],description='Descrição da consulta' )
     fonte = StringField('Fonte', validators=[DataRequired()], description='Nome dado a origem dos dados')
     cmd_sql = TextAreaField('Comando SQL', validators=[DataRequired()], description='Comando aplicado ao Banco de dados')
-    em_producao = SelectField('Em produção?', validators=[InputRequired()], description="Disponível",choices=['S','N'])
+    habilitada = SelectField('Habilitada?', validators=[InputRequired()], description="Disponível", choices=['S', 'N'])
     StringField('Em produção', validators=[DataRequired()])
 
     submit = SubmitField(_l('OK'))

@@ -19,7 +19,7 @@
         {% if id %}
 
         <div class="col-md-4" id="consultas_ente_div" style="width: 450px; heigth: 350px; ">
-            <p>CONSULTAS DE ENTES <a class="ferramentaslinhabtn_azul" href="{{ url_for('main.add_consulta_ente', id=id) }}" title="Adicionar consultas de Entes" ></a> &#x2795;</p>
+            <p>CONSULTAS DE ENTES <a class="ferramentaslinhabtn_azul" href="{{ url_for('main.add_consulta_ente', id=id) }}" title="Adicionar consultas de Entes" >&#x2795;</a></p>
             <table>
             {% for consulta in conexao.consultas_ente %}
             <tr>
@@ -46,7 +46,7 @@
             {% endfor %}
                 </table>
             <p></p>
-            <p>CONSULTAS DE RELACIONAMENTOS <a class="ferramentaslinhabtn_azul" href="{{ url_for('main.add_consulta_vinc', id=id) }}" title="Adicionar consultas de relacionamentos"></a> &#x2795;</a></p>
+            <p>CONSULTAS DE RELACIONAMENTOS <a class="ferramentaslinhabtn_azul" href="{{ url_for('main.add_consulta_vinc', id=id) }}" title="Adicionar consultas de relacionamentos">&#x2795;</a></p>
             <table>
             {% for consulta in conexao.consultas_vinc %}
                 <td width="17px">

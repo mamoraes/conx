@@ -13,36 +13,55 @@
         </p>
         <p>
             {{ form.descricao.label }}<br>
-            {{ form.descricao(size=32) }}
+            {{ form.descricao(size=32, placeholder= "Obtém o dado...") }}
         </p>
         <p>
             {{ form.fonte.label }}<br>
-            {{ form.fonte(size=32) }}
+            {{ form.fonte(size=32, placeholder= "Ex.: RAIS, CNPJ") }}
         </p>
         <p><div style="width: 100%">
             {{ form.cmd_sql.label }}<br>
         </div>
         <div style="width: 100%; textarea=90%">
-            {{ form.cmd_sql(cols="50", rows="10") }}
+            {{ form.cmd_sql(cols="50", rows="10", placeholder= "SELECT TIPO, IDENT FROM TABLE") }}
             </div>
         </p>
         <p>
-            {{ form.em_producao.label }}<br>
-            {{ form.em_producao() }}
+            {{ form.habilitada.label }} ({{ form.habilitada.description }})<br>
+            {{ form.habilitada() }}
         </p>
         <p>{{ form.submit() }}</p>
 </div>
-<div id="amostra_tabela"  >
-        <style>.df tbody tr:nth-child(even) {background-color: lightblue;}</style>
-    {{ mensagem }}
-    {% for verificacao in verificacoes %}
+{% if consulta %}
+<div id="amostra_tabela" style="font-size:12px" >
+
+    {{ consulta.verificacoes[0]  }}
+<p>Campos obrigatórios</p>
+    <table style="padding: 15px; border: 1px solid black; border-collapse: collapse; " >
+        <tr>
+    {% for key,value in consulta.verificacoes[1].items() %}
+<th style="padding: 5px; border: 1px solid black; border-collapse: collapse;">{{ key }}</th>
+    {% endfor %}
+        </tr>
+        <tr>
+    {% for key,value in consulta.verificacoes[1].items() %}
+            {%if value == "NÃO" %}
+            <td style="padding: 5px; border: 1px solid black; border-collapse: collapse; background-color:Tomato; transparency:0.1">&#x2716;</td>
+            {%else%}
+            <td style="padding: 5px; border: 1px solid black; border-collapse: collapse; background-color:LightGreen; transparency:0.1">&#x2714;</td>
+            {%endif%}
+    {% endfor %}
+        </tr>
+    </table>
+    {% for verificacao in consulta.verificacoes[2] %}
         <p>{{ verificacao[0]}} {{ verificacao[1]}}</p>
     {% endfor %}
 
-    {% for table in tables %}
-            {{titles[loop.index]}}
+    {% for table in [consulta.verificacoes[3].head(5).to_html()] %}
+
             {{ table|safe }}
 {% endfor %}
 </div>
+        {% endif%}
 
 {% endblock %}

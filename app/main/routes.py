@@ -1,6 +1,5 @@
 from datetime import datetime
 
-import pandas as pd
 from flask import render_template, flash, redirect, url_for, request, g, \
     jsonify, current_app
 from flask_login import current_user, login_required
@@ -168,81 +167,6 @@ def add_consulta_vinc(id):
     return render_template('edit_consulta.html', title=_('Nova Consulta de Relacionamentos'), id=consulta.id,
                            form=form)
 
-def testartemp(conexao):
-    ok = True
-    try:
-        df = pd.read_sql(sql=f'select * from {temp_entes.__tablename__}', con=config.SQLALCHEMY_DATABASE_URI)
-    except:
-        ok = False
-        flash(_(f'Não encontrou modelo de tabela temporária {temp_entes.__tablename__} em {conexao.string}.'))
-    if not ok:
-        return ok
-    try:
-        df.to_sql(temp_entes.__tablename__, con=conexao.string, if_exists='replace', index=False, index_label='ident')
-    except:
-        ok = False
-        flash(_(f'Não gravou modelo de tabela temporária no bd {conexao.string}'))
-
-
-
-def valoresunicos(df,campo:str):
-    tipos = ['NAO']
-    campo = campo.lower()
-    if campo in df.columns.values:
-        tipos = df[campo].unique()
-        tipos = ','.join(tipos)
-    return tipos
-
-def jsonificar(atrib: str = '') -> dict:
-    if atrib == None or atrib == '':
-        return ({})
-    d = json.loads('{' + atrib + '}')
-    return (d)
-
-def verificaatributos(df):
-    atrib = []
-    if len(df) == 0:
-        atrib=[]
-    elif 'atributos' in df.columns.values:
-        atrb = df.head(1).iloc[0]['atributos']
-        atributos = jsonificar(atrb)
-        for k in atributos:
-            atrib.append(k)
-    return ','.join(atrib)
-
-
-def verificar_consulta(consulta, tipo_consulta='E'):
-    def verificar_consulta_ente(df):
-        verificacoes = []
-        for campo_nome in ['tipo','ident', 'atributos']:
-            verificacoes.append( ['Campo '+campo_nome, 'ok' if campo_nome in df.columns.values else 'NÃO'])
-        verificacoes.append(['Campo TIPO', valoresunicos(df,'tipo')])
-        verificacoes.append(['Campo ATRIBUTOS', verificaatributos(df)])
-        return verificacoes
-    def verificar_consulta_vinc(df):
-        verificacoes = []
-        for campo_nome in ['tipo_destino','subtipo_destino','ident_destino', 'tipo_origem','subtipo_origem','ident_origem', 'descricao','atributos']:
-            verificacoes.append( ['Campo '+campo_nome, 'ok' if campo_nome in df.columns.values else 'NÃO'])
-        for campo_nome in ['tipo_destino','subtipo_destino','tipo_origem','subtipo_origem']:
-            verificacoes.append(['Campo '+campo_nome.upper(), valoresunicos(df,campo_nome.lower())])
-        verificacoes.append(['Campo ATRIBUTOS', verificaatributos(df)])
-        return verificacoes
-    verificacoes=[]
-    try:
-        df=pd.read_sql(sql=consulta.cmd_sql, con=consulta.conexao.string)
-        mensagem = 'Consulta retornou ' + str(len(df)) + ' registros!'
-        if tipo_consulta == 'E':
-            verificacoes= verificar_consulta_ente(df)
-        else:
-            verificacoes = verificar_consulta_vinc(df)
-
-
-    except SQLAlchemyError as e:
-        error = str(e.__dict__['orig'])
-        mensagem = error
-        df=pd.DataFrame({'Coluna':['ERRO']})
-    return mensagem, verificacoes, df
-
 
 @bp.route('/editconsultaente/<id>', methods=['GET', 'POST'])
 @login_required
@@ -254,16 +178,13 @@ def edit_consulta_ente(id):
 
     form = EditConsultaForm(obj=consulta, id=id)
 
-    mensagem, verificacoes, df = verificar_consulta(consulta, 'E')
-
     if form.validate_on_submit():
         form.populate_obj(consulta)
         db.session.commit()
         flash(_('Your changes have been saved.'))
-        return redirect(url_for('main.edit_consulta_ente', id=id , conexao_ativa=conexao_ativa))
+        return redirect(url_for('main.edit_consulta_ente', id=id ))
     return render_template('edit_consulta.html', title=_('Consulta de Entes'), id=id,
-                           form=form, consulta_entes=consulta,
-                           tables=[df.head(5).to_html()], titles=df.columns.values, mensagem=mensagem, verificacoes=verificacoes)
+                           form=form, consulta=consulta)
 #tables = [df.head(5).to_html(classes='data')], titles = df.columns.values, mensagem = mensagem)
 @bp.route('/delconsultaente/<id>', methods=['GET', 'POST'])
 @login_required
@@ -296,18 +217,14 @@ def edit_consulta_vinc(id):
         return redirect(url_for('main.conexoes'))
 
     form = EditConsultaForm(obj=consulta, id=id)
-    mensagem, verificacoes, df = verificar_consulta(consulta, 'V')
 
     if form.validate_on_submit():
         form.populate_obj(consulta)
         db.session.commit()
         flash(_('Your changes have been saved.'))
-        return redirect(url_for('main.edit_consultavinc', id=id , conexao_ativa=conexao_ativa))
+        return redirect(url_for('main.edit_consulta_vinc', id=id))
     return render_template('edit_consulta.html', title=_('Consulta de Relacionamentos'), id=id,
-                           form=form, consulta_entes=consulta,
-                           tables=[df.head(5).to_html()], titles=df.columns.values, mensagem=mensagem, verificacoes=verificacoes)
-
-
+                           form=form, consulta=consulta)
 
 @bp.route('/delconexao', methods=['GET', 'POST'])
 @login_required
