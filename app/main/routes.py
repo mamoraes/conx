@@ -73,7 +73,7 @@ def edit_profile():
         current_user.username = form.username.data
         current_user.about_me = form.about_me.data
         db.session.commit()
-        flash(_('Your changes have been saved.'))
+        flash(_('As alterações foram registradas.'))
         return redirect(url_for('main.edit_profile'))
     elif request.method == 'GET':
         form.username.data = current_user.username
@@ -112,7 +112,7 @@ def add_conexao():
         form.populate_obj(conexao)
         db.session.add(conexao)
         db.session.commit()
-        flash(_('Your changes have been saved.'))
+        flash(_('As alterações foram registradas.'))
         return redirect(url_for('main.conexoes'))
     return render_template('edit_conexao.html', title=_('Nova Conexão'), id=conexao.id,
                            form=form)
@@ -131,7 +131,7 @@ def edit_conexao(id):
         form.populate_obj(conexao)
         db.session.commit()
         testartemp(conexao)
-        flash(_('Your changes have been saved.'))
+        flash(_('As alterações foram registradas.'))
         return redirect(url_for('main.edit_conexao', id=id))
     return render_template('edit_conexao.html', title=_('Conexão'), id=id, form=form,
                            conexao=conexao)
@@ -139,30 +139,34 @@ def edit_conexao(id):
 @bp.route('/addconsultaente/<id>', methods=['GET', 'POST'])
 @login_required
 def add_consulta_ente(id):
-    consulta=ConsultaEnte()
+    consulta=Consulta()
+    consulta.tipo = 'E'
     form = EditConsultaForm(obj=consulta, id=consulta.id)
     if form.validate_on_submit():
         form.populate_obj(consulta)
         db.session.add(consulta)
         consulta.conx_id = id
+        consulta.tipo = 'E'
         db.session.commit()
 
-        flash(_('Your changes have been saved.'))
+        flash(_('As alterações foram registradas.'))
         return redirect(url_for('main.conexoes'))
     return render_template('edit_consulta.html', title=_('Nova Consulta de Entes'), id=consulta.id,
                            form=form)
 @bp.route('/addconsultavinc/<id>', methods=['GET', 'POST'])
 @login_required
 def add_consulta_vinc(id):
-    consulta=ConsultaVinculo()
+    consulta = Consulta()
+    consulta.tipo = 'V'
     form = EditConsultaForm(obj=consulta, id=consulta.id)
     if form.validate_on_submit():
         form.populate_obj(consulta)
         db.session.add(consulta)
+        consulta.tipo = 'V'
         consulta.conx_id = id
         db.session.commit()
 
-        flash(_('Your changes have been saved.'))
+        flash(_('As alterações foram registradas.'))
         return redirect(url_for('main.conexoes'))
     return render_template('edit_consulta.html', title=_('Nova Consulta de Relacionamentos'), id=consulta.id,
                            form=form)
@@ -171,7 +175,7 @@ def add_consulta_vinc(id):
 @bp.route('/editconsultaente/<id>', methods=['GET', 'POST'])
 @login_required
 def edit_consulta_ente(id):
-    consulta = ConsultaEnte.query.filter_by(id=id).first_or_404()
+    consulta = Consulta.query.filter_by(id=id).first_or_404()
     if consulta is None:
         flash(_('Consulta de Entes %(id) não encontrada.', id=id))
         return redirect(url_for('main.conexoes'))
@@ -181,26 +185,26 @@ def edit_consulta_ente(id):
     if form.validate_on_submit():
         form.populate_obj(consulta)
         db.session.commit()
-        flash(_('Your changes have been saved.'))
+        flash(_('As alterações foram registradas.'))
         return redirect(url_for('main.edit_consulta_ente', id=id ))
     return render_template('edit_consulta.html', title=_('Consulta de Entes'), id=id,
                            form=form, consulta=consulta)
-#tables = [df.head(5).to_html(classes='data')], titles = df.columns.values, mensagem = mensagem)
+
 @bp.route('/delconsultaente/<id>', methods=['GET', 'POST'])
 @login_required
 def del_consulta_ente(id):
-    ce = ConsultaEnte.query.filter_by(id=id).first_or_404()
+    ce = Consulta.query.filter_by(id=id).first_or_404()
     if ce is None:
         flash(_('Consulta de Entes %(id) não encontrada.', id=id))
     else:
-        db.session.delete(ef)
+        db.session.delete(ce)
         db.session.commit()
     return redirect(url_for('main.edit_conexao', id=id))
 
 @bp.route('/delconsultavinc>/<id>', methods=['GET', 'POST'])
 @login_required
 def del_consulta_vinc(id):
-    cv = ConsultaVinculoquery.filter_by(id=id).first_or_404()
+    cv = Consulta.query.filter_by(id=id).first_or_404()
     if cv is None:
         flash(_('Consulta de Relacionamentos %(id) não encontrada.', id=id))
     else:
@@ -211,7 +215,7 @@ def del_consulta_vinc(id):
 @bp.route('/editconsultavinc/<id>', methods=['GET', 'POST'])
 @login_required
 def edit_consulta_vinc(id):
-    consulta = ConsultaVinculo.query.filter_by(id=id).first_or_404()
+    consulta = Consulta.query.filter_by(id=id).first_or_404()
     if consulta is None:
         flash(_('Consulta de Relacionamentos %(id) não encontrada.', id=id))
         return redirect(url_for('main.conexoes'))
@@ -221,7 +225,7 @@ def edit_consulta_vinc(id):
     if form.validate_on_submit():
         form.populate_obj(consulta)
         db.session.commit()
-        flash(_('Your changes have been saved.'))
+        flash(_('As alterações foram registradas.'))
         return redirect(url_for('main.edit_consulta_vinc', id=id))
     return render_template('edit_consulta.html', title=_('Consulta de Relacionamentos'), id=id,
                            form=form, consulta=consulta)

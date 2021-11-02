@@ -103,7 +103,7 @@ def verificaatributos(df):
     return ','.join(atrib)
 
 
-def verificar_consulta(consulta, tipo_consulta='E'):
+def verificar_consulta(consulta):
     def verificar_consulta_ente(df):
         campos_obrigatorios={}
         for campo_nome in ['tipo','ident', 'atributos']:
@@ -126,7 +126,7 @@ def verificar_consulta(consulta, tipo_consulta='E'):
     try:
         df=pd.read_sql(sql=consulta.cmd_sql, con=consulta.conexao.string)
         mensagem = 'Consulta retornou ' + str(len(df)) + ' registro'+('' if len(df) == 1 else 's')+'!'
-        if tipo_consulta == 'E':
+        if consulta.tipo == 'E':
             campos_obrigatorios, verificacoes = verificar_consulta_ente(df)
         else:
             campos_obrigatorios, verificacoes = verificar_consulta_vinc(df)
@@ -151,8 +151,8 @@ class Conexao(db.Model):
     usuario = db.Column(db.String(50), nullable=True)
     senha = db.Column(db.String(50), nullable=True)
     habilitada = db.Column(db.String(1), nullable=False)
-    consultas_ente = db.relationship("ConsultaEnte", back_populates="conexao")
-    consultas_vinc = db.relationship("ConsultaVinculo", back_populates="conexao")
+    consultas = db.relationship("Consulta", back_populates="conexao")
+
 
     @hybrid_property
     def ativa(self) -> bool:
@@ -168,46 +168,52 @@ class Conexao(db.Model):
             return False
 
     def __repr__(self):
-        return '{}-{}:{}'.format(self.nome,self.string,self.em_producao)
+        return '{}-{}:{}'.format(self.nome,self.string,self.habilitada)
 
 
-
-
-class ConsultaEnte(db.Model):
-    __tablename__ = 'consulta_ente'
+class Consulta(db.Model):
+    __tablename__ = 'consulta'
 
     id = db.Column(db.Integer, primary_key=True, autoincrement='auto')
     conx_id = db.Column(db.BigInteger, db.ForeignKey('conexao.id'), index=True, nullable=False)
+    tipo = db.Column(db.String(1), nullable=False, default='V', doc='Define se a consulta é do tipo Enteou Vínculo')
     nome = db.Column(db.String(50), nullable=False, doc='Nome da consulta')
     descricao = db.Column(db.String(500), nullable=False, doc='Descriçao da finalidade da consulta')
     fonte = db.Column(db.String(15), nullable=False, doc='Nome da fonte de dados para rastrear o resultado')
     cmd_sql = db.Column(db.String(2500), nullable=True, doc='Comando SQL')
     habilitada = db.Column(db.String(1), nullable=False, default='S', doc='Define se a consulta está habilitada')
-    conexao = db.relationship("Conexao", back_populates="consultas_ente")
+    conexao = db.relationship("Conexao", back_populates="consultas")
+    trilhas = db.relationship("TrilhaConsulta", back_populates="consulta")
 
     @hybrid_property
     def verificacoes(self):
-        return verificar_consulta(self, 'E')
+        return verificar_consulta(self)
     def __repr__(self):
-        return '{}-{}:{}'.format(self.id,self.cmd_sql,self.em_producao)
+        return '{}-{}:{}'.format(self.id,self.cmd_sql,self.habilitada)
 
-class ConsultaVinculo(db.Model):
-    __tablename__ = 'consulta_vinculo'
+
+class Trilha(db.Model):
+    __tablename__ = 'trilha'
 
     id = db.Column(db.Integer, primary_key=True, autoincrement='auto')
-    conx_id = db.Column(db.BigInteger, db.ForeignKey('conexao.id'), index=True, nullable=False)
     nome = db.Column(db.String(50), nullable=False, doc='Nome da consulta')
     descricao = db.Column(db.String(500), nullable=False, doc='Descriçao da finalidade da consulta')
-    fonte = db.Column(db.String(15), nullable=False, doc='Nome da fonte de dados para rastrear o resultado')
-    cmd_sql = db.Column(db.String(2500), nullable=True, doc='Comando SQL')
-    habilitada = db.Column(db.String(1), nullable=False, default='S', doc='Define se a consulta está habilitada')
-    conexao = db.relationship("Conexao", back_populates="consultas_vinc")
-
-    @hybrid_property
-    def verificacoes(self):
-        return verificar_consulta(self, 'V')
+    consultas = db.relationship("TrilhaConsulta", back_populates="trilha")
     def __repr__(self):
-        return '{}-{}:{}'.format(self.id,self.cmd_sql,self.em_producao)
+        return '{}-{}:{}'.format(self.id,self.nome,self.descricao)
+
+class TrilhaConsulta(db.Model):
+    __tablename__ = 'trilha_consulta'
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement='auto')
+    trilha_id = db.Column(db.BigInteger, db.ForeignKey('trilha.id'), index=True, nullable=False)
+    consulta_id = db.Column(db.BigInteger, db.ForeignKey('consulta.id'), index=True, nullable=False)
+    trilha = db.relationship("Trilha", back_populates="consultas")
+    consulta = db.relationship("Consulta", back_populates="trilhas")
+
+    def __repr__(self):
+        return '{}-{}:{}'.format(self.id,self.trilha_id,self.consulta_id)
+
 
 class temp_entes(db.Model):
     __tablename__ = 'TEMP_ENTES'

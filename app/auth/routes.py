@@ -18,7 +18,7 @@ def login():
     if form.validate_on_submit():
         user = User.query.filter_by(username=form.username.data).first()
         if user is None or not user.check_password(form.password.data):
-            flash(_('Invalid username or password'))
+            flash(_('Usuário ou senha Inválido '))
             return redirect(url_for('auth.login'))
         login_user(user, remember=form.remember_me.data)
         next_page = request.args.get('next')
@@ -44,9 +44,9 @@ def register():
         user.set_password(form.password.data)
         db.session.add(user)
         db.session.commit()
-        flash(_('Congratulations, you are now a registered user!'))
+        flash(_('Você foi registrado como usuário!'))
         return redirect(url_for('auth.login'))
-    return render_template('auth/register.html', title=_('Register'),
+    return render_template('auth/register.html', title=_('Registrar'),
                            form=form)
 
 
@@ -60,10 +60,10 @@ def reset_password_request():
         if user:
             send_password_reset_email(user)
         flash(
-            _('Check your email for the instructions to reset your password'))
+            _('Verifique no seu email as instruções para redefinir sua senha'))
         return redirect(url_for('auth.login'))
     return render_template('auth/reset_password_request.html',
-                           title=_('Reset Password'), form=form)
+                           title=_('Redefinir Senha'), form=form)
 
 
 @bp.route('/reset_password/<token>', methods=['GET', 'POST'])
@@ -77,6 +77,6 @@ def reset_password(token):
     if form.validate_on_submit():
         user.set_password(form.password.data)
         db.session.commit()
-        flash(_('Your password has been reset.'))
+        flash(_('Sua senha foi redefinida.'))
         return redirect(url_for('auth.login'))
     return render_template('auth/reset_password.html', form=form)

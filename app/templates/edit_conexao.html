@@ -10,7 +10,8 @@
     <div class="row">
         <div class="col-md-4" id="obj_div" style="width: 250px; heigth: 350px;">
             {{ wtf.quick_form(form) }}
-            {% if conexao.ativa %}
+
+            {% if conexao and conexao.ativa %}
             <p style="background-color:LightGreen; transparency=0.1" >Conexão disponível</p>
             {% else %}
             <p style="background-color:Tomato; transparency=0.1" >Conexão INDISPONÍVEL</p>
@@ -21,7 +22,8 @@
         <div class="col-md-4" id="consultas_ente_div" style="width: 450px; heigth: 350px; ">
             <p>CONSULTAS DE ENTES <a class="ferramentaslinhabtn_azul" href="{{ url_for('main.add_consulta_ente', id=id) }}" title="Adicionar consultas de Entes" >&#x2795;</a></p>
             <table>
-            {% for consulta in conexao.consultas_ente %}
+            {% for consulta in conexao.consultas %}
+                {% if consulta.tipo == "E" %}
             <tr>
                 <td width="17px">
                    <a class="ferramentaslinhabtn_verde" href="{{ url_for('main.edit_consulta_ente', id=consulta.id) }}" title="Alterar Consulta de entes">✎</a>
@@ -42,18 +44,19 @@
                      <a href="{{ url_for('main.edit_consulta_ente', id=consulta.id) }}"> {{ consulta.em_producao }} </a>
                    </td>
             </tr>
-
+            {% endif %}
             {% endfor %}
                 </table>
             <p></p>
             <p>CONSULTAS DE RELACIONAMENTOS <a class="ferramentaslinhabtn_azul" href="{{ url_for('main.add_consulta_vinc', id=id) }}" title="Adicionar consultas de relacionamentos">&#x2795;</a></p>
             <table>
-            {% for consulta in conexao.consultas_vinc %}
+            {% for consulta in conexao.consultas %}
+                {% if consulta.tipo == "V" %}
                 <td width="17px">
                    <a class="ferramentaslinhabtn_verde" href="{{ url_for('main.edit_consulta_vinc', id=consulta.id) }}" title="Alterar Consulta de relacionamentos">✎</a>
                 </td>
                 <td width="17px">
-                    <a class="ferramentaslinhabtn_vermelho" href="{{ url_for('main.del_consulta_ente', id=conexao.id) }}" title="Excluir">&#x1F5D1;</a>
+                    <a class="ferramentaslinhabtn_vermelho" href="{{ url_for('main.del_consulta_vinc', id=conexao.id) }}" title="Excluir">&#x1F5D1;</a>
                 </td>
                    <td width="240px">
                        <a href="{{ url_for('main.edit_consulta_vinc', id=conexao.id) }}" title="Alterar consulta"> {{ consulta.nome }}</a>
@@ -68,6 +71,7 @@
                      <a href="{{ url_for('main.edit_consulta_vinc', id=consulta.id) }}"> {{ consulta.em_producao }} </a>
                    </td>
             </tr>
+            {% endif %}
             {% endfor %}
                 </table>
         </div>
