@@ -37,18 +37,6 @@ class EditConexaoForm(FlaskForm):
         super(EditConexaoForm, self).__init__(*args, **kwargs)
         self.id = id
 
-class EditConsultaEnteForm(FlaskForm):
-    fonte = StringField('fonte', validators=[DataRequired()])
-    cmd_sql = TextAreaField('Comando SQL', validators=[DataRequired()])
-    habilitada = SelectField('Habilitada?', validators=[InputRequired()], description="Disponível",choices=['S','N'])
-    StringField('Em produção', validators=[DataRequired()])
-
-    submit = SubmitField(_l('OK'))
-
-    def __init__(self, id: int, *args, **kwargs):
-        super(EditConsultaEnteForm, self).__init__(*args, **kwargs)
-        self.id = id
-
 class EditConsultaForm(FlaskForm):
     nome = StringField('Nome',validators=[DataRequired()],description='Nome da consulta', render_kw={"placeholder": 'Nome da consulta'} )
     descricao = StringField('Descrição',validators=[DataRequired()],description='Descrição da consulta' )
@@ -61,4 +49,15 @@ class EditConsultaForm(FlaskForm):
 
     def __init__(self, id: int, *args, **kwargs):
         super(EditConsultaForm, self).__init__(*args, **kwargs)
+        self.id = id
+
+
+class EditTrilhaForm(FlaskForm):
+    nome = StringField('Nome',validators=[DataRequired()],description='Nome da trilha', render_kw={"placeholder": 'Nome da trilha'} )
+    descricao = StringField('Descrição',validators=[DataRequired()],description='Descrição da trilha' )
+
+    submit = SubmitField(_l('OK'))
+
+    def __init__(self, id: int, *args, **kwargs):
+        super(EditTrilhaForm, self).__init__(*args, **kwargs)
         self.id = id

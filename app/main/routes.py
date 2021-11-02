@@ -136,100 +136,6 @@ def edit_conexao(id):
     return render_template('edit_conexao.html', title=_('Conexão'), id=id, form=form,
                            conexao=conexao)
 
-@bp.route('/addconsultaente/<id>', methods=['GET', 'POST'])
-@login_required
-def add_consulta_ente(id):
-    consulta=Consulta()
-    consulta.tipo = 'E'
-    form = EditConsultaForm(obj=consulta, id=consulta.id)
-    if form.validate_on_submit():
-        form.populate_obj(consulta)
-        db.session.add(consulta)
-        consulta.conx_id = id
-        consulta.tipo = 'E'
-        db.session.commit()
-
-        flash(_('As alterações foram registradas.'))
-        return redirect(url_for('main.conexoes'))
-    return render_template('edit_consulta.html', title=_('Nova Consulta de Entes'), id=consulta.id,
-                           form=form)
-@bp.route('/addconsultavinc/<id>', methods=['GET', 'POST'])
-@login_required
-def add_consulta_vinc(id):
-    consulta = Consulta()
-    consulta.tipo = 'V'
-    form = EditConsultaForm(obj=consulta, id=consulta.id)
-    if form.validate_on_submit():
-        form.populate_obj(consulta)
-        db.session.add(consulta)
-        consulta.tipo = 'V'
-        consulta.conx_id = id
-        db.session.commit()
-
-        flash(_('As alterações foram registradas.'))
-        return redirect(url_for('main.conexoes'))
-    return render_template('edit_consulta.html', title=_('Nova Consulta de Relacionamentos'), id=consulta.id,
-                           form=form)
-
-
-@bp.route('/editconsultaente/<id>', methods=['GET', 'POST'])
-@login_required
-def edit_consulta_ente(id):
-    consulta = Consulta.query.filter_by(id=id).first_or_404()
-    if consulta is None:
-        flash(_('Consulta de Entes %(id) não encontrada.', id=id))
-        return redirect(url_for('main.conexoes'))
-
-    form = EditConsultaForm(obj=consulta, id=id)
-
-    if form.validate_on_submit():
-        form.populate_obj(consulta)
-        db.session.commit()
-        flash(_('As alterações foram registradas.'))
-        return redirect(url_for('main.edit_consulta_ente', id=id ))
-    return render_template('edit_consulta.html', title=_('Consulta de Entes'), id=id,
-                           form=form, consulta=consulta)
-
-@bp.route('/delconsultaente/<id>', methods=['GET', 'POST'])
-@login_required
-def del_consulta_ente(id):
-    ce = Consulta.query.filter_by(id=id).first_or_404()
-    if ce is None:
-        flash(_('Consulta de Entes %(id) não encontrada.', id=id))
-    else:
-        db.session.delete(ce)
-        db.session.commit()
-    return redirect(url_for('main.edit_conexao', id=id))
-
-@bp.route('/delconsultavinc>/<id>', methods=['GET', 'POST'])
-@login_required
-def del_consulta_vinc(id):
-    cv = Consulta.query.filter_by(id=id).first_or_404()
-    if cv is None:
-        flash(_('Consulta de Relacionamentos %(id) não encontrada.', id=id))
-    else:
-        db.session.delete(ef)
-        db.session.commit()
-    return redirect(url_for('main.edit_conexao', id=id))
-
-@bp.route('/editconsultavinc/<id>', methods=['GET', 'POST'])
-@login_required
-def edit_consulta_vinc(id):
-    consulta = Consulta.query.filter_by(id=id).first_or_404()
-    if consulta is None:
-        flash(_('Consulta de Relacionamentos %(id) não encontrada.', id=id))
-        return redirect(url_for('main.conexoes'))
-
-    form = EditConsultaForm(obj=consulta, id=id)
-
-    if form.validate_on_submit():
-        form.populate_obj(consulta)
-        db.session.commit()
-        flash(_('As alterações foram registradas.'))
-        return redirect(url_for('main.edit_consulta_vinc', id=id))
-    return render_template('edit_consulta.html', title=_('Consulta de Relacionamentos'), id=id,
-                           form=form, consulta=consulta)
-
 @bp.route('/delconexao', methods=['GET', 'POST'])
 @login_required
 def del_conexao():
@@ -239,6 +145,115 @@ def del_conexao():
     else:
         db.session.delete(conexao)
     return redirect(url_for('main.conexoes'))
+
+@bp.route('/addconsulta/<id>/<tipo>/', methods=['GET', 'POST'])
+@login_required
+def add_consulta(id,tipo):
+    consulta = Consulta()
+    tipo = 'V' if (tipo != 'E' and tipo != 'V') else tipo
+    form = EditConsultaForm(obj=consulta, id=consulta.id)
+    if form.validate_on_submit():
+        form.populate_obj(consulta)
+        db.session.add(consulta)
+        consulta.tipo = tipo
+        consulta.conx_id = id
+        db.session.commit()
+
+        flash(_('As alterações foram registradas.'))
+        return redirect(url_for('main.conexoes'))
+    titulo = 'Nova Consulta de ' + 'Entes' if consulta.tipo == 'E' else 'Relacionamentos'
+    return render_template('edit_consulta.html', title=_(titulo), id=consulta.id,
+                           form=form)
+
+
+@bp.route('/delconsulta/<id>', methods=['GET', 'POST'])
+@login_required
+def del_consulta(id):
+    ce = Consulta.query.filter_by(id=id).first_or_404()
+    if ce is None:
+        flash(_('Consulta %(id) não encontrada.', id=id))
+    else:
+        db.session.delete(ce)
+        db.session.commit()
+    return redirect(url_for('main.edit_conexao', id=id))
+
+@bp.route('/editconsulta/<id>', methods=['GET', 'POST'])
+@login_required
+def edit_consulta(id):
+    consulta = Consulta.query.filter_by(id=id).first_or_404()
+    if consulta is None:
+        flash(_('Consulta %(id) não encontrada.', id=id))
+        return redirect(url_for('main.conexoes'))
+
+    form = EditConsultaForm(obj=consulta, id=id)
+
+    if form.validate_on_submit():
+        form.populate_obj(consulta)
+        db.session.commit()
+        flash(_('As alterações foram registradas.'))
+        return redirect(url_for('main.edit_consulta', id=id))
+    titulo = 'Consulta de '+'Entes' if consulta.tipo == 'E' else 'Relacionamentos'
+    return render_template('edit_consulta.html', title=_(titulo), id=id,
+                           form=form, consulta=consulta)
+
+
+
+@bp.route('/trilhas')
+@login_required
+def trilhas():
+    page = request.args.get('page', 1, type=int)
+    trilhas = Trilha.query.order_by(Trilha.nome.asc()).paginate(
+        page, current_app.config['POSTS_PER_PAGE'], False)
+    next_url = url_for('main.trilhas', page=trilhas.next_num) \
+        if trilhas.has_next else None
+    prev_url = url_for('main.trilhas', page=trilhas.prev_num) \
+        if trilhas.has_prev else None
+    return render_template('trilhas.html', title=_('Trilhas'),
+                           trilhas=trilhas.items, next_url=next_url,
+                           prev_url=prev_url)
+
+@bp.route('/addtrilha', methods=['GET', 'POST'])
+@login_required
+def add_trilha():
+    trilha=Trilha()
+    form = EditTrilhaForm(obj=trilha, id=trilha.id)
+    if form.validate_on_submit():
+        form.populate_obj(trilha)
+        db.session.add(trilha)
+        db.session.commit()
+        flash(_('As alterações foram registradas.'))
+        return redirect(url_for('main.trilhas'))
+    return render_template('edit_trilha.html', title=_('Nova Trilha'), id=trilha.id,
+                           form=form)
+
+
+@bp.route('/edittrilha/<id>', methods=['GET', 'POST'])
+@login_required
+def edit_trilha(id):
+    trilha = Trilha.query.filter_by(id=id).first_or_404()
+    if trilha is None:
+        flash(_('Trilha %(id) não encontrada.', id=id))
+        return redirect(url_for('main.trilhas'))
+
+    form = EditTrilhaForm(obj=trilha, id=id)
+    if form.validate_on_submit():
+        form.populate_obj(conexao)
+        db.session.commit()
+        testartemp(conexao)
+        flash(_('As alterações foram registradas.'))
+        return redirect(url_for('main.edit_trilha', id=id))
+    return render_template('edit_trilha.html', title=_('Trilha'), id=id, form=form,
+                           trilha=trilha)
+
+@bp.route('/deltrilha', methods=['GET', 'POST'])
+@login_required
+def del_trilha():
+    trilha = Trilha.query.filter_by(id=id).first_or_404()
+    if trilha is None:
+        flash(_('Trilha %(id) não encontrada.', id=id))
+    else:
+        db.session.delete(trilha)
+    return redirect(url_for('main.trilhas'))
 
 
 from sqlalchemy.orm.exc import NoResultFound
