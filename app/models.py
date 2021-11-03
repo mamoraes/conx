@@ -10,6 +10,7 @@ import sqlalchemy
 from sqlalchemy import BigInteger, Column, Integer, String, text, Date
 from sqlalchemy.ext.hybrid import hybrid_property, hybrid_method
 import pandas as pd
+from pandas.core.base import DataError
 
 from app.database_aux import dbaux as dbx
 from app.database_aux import *
@@ -191,6 +192,35 @@ class Consulta(db.Model):
     def __repr__(self):
         return '{}-{}:{}'.format(self.id,self.cmd_sql,self.habilitada)
 
+def selecao_consultas(trilha):
+    ok = True
+    consulta=Consulta()
+    trilhaconsulta= TrilhaConsulta()
+
+    sql = f"""select cn.*, 
+              case when (select tc.trilha_id from {trilhaconsulta.__tablename__} tc 
+                         where tc.consulta_id = cn.id and tc.trilha_id = {trilha.id}) isnull 
+                    then 'N' 
+                    else 'S' end as tr_id 
+              from {consulta.__tablename__} cn"""
+    try:
+       # df = pd.read_sql(sql=sql, con=config.SQLALCHEMY_DATABASE_URI)
+       df = pd.read_sql(sql=sql, con=current_app.config['SQLALCHEMY_DATABASE_URI'])
+    except :
+        ok = False
+        print(DataError)
+        #flash(_(f'Erro em consulta'))
+    lista=[]
+    for linha in df.itertuples():
+        #lin={}
+        #lin['tipo'] = linha['tipo']
+        lista.append(linha)
+
+    return df.itertuples()
+
+
+
+
 
 class Trilha(db.Model):
     __tablename__ = 'trilha'
@@ -199,6 +229,11 @@ class Trilha(db.Model):
     nome = db.Column(db.String(50), nullable=False, doc='Nome da consulta')
     descricao = db.Column(db.String(500), nullable=False, doc='Descriçao da finalidade da consulta')
     consultas = db.relationship("TrilhaConsulta", back_populates="trilha")
+
+    @hybrid_property
+    def selecao(self):
+        return selecao_consultas(self)
+
     def __repr__(self):
         return '{}-{}:{}'.format(self.id,self.nome,self.descricao)
 

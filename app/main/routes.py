@@ -26,7 +26,7 @@ from app.main.gerargrafo import Aresta, Nodo, NoPF, NoPJ, NoCaso, NoRinf
 
 from app.database_aux import dbaux as dbx
 from app.database_aux import * #so_digitos, validar_cpf_cnpj
-import config
+#import config
 
 #from app.main.database_aux import dbx
 
@@ -237,11 +237,11 @@ def edit_trilha(id):
 
     form = EditTrilhaForm(obj=trilha, id=id)
     if form.validate_on_submit():
-        form.populate_obj(conexao)
+        form.populate_obj(trilha)
         db.session.commit()
-        testartemp(conexao)
         flash(_('As alterações foram registradas.'))
         return redirect(url_for('main.edit_trilha', id=id))
+
     return render_template('edit_trilha.html', title=_('Trilha'), id=id, form=form,
                            trilha=trilha)
 
@@ -255,6 +255,34 @@ def del_trilha():
         db.session.delete(trilha)
     return redirect(url_for('main.trilhas'))
 
+@bp.route('/addconsultatrilha/<id_consulta>/<id_trilha>', methods=['GET', 'POST'])
+@login_required
+def add_consulta_trilha(id_consulta, id_trilha):
+    trilhaconsulta = TrilhaConsulta.query.filter_by(trilha_id=id_trilha,consulta_id=id_consulta).first()
+    if trilhaconsulta is None:
+        trilhaconsulta = TrilhaConsulta()
+        db.session.add(trilhaconsulta)
+        trilhaconsulta.consulta_id = id_consulta
+        trilhaconsulta.trilha_id = id_trilha
+        db.session.commit()
+    else:
+        flash(_('trilhaconsulta %(id) já existe encontrada.', id=id))
+    return redirect(url_for('main.edit_trilha',id=id_trilha))
+
+
+@bp.route('/delconsultatrilha/<id_consulta>/<id_trilha>', methods=['GET', 'POST'])
+@login_required
+def del_consulta_trilha(id_consulta, id_trilha):
+    trilhaconsulta = TrilhaConsulta.query.filter_by(trilha_id=id_trilha, consulta_id=id_consulta).first()
+    if trilhaconsulta is None:
+        flash(_('trilhaconsulta %(id) não encontrada.', id=id))
+    else:
+        try:
+            db.session.delete(trilhaconsulta)
+            db.session.commit()
+        except Exception:
+            flash('Erro ao excluir consulta da trilha ')
+    return redirect(url_for('main.edit_trilha', id=id_trilha))
 
 from sqlalchemy.orm.exc import NoResultFound
 # ...

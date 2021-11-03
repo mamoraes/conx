@@ -15,56 +15,54 @@
         {% if id %}
 
         <div class="col-md-4" id="consultas_ente_div" style="width: 450px; heigth: 350px; ">
-            <p>CONSULTAS DE ENTES <a class="ferramentaslinhabtn_azul" href="{{ url_for('main.add_consulta', id=id, tipo='E') }}" title="Adicionar consultas de Entes" >&#x2795;</a></p>
+            <p style="background-color:LightGreen; Transparency:0.1">CONSULTAS DE ENTES</p>
             <table>
-            {% for consulta in trilha.consultas %}
+            {% for consulta in trilha.selecao %}
                 {% if consulta.tipo == "E" %}
             <tr>
                 <td width="17px">
-                   <a class="ferramentaslinhabtn_verde" href="{{ url_for('main.edit_consulta', id=consulta.id) }}" title="Alterar Consulta de entes">✎</a>
+                    {% if consulta.tr_id == 'N'%}
+                    <a href="{{ url_for('main.add_consulta_trilha', id_consulta=consulta.id, id_trilha=trilha.id) }}" title="Incluir consulta na trilha">&#x2610; </a>
+                    {% else %}
+                    <a href="{{ url_for('main.del_consulta_trilha', id_consulta=consulta.id, id_trilha=trilha.id) }}" title="Excluir consulta da trilha">&#x2611; </a>
+                    {% endif %}
                 </td>
-                <td width="17px">
-                    <a class="ferramentaslinhabtn_vermelho" href="{{ url_for('main.del_consulta', id=consulta.id) }}" title="Excluir">&#x1F5D1;</a>
-                </td>
-                   <td width="240px">
-                       <a href="{{ url_for('main.edit_consulta', id=consulta.id) }}" title="Alterar consulta"> {{ consulta.nome }}</a>
+                   <td width="240px" title="Nome">
+                       {{ consulta.nome }}
                    </td>
-                   <td width="500px">
-                   <a href="{{ url_for('main.edit_consulta', id=consulta.id) }}" title="Alterar consulta"> {{ consulta.descricao }} </a>
+                   <td width="500px" title=Descrição>
+                   {{ consulta.descricao }}
                    </td>
-                   <td width="240px">
-                    <a href="{{ url_for('main.edit_consulta', id=consulta.id) }}"title="Alterar consulta"> {{ consulta.fonte }} </a>
+                   <td width="240px" title="Fonte">
+                    {{ consulta.fonte }}
                    </td>
-                   <td width="20px">
-                     <a href="{{ url_for('main.edit_consulta', id=consulta.id) }}"> {{ consulta.habilitada }} </a>
-                   </td>
+
             </tr>
             {% endif %}
             {% endfor %}
                 </table>
             <p></p>
-            <p>CONSULTAS DE RELACIONAMENTOS <a class="ferramentaslinhabtn_azul" href="{{ url_for('main.add_consulta', id=id, tipo='V') }}" title="Adicionar consultas de relacionamentos">&#x2795;</a></p>
+            <p style="background-color:Tomato; Transparency:0.1">CONSULTAS DE RELACIONAMENTOS</p>
             <table>
-            {% for consulta in trilha.consultas %}
+            {% for consulta in trilha.selecao %}
                 {% if consulta.tipo == "V" %}
                 <td width="17px">
-                   <a class="ferramentaslinhabtn_verde" href="{{ url_for('main.edit_consulta', id=consulta.id) }}" title="Alterar Consulta de relacionamentos">✎</a>
+                    {% if consulta.tr_id == 'N'%}
+                    <a href="{{ url_for('main.add_consulta_trilha', id_consulta=consulta.id, id_trilha=trilha.id) }}" title="Incluir consulta na trilha">&#x2610; </a>
+                    {% else %}
+                    <a href="{{ url_for('main.del_consulta_trilha', id_consulta=consulta.id, id_trilha=trilha.id) }}" title="Excluir consulta da trilha">&#x2611; </a>
+                    {% endif %}
                 </td>
-                <td width="17px">
-                    <a class="ferramentaslinhabtn_vermelho" href="{{ url_for('main.del_consulta', id=consulta.id) }}" title="Excluir">&#x1F5D1;</a>
-                </td>
-                   <td width="240px">
-                       <a href="{{ url_for('main.edit_consulta', id=consulta.id) }}" title="Alterar consulta"> {{ consulta.nome }}</a>
+                   <td width="240px" title="Nome">
+                       {{ consulta.nome }}
                    </td>
-                   <td width="500px">
-                   <a href="{{ url_for('main.edit_consulta', id=consulta.id) }}" title="Alterar consulta"> {{ consulta.descricao }} </a>
+                   <td width="500px" title=Descrição>
+                   {{ consulta.descricao }}
                    </td>
-                   <td width="240px">
-                    <a href="{{ url_for('main.edit_consulta', id=consulta.id) }}"title="Alterar consulta"> {{ consulta.fonte }} </a>
+                   <td width="240px" title="Fonte">
+                    {{ consulta.fonte }}
                    </td>
-                   <td width="20px">
-                     <a href="{{ url_for('main.edit_consulta', id=consulta.id) }}"> {{ consulta.habilitada }} </a>
-                   </td>
+
             </tr>
             {% endif %}
             {% endfor %}
