@@ -208,7 +208,8 @@ def trilhas():
         if trilhas.has_next else None
     prev_url = url_for('main.trilhas', page=trilhas.prev_num) \
         if trilhas.has_prev else None
-    return render_template('trilhas.html', title=_('Trilhas'),
+    emojis = current_app.config.EMOJIS
+    return render_template('trilhas.html', title=_('Trilhas'), emojis=emojis,
                            trilhas=trilhas.items, next_url=next_url,
                            prev_url=prev_url)
 
