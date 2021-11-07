@@ -22,9 +22,9 @@
             <tr>
                 <td width="17px">
                     {% if consulta.tr_id == 'N'%}
-                    <a href="{{ url_for('main.add_consulta_trilha', id_consulta=consulta.id, id_trilha=trilha.id) }}" title="Incluir consulta na trilha">&#x2610; </a>
+                    <a href="{{ url_for('main.add_consulta_trilha', id_consulta=consulta.id, id_trilha=trilha.id) }}" title="Incluir consulta na trilha">{%if emojis%}&#x{{emojis['checkedout']}}{%else%}&#x2610;{%endif%} </a>
                     {% else %}
-                    <a href="{{ url_for('main.del_consulta_trilha', id_consulta=consulta.id, id_trilha=trilha.id) }}" title="Excluir consulta da trilha">&#x2611; </a>
+                    <a href="{{ url_for('main.del_consulta_trilha', id_consulta=consulta.id, id_trilha=trilha.id) }}" title="Excluir consulta da trilha">{%if emojis%}&#x{{emojis['checkedin']}}{%else%}&#x2611;{%endif%} </a>
                     {% endif %}
                 </td>
                    <td width="240px" title="Nome">
@@ -48,9 +48,9 @@
                 {% if consulta.tipo == "V" %}
                 <td width="17px">
                     {% if consulta.tr_id == 'N'%}
-                    <a href="{{ url_for('main.add_consulta_trilha', id_consulta=consulta.id, id_trilha=trilha.id) }}" title="Incluir consulta na trilha">&#x2610; </a>
+                    <a href="{{ url_for('main.add_consulta_trilha', id_consulta=consulta.id, id_trilha=trilha.id) }}" title="Incluir consulta na trilha">{%if emojis%}&#x{{emojis['checkedout']}}{%else%}&#x2610;{%endif%} </a>
                     {% else %}
-                    <a href="{{ url_for('main.del_consulta_trilha', id_consulta=consulta.id, id_trilha=trilha.id) }}" title="Excluir consulta da trilha">&#x2611; </a>
+                    <a href="{{ url_for('main.del_consulta_trilha', id_consulta=consulta.id, id_trilha=trilha.id) }}" title="Excluir consulta da trilha">{%if emojis%}&#x{{emojis['checkedin']}}{%else%}&#x2611;{%endif%} </a>
                     {% endif %}
                 </td>
                    <td width="240px" title="Nome">

@@ -4,10 +4,11 @@
 {% block app_content %}
     <div class="row" >
         <div class="col-md-4" id="obj_div" style="width: 550px;">
-            <h1>&#x1F4A2; {{title}}</h1>
+            <h1>{% if emojis %}&#x{{emojis['conexoes']}} {%endif%} {{title}}</h1>
         </div>
         <div class="col-md-4" id="conexoes_div" style="width: 550px; heigth: 350px;">
-        <a href="{{ url_for('main.add_conexao') }}"><input type="button" class="btn btn-primary btn-lg" value=&#x2795; title="Incluir"> </a>
+        <a href="{{ url_for('main.add_conexao') }}"><input type="button" class="btn btn-primary btn-lg" value={%if emojis%}&#x{{emojis['incluir']}}{%else%}&#x2795;{%endif%} title="Incluir"> </a>
+        <a href="{{ url_for('main.def_conexao') }}"><input type="button" class="btn btn-primary btn-lg" value={%if emojis%}&#x{{emojis['default']}}{%else%}&#x26A1;{%endif%} title="Padrão"> </a>
         <!-- a  href="{{ url_for('main.conexoes') }}"><input type="button" class="btn btn-primary btn-lg" value=&#x1F50E; title="Filtrar"></a -->
          </div>
     </div>

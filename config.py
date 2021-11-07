@@ -57,7 +57,8 @@ class Config(object):
     UPLOAD_PASTA = cria_pasta(os.path.join(basedir,'_UPLOADS'))
     EXTENSOES_PERMITIDAS = ['csv','doc','docx','eml','epub','gif','jpg','jpeg','json','htm','html','mp3','msg',
                             'odt','ogg','pdf','png','pptx','ps','rtf','tiff','tif','txt','wav','xls','xlsx']
-    EMOJIS = {'conexoes': '&#x1F4A2;', 'trilhas':'&#x1F4DD;', 'incluir':'', 'excluir':'','alterar':'', 'checkin':'','checkout':''}
+    #  https://www.w3schools.com/charsets/ref_emoji.asp
+    EMOJIS = {'conexoes': '1F4A2;', 'trilhas':'1F4DD;', 'incluir':'2795;', 'excluir':'1F5D1;','alterar':'1F58D;', 'checkedin':'2611;','checkedout':'2610;','default':'26A1;'}
 
 
 

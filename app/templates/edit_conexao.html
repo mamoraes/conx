@@ -20,13 +20,13 @@
         {% if id %}
 
         <div class="col-md-4" id="consultas_ente_div" style="width: 450px; heigth: 350px; ">
-            <p>CONSULTAS DE ENTES <a class="ferramentaslinhabtn_azul" href="{{ url_for('main.add_consulta', id=id, tipo='E') }}" title="Adicionar consultas de Entes" >&#x2795;</a></p>
+            <p>CONSULTAS DE ENTES <a class="ferramentaslinhabtn_azul" href="{{ url_for('main.add_consulta', id=id, tipo='E') }}" title="Adicionar consultas de Entes" >{%if emojis%}&#x{{emojis['incluir']}}{%else%}&#x2795;{%endif%}</a></p>
             <table>
             {% for consulta in conexao.consultas %}
                 {% if consulta.tipo == "E" %}
             <tr>
                 <td width="17px">
-                   <a class="ferramentaslinhabtn_verde" href="{{ url_for('main.edit_consulta', id=consulta.id) }}" title="Alterar Consulta de entes">✎</a>
+                   <a class="ferramentaslinhabtn_verde" href="{{ url_for('main.edit_consulta', id=consulta.id) }}" title="Alterar Consulta de entes">{%if emojis%}&#x{{emojis['alterar']}}{%else%}✎{%endif%}</a>
                 </td>
                 <td width="17px">
                     <a class="ferramentaslinhabtn_vermelho" href="{{ url_for('main.del_consulta', id=consulta.id) }}" title="Excluir">&#x1F5D1;</a>
@@ -48,12 +48,12 @@
             {% endfor %}
                 </table>
             <p></p>
-            <p>CONSULTAS DE RELACIONAMENTOS <a class="ferramentaslinhabtn_azul" href="{{ url_for('main.add_consulta', id=id, tipo='V') }}" title="Adicionar consultas de relacionamentos">&#x2795;</a></p>
+            <p>CONSULTAS DE RELACIONAMENTOS <a class="ferramentaslinhabtn_azul" href="{{ url_for('main.add_consulta', id=id, tipo='V') }}" title="Adicionar consultas de relacionamentos">{%if emojis%}&#x{{emojis['incluir']}}{%else%}&#x2795;{%endif%}</a></p>
             <table>
             {% for consulta in conexao.consultas %}
                 {% if consulta.tipo == "V" %}
                 <td width="17px">
-                   <a class="ferramentaslinhabtn_verde" href="{{ url_for('main.edit_consulta', id=consulta.id) }}" title="Alterar Consulta de relacionamentos">✎</a>
+                   <a class="ferramentaslinhabtn_verde" href="{{ url_for('main.edit_consulta', id=consulta.id) }}" title="Alterar Consulta de relacionamentos">{%if emojis%}&#x{{emojis['alterar']}}{%else%}✎{%endif%}</a>
                 </td>
                 <td width="17px">
                     <a class="ferramentaslinhabtn_vermelho" href="{{ url_for('main.del_consulta', id=consulta.id) }}" title="Excluir">&#x1F5D1;</a>

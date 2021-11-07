@@ -154,7 +154,6 @@ class Conexao(db.Model):
     habilitada = db.Column(db.String(1), nullable=False)
     consultas = db.relationship("Consulta", back_populates="conexao")
 
-
     @hybrid_property
     def ativa(self) -> bool:
         try:
@@ -170,6 +169,23 @@ class Conexao(db.Model):
 
     def __repr__(self):
         return '{}-{}:{}'.format(self.nome,self.string,self.habilitada)
+def conexoes_default():
+    padroes=[]
+    padroes.append({'nome':'conx', 'string':'sqlite:///conxs.db'})
+    padroes.append({'nome':'cnpj_full', 'string': 'sqlite:///Cnpj_full.db'})
+    padroes.append({'nome':'cnpj', 'string':'sqlite:///cnpj.db'})
+    padroes.append({'nome':'CGUDATA', 'string':'mssql+pyodbc://sdh-die-bd/temp_NAE_PE?Trusted_Connection=yes&driver=SQL+Server'})
+
+    for cnx in padroes:
+        nome =  cnx['nome']
+        conexao = Conexao.query.filter_by(nome=nome).first_or_404()
+        if conexao is None:
+            conexao = Conexao()
+            db.session.add(conexao)
+            conexao.nome = cnx['nome']
+            conexao.string = cnx['string']
+            conexao.habilitada = 'S'
+            db.session.commit()
 
 
 class Consulta(db.Model):

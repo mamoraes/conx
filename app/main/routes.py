@@ -99,7 +99,7 @@ def conexoes():
         if conexoes.has_next else None
     prev_url = url_for('main.conexoes', page=conexoes.prev_num) \
         if conexoes.has_prev else None
-    return render_template('conexoes.html', title=_('Conexões'),
+    return render_template('conexoes.html', title=_('Conexões'), emojis=current_app.config['EMOJIS'],
                            conexoes=conexoes.items, next_url=next_url,
                            prev_url=prev_url)
 
@@ -115,9 +115,13 @@ def add_conexao():
         flash(_('As alterações foram registradas.'))
         return redirect(url_for('main.conexoes'))
     return render_template('edit_conexao.html', title=_('Nova Conexão'), id=conexao.id,
-                           form=form)
+                           emojis=current_app.config['EMOJIS'], form=form)
 
-
+@bp.route('/conexaodef', methods=['GET', 'POST'])
+@login_required
+def def_conexao():
+    conexoes_default()
+    return  redirect(url_for('main.conexoes'))
 @bp.route('/editconexao/<id>', methods=['GET', 'POST'])
 @login_required
 def edit_conexao(id):
@@ -134,7 +138,7 @@ def edit_conexao(id):
         flash(_('As alterações foram registradas.'))
         return redirect(url_for('main.edit_conexao', id=id))
     return render_template('edit_conexao.html', title=_('Conexão'), id=id, form=form,
-                           conexao=conexao)
+                           emojis=current_app.config['EMOJIS'], conexao=conexao)
 
 @bp.route('/delconexao', methods=['GET', 'POST'])
 @login_required
@@ -163,7 +167,7 @@ def add_consulta(id,tipo):
         return redirect(url_for('main.conexoes'))
     titulo = 'Nova Consulta de ' + 'Entes' if consulta.tipo == 'E' else 'Relacionamentos'
     return render_template('edit_consulta.html', title=_(titulo), id=consulta.id,
-                           form=form)
+                           emojis=current_app.config['EMOJIS'], form=form)
 
 
 @bp.route('/delconsulta/<id>', methods=['GET', 'POST'])
@@ -194,7 +198,7 @@ def edit_consulta(id):
         return redirect(url_for('main.edit_consulta', id=id))
     titulo = 'Consulta de '+'Entes' if consulta.tipo == 'E' else 'Relacionamentos'
     return render_template('edit_consulta.html', title=_(titulo), id=id,
-                           form=form, consulta=consulta)
+                           emojis=current_app.config['EMOJIS'], form=form, consulta=consulta)
 
 
 
@@ -208,8 +212,7 @@ def trilhas():
         if trilhas.has_next else None
     prev_url = url_for('main.trilhas', page=trilhas.prev_num) \
         if trilhas.has_prev else None
-    emojis = current_app.config.EMOJIS
-    return render_template('trilhas.html', title=_('Trilhas'), emojis=emojis,
+    return render_template('trilhas.html', title=_('Trilhas'), emojis=current_app.config['EMOJIS'],
                            trilhas=trilhas.items, next_url=next_url,
                            prev_url=prev_url)
 
@@ -225,7 +228,7 @@ def add_trilha():
         flash(_('As alterações foram registradas.'))
         return redirect(url_for('main.trilhas'))
     return render_template('edit_trilha.html', title=_('Nova Trilha'), id=trilha.id,
-                           form=form)
+                           emojis=current_app.config['EMOJIS'], form=form)
 
 
 @bp.route('/edittrilha/<id>', methods=['GET', 'POST'])
@@ -244,7 +247,7 @@ def edit_trilha(id):
         return redirect(url_for('main.edit_trilha', id=id))
 
     return render_template('edit_trilha.html', title=_('Trilha'), id=id, form=form,
-                           trilha=trilha)
+                           emojis=current_app.config['EMOJIS'], trilha=trilha)
 
 @bp.route('/deltrilha', methods=['GET', 'POST'])
 @login_required
