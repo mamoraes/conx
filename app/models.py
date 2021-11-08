@@ -404,7 +404,8 @@ def consultas_default():
         nome_conx = cons['nome_conx']
 
         sql = f"select * from {Conexao.__tablename__} where nome = '{nome_conx}'"
-        df = pd.read_sql(sql=sql, con=current_app.config['SQLALCHEMY_DATABASE_URI'])
+        uri = current_app.config['SQLALCHEMY_DATABASE_URI']
+        df = pd.read_sql(sql=sql, con=uri)
         if len(df.head(1)) > 0:
             idconx = df.at[0, 'id']
 
