@@ -7,6 +7,8 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import jwt
 from app import db, login
 import sqlalchemy
+from sqlalchemy.exc import SQLAlchemyError
+from flask_sqlalchemy  import SQLAlchemy
 from sqlalchemy import BigInteger, Column, Integer, String, text, Date
 from sqlalchemy.ext.hybrid import hybrid_property, hybrid_method
 
@@ -16,7 +18,7 @@ from pandas.core.base import DataError
 from app.database_aux import dbaux as dbx
 from app.database_aux import *
 # metadata = db.metadata(bind=engine)
-
+import json
 
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -68,14 +70,14 @@ def testartemp(conexao):
         df = pd.read_sql(sql=f'select * from {temp_entes.__tablename__}', con=config.SQLALCHEMY_DATABASE_URI)
     except:
         ok = False
-        flash(_(f'Não encontrou modelo de tabela temporária {temp_entes.__tablename__} em {conexao.string}.'))
+        return(_(f'Não encontrou modelo de tabela temporária {temp_entes.__tablename__} em {conexao.string}.'))
     if not ok:
         return ok
     try:
         df.to_sql(temp_entes.__tablename__, con=conexao.string, if_exists='replace', index=False, index_label='ident')
     except:
         ok = False
-        flash(_(f'Não gravou modelo de tabela temporária no bd {conexao.string}'))
+        return(_(f'Não gravou modelo de tabela temporária no bd {conexao.string}'))
 
 
 
