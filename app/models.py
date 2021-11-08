@@ -6,9 +6,11 @@ from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 import jwt
 from app import db, login
-import sqlalchemy
-from sqlalchemy import BigInteger, Column, Integer, String, text, Date
-from sqlalchemy.ext.hybrid import hybrid_property, hybrid_method
+
+#import SQLAlchemy
+from SQLAlchemy.ext.hybrid import hybrid_property, hybrid_method
+
+from SQLAlchemy.ext import BigInteger, Column, Integer, String, text, Date
 import pandas as pd
 from pandas.core.base import DataError
 
@@ -196,8 +198,8 @@ def conexoes_default():
 
 def consultas_default():
     padroes=[]
-    consulta={}
 
+    consulta={}
     consulta['nome_conx']= 'cnpj'
     consulta['nome'] = 'PJ_cnpj'
     consulta['descricao']='Obtém dados de PJ publicados pela RF'
@@ -212,6 +214,7 @@ def consultas_default():
        """
     padroes.append(consulta)
 
+    consulta={}
     consulta['nome_conx']= 'CGUDATA'
     consulta['nome'] = 'PF_CPF'
     consulta['descricao']='Obtém dados de PF no CPF da RF'
@@ -226,6 +229,7 @@ def consultas_default():
        """
     padroes.append(consulta)
 
+    consulta={}
     consulta['nome_conx']= 'CGUDATA'
     consulta['nome'] = 'PJ_CNPJ'
     consulta['descricao']='Obtém dados de PJ no CNPJ da RF'
@@ -246,6 +250,7 @@ def consultas_default():
        """
     padroes.append(consulta)
 
+    consulta={}
     consulta['nome_conx']= 'cnpj'
     consulta['nome'] = 'SOCIOS_PJ'
     consulta['descricao']='Obtém dados de sócios PJ no CNPJ da RF'
@@ -267,6 +272,7 @@ def consultas_default():
        """
     padroes.append(consulta)
 
+    consulta={}
     consulta['nome_conx']= 'cnpj'
     consulta['nome'] = 'SOCIOS_PF'
     consulta['descricao']='Obtém vínculos de sócios PF no CNPJ da RF'
@@ -287,6 +293,7 @@ def consultas_default():
             inner join temp_entes TC on cnpj_cpf_socio = TC.ident and TC.tipo = 'PF' and nome_socio = TC.nome"""
     padroes.append(consulta)
 
+    consulta={}
     consulta['nome_conx']= 'cnpj'
     consulta['nome'] = 'SOCIOS_PJ'
     consulta['descricao']='Obtém vínculos de sócios PJ no CNPJ da RF'
@@ -310,6 +317,7 @@ def consultas_default():
        """
     padroes.append(consulta)
 
+    consulta={}
     consulta['nome_conx']= 'cnpj'
     consulta['nome'] = 'SOCIOS_PF'
     consulta['descricao']='Obtém vínculos de sócios PF no CNPJ da RF'
@@ -333,6 +341,7 @@ def consultas_default():
        """
     padroes.append(consulta)
 
+    consulta={}
     consulta['nome_conx']= 'CGUDATA'
     consulta['nome'] = 'SOCIOS_PF'
     consulta['descricao']='Obtém vínculos de sócios PF no CNPJ da RF'
@@ -355,6 +364,7 @@ def consultas_default():
        """
     padroes.append(consulta)
 
+    consulta={}
     consulta['nome_conx']= 'CGUDATA'
     consulta['nome'] = 'SOCIOS_PJ'
     consulta['descricao']='Obtém dados de sócios PJ no CNPJ da RF'
@@ -377,6 +387,7 @@ def consultas_default():
        """
     padroes.append(consulta)
 
+    consulta={}
     consulta['nome_conx']= 'CGUDATA'
     consulta['nome'] = 'SOCIOS_PJ'
     consulta['descricao']='Obtém vínculos de sócios PJ no CNPJ da RF'
@@ -403,13 +414,15 @@ def consultas_default():
     for cons in padroes:
         nome_conx = cons['nome_conx']
 
-        sql = f"select * from {Conexao.__tablename__} where nome = '{nome_conx}'"
+        sql = f"""select * from {Conexao.__tablename__} where nome = '{nome_conx}' """
         uri = current_app.config['SQLALCHEMY_DATABASE_URI']
         df = pd.read_sql(sql=sql, con=uri)
         if len(df.head(1)) > 0:
             idconx = df.at[0, 'id']
 
-        #if conexao.id is None:
+        sql = f"""select * from {Consulta.__tablename__} where conx_id = {idconx} and nome = '{cons['nome']}' and tipo = '{cons["tipo"]}'"""
+        df = pd.read_sql(sql=sql, con=uri)
+        if len(df.head(1)) == 0:
             consulta = Consulta()
             db.session.add(consulta)
             consulta.conx_id = int(idconx)

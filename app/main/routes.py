@@ -121,7 +121,6 @@ def add_conexao():
 @login_required
 def def_conexao():
     conexoes_default()
-    consultas_default()
     return redirect(url_for('main.conexoes'))
 
 @bp.route('/editconexao/<id>', methods=['GET', 'POST'])
