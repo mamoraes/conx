@@ -169,17 +169,22 @@ class Conexao(db.Model):
 
     def __repr__(self):
         return '{}-{}:{}'.format(self.nome,self.string,self.habilitada)
+
 def conexoes_default():
     padroes=[]
-    padroes.append({'nome':'conx', 'string':'sqlite:///conxs.db'})
-    padroes.append({'nome':'cnpj_full', 'string': 'sqlite:///Cnpj_full.db'})
-    padroes.append({'nome':'cnpj', 'string':'sqlite:///cnpj.db'})
-    padroes.append({'nome':'CGUDATA', 'string':'mssql+pyodbc://sdh-die-bd/temp_NAE_PE?Trusted_Connection=yes&driver=SQL+Server'})
+    padroes.append({'nome': 'conx', 'string': 'sqlite:///conxs.db'})
+    padroes.append({'nome': 'cnpj_full', 'string': 'sqlite:///Cnpj_full.db'})
+    padroes.append({'nome': 'cnpj', 'string': 'sqlite:///cnpj.db'})
+    padroes.append({'nome': 'CGUDATA', 'string': 'mssql+pyodbc://sdh-die-bd/temp_NAE_PE?Trusted_Connection=yes&driver=SQL+Server'})
 
     for cnx in padroes:
-        nome =  cnx['nome']
-        conexao = Conexao.query.filter_by(nome=nome).first_or_404()
-        if conexao is None:
+        nome = cnx['nome']
+        conexao = Conexao()
+        #conexao = Conexao.query.filter_by(nome = 'conx').first_or_404()
+        sql = f"select * from {Conexao.__tablename__} where nome = '{nome}'"
+        df = pd.read_sql(sql=sql, con=current_app.config['SQLALCHEMY_DATABASE_URI'])
+        if len(df) == 0:
+        #if conexao.id is None:
             conexao = Conexao()
             db.session.add(conexao)
             conexao.nome = cnx['nome']
@@ -187,6 +192,233 @@ def conexoes_default():
             conexao.habilitada = 'S'
             db.session.commit()
 
+    consultas_default()
+
+def consultas_default():
+    padroes=[]
+    consulta={}
+
+    consulta['nome_conx']= 'cnpj'
+    consulta['nome'] = 'PJ_cnpj'
+    consulta['descricao']='Obtém dados de PJ publicados pela RF'
+    consulta['tipo']= 'E'
+    consulta['fonte']= 'empresas'
+    consulta['cmd_sql']= """
+       select TC.tipo as tipo
+       , e.cnpj as ident
+       , razao_social as nome, 
+       '"fantasia":"'||E.nome_fantasia|| '","inicio_atividade":"'||E.data_inicio_atividades || '","natureza_juridica":"'||Em.natureza_juridica ||'","email":"'||E.correio_eletronico|| '","fone1":"'||E.ddd1||' '||E.telefone1|| '","fone2":"'||E.ddd2||' '||E.telefone2||'"' as atributos 
+       from estabelecimentos E inner join empresas em on e.cnpj_basico = em.cnpj_basico inner join temp_entes TC on e.cnpj = TC.ident and TC.tipo = 'PJ' 
+       """
+    padroes.append(consulta)
+
+    consulta['nome_conx']= 'CGUDATA'
+    consulta['nome'] = 'PF_CPF'
+    consulta['descricao']='Obtém dados de PF no CPF da RF'
+    consulta['tipo']= 'E'
+    consulta['fonte']= 'db_cpf'
+    consulta['cmd_sql']= """
+       select TC.tipo as tipo
+       , TC.ident as ident, 
+       PF.nome as nome, 
+       concat('"data_nascimento":"',dataNascimento,'","nome_mae":"',coalesce(nomeMae,''),'","ano_obito":"',coalesce(anoObito,''), '","situacao_cadastral":"',coalesce(sitCadastral,''),'","sexo":"',coalesce(idsexo,''),'"') as atributos 
+       from db_cpf.dbo.cpf PF inner join temp_entes TC on PF.cpf = TC.ident and TC.tipo = 'PF' 
+       """
+    padroes.append(consulta)
+
+    consulta['nome_conx']= 'CGUDATA'
+    consulta['nome'] = 'PJ_CNPJ'
+    consulta['descricao']='Obtém dados de PJ no CNPJ da RF'
+    consulta['tipo']= 'E'
+    consulta['fonte']= 'db_cnpj'
+    consulta['cmd_sql']= """
+       select TC.tipo as tipo
+       , e.cnpj as ident
+       , razaosocial as nome
+       , concat('"fantasia":"',coalesce(E.nomefantasia,''), '","inicio_atividade":"'
+                ,coalesce(E.dataabertura,''),'","natureza_juridica":"'
+                ,coalesce(E.codnaturezajuridica,''),'"
+                ,coalesce("email":"'
+                ,coalesce(E.correioeletronico,''),'","fone1":"'
+                ,coalesce(E.telefone1,''),'","fone2":"'
+                ,coalesce(E.telefone2,''),'"') as atributos 
+       from db_cnpj.dbo.cnpj E inner join temp_entes TC on e.cnpj = TC.ident and TC.tipo = 'PJ'
+       """
+    padroes.append(consulta)
+
+    consulta['nome_conx']= 'cnpj'
+    consulta['nome'] = 'SOCIOS_PJ'
+    consulta['descricao']='Obtém dados de sócios PJ no CNPJ da RF'
+    consulta['tipo']= 'V'
+    consulta['fonte']= 'empresas'
+    consulta['cmd_sql']= """
+       select 'PJ' as tipo_destino
+       , '' as subtipo_destino
+       , S.cnpj as ident_destino
+       , '' as nome_destino
+       , cnpj_cpf_socio as ident_origem
+       , nome_socio as nome_origem
+       , TC.tipo as tipo_origem
+       , 'sócio' as descricao
+       ,  '"cod_qualificacao":"' ||qualificacao_socio ||'-' || qs.descricao  ||'"' as atributos 
+       from socios S 
+            inner join qualificacao_socio qs on qs.codigo  = S.qualificacao_socio 
+            inner join temp_entes TC on cnpj_cpf_socio = TC.ident and TC.tipo = 'PJ'        
+       """
+    padroes.append(consulta)
+
+    consulta['nome_conx']= 'cnpj'
+    consulta['nome'] = 'SOCIOS_PF'
+    consulta['descricao']='Obtém vínculos de sócios PF no CNPJ da RF'
+    consulta['tipo']= 'V'
+    consulta['fonte']= 'empresas'
+    consulta['cmd_sql']= """
+       select 'PJ' as tipo_destino
+       , '' as subtipo_destino
+       , S.cnpj as ident_destino
+       , '' as nome_destino
+       , cnpj_cpf_socio as ident_origem
+       , nome_socio as nome_origem
+       , TC.tipo as tipo_origem
+       , 'sócio' as descricao
+       ,  '"cod_qualificacao":"' ||qualificacao_socio ||'-' || qs.descricao  ||'"' as atributos 
+       from socios S 
+            inner join qualificacao_socio qs on qs.codigo  = S.qualificacao_socio 
+            inner join temp_entes TC on cnpj_cpf_socio = TC.ident and TC.tipo = 'PF' and nome_socio = TC.nome"""
+    padroes.append(consulta)
+
+    consulta['nome_conx']= 'cnpj'
+    consulta['nome'] = 'SOCIOS_PJ'
+    consulta['descricao']='Obtém vínculos de sócios PJ no CNPJ da RF'
+    consulta['tipo']= 'V'
+    consulta['fonte']= 'socios'
+    consulta['cmd_sql']= """
+       select case when substr(cnpj_cpf_socio,1,3) = '***' then 'PF' else 'PJ' end as tipo_destino, 
+       case when substr(cnpj_cpf_socio,1,3) = '***' then '***' else '' end as subtipo_destino
+       , cnpj_cpf_socio as ident_destino
+       , nome_socio as nome_destino
+       , S.cnpj as ident_origem
+       , Em.razao_social as nome_origem
+       , TC.tipo as tipo_origem
+       , 'sócio' as descricao
+       , '"cod_qualificacao":"' ||qualificacao_socio ||'-' || qs.descricao  ||'"' as atributos 
+       from socios S 
+            inner join qualificacao_socio qs on qs.codigo  = S.qualificacao_socio 
+            inner join temp_entes TC on S.cnpj = TC.ident and TC.tipo = 'PJ' 
+            left join estabelecimentos E on E.cnpj = S.cnpj 
+            inner join empresas em on em.cnpj_basico = E.cnpj_basico
+       """
+    padroes.append(consulta)
+
+    consulta['nome_conx']= 'cnpj'
+    consulta['nome'] = 'SOCIOS_PF'
+    consulta['descricao']='Obtém vínculos de sócios PF no CNPJ da RF'
+    consulta['tipo']= 'V'
+    consulta['fonte']= 'socios'
+    consulta['cmd_sql']= """
+       select 'PF' as tipo_destino
+       , case when substr(representante_legal ,1,3) = '***' then '***' else '' end as subtipo_destino
+       , representante_legal as ident_destino
+       , nome_socio as nome_destino
+       , cnpj as ident_origem
+       , tc.tipo as tipo_origem
+       , 'representante sócio' as descricao
+       , '' as atributos 
+       from socios 
+            inner join temp_entes TC on cnpj = TC.ident and TC.tipo = 'PJ' 
+       where representante_legal is not null 
+         and representante_legal  <> '' 
+         and representante_legal <> '***000000**' 
+         and representante_legal <> '***999999**'
+       """
+    padroes.append(consulta)
+
+    consulta['nome_conx']= 'CGUDATA'
+    consulta['nome'] = 'SOCIOS_PF'
+    consulta['descricao']='Obtém vínculos de sócios PF no CNPJ da RF'
+    consulta['tipo']= 'V'
+    consulta['fonte']= 'db_cnpj'
+    consulta['cmd_sql']= """
+       select 'PJ' as tipo_destino
+       , '' as subtipo_destino
+       , S.cnpj as ident_destino
+       , '' as nome_destino
+       , s.cpfcnpjsocio as ident_origem
+       , S.nomesocio as nome_origem
+       , TC.tipo as tipo_origem
+       , 'sócio' as descricao
+       , concat('"qualificacao_socio":"',S.DescQualificacaoSocio,'", "data_entrada":"'
+               ,coalesce(S.DataEntradaSociedade,''),'", "data_saida":"'
+               ,coalesce(S.DataExclusaoSociedade,''),'"') as atributos 
+       from db_CNPJ.dbo.socios S 
+       inner join temp_NAE_PE.dbo.temp_entes TC on S.cpfcnpjsocio = TC.ident and TC.tipo = 'PF'
+       """
+    padroes.append(consulta)
+
+    consulta['nome_conx']= 'CGUDATA'
+    consulta['nome'] = 'SOCIOS_PJ'
+    consulta['descricao']='Obtém dados de sócios PJ no CNPJ da RF'
+    consulta['tipo']= 'V'
+    consulta['fonte']= 'db_cnpj'
+    consulta['cmd_sql']= """
+       select 'PJ' as tipo_destino
+       , '' as subtipo_destino
+       , S.cnpj as ident_destino
+       , '' as nome_destino
+       , s.cpfcnpjsocio as ident_origem
+       , S.nomesocio as nome_origem
+       , TC.tipo as tipo_origem
+       , 'sócio' as descricao
+       , concat('"qualificacao_socio":"',S.DescQualificacaoSocio,'", "data_entrada":"'
+                ,coalesce(S.DataEntradaSociedade,''),'", "data_saida":"'
+                ,coalesce(S.DataExclusaoSociedade,''),'"') as atributos 
+       from db_CNPJ.dbo.socios S 
+            inner join temp_NAE_PE.dbo.temp_entes TC on S.cpfcnpjsocio = TC.ident and TC.tipo = 'PJ'
+       """
+    padroes.append(consulta)
+
+    consulta['nome_conx']= 'CGUDATA'
+    consulta['nome'] = 'SOCIOS_PJ'
+    consulta['descricao']='Obtém vínculos de sócios PJ no CNPJ da RF'
+    consulta['tipo']= 'V'
+    consulta['fonte']= 'db_cnpj'
+    consulta['cmd_sql']= """
+       select S.IndSocio as tipo_destino
+       , '' as subtipo_destino
+       , S.CpfCnpjSocio as ident_destino
+       , s.NomeSocio as nome_destino
+       , s.Cnpj as ident_origem
+       , '' as nome_origem
+       , TC.tipo as tipo_origem
+       , 'sócio' as descricao
+       , concat('"qualificacao_socio":"',S.DescQualificacaoSocio,'", "data_entrada":"'
+               ,coalesce(S.DataEntradaSociedade,''),'", "data_saida":"'
+               ,coalesce(S.DataExclusaoSociedade,''),'"') as atributos 
+       from db_CNPJ.dbo.socios S 
+            inner join temp_NAE_PE.dbo.temp_entes TC on S.cnpj = TC.ident and TC.tipo = 'PJ'
+       """
+    padroes.append(consulta)
+
+
+    for cons in padroes:
+        nome_conx = cons['nome_conx']
+
+        sql = f"select * from {Conexao.__tablename__} where nome = '{nome_conx}'"
+        df = pd.read_sql(sql=sql, con=current_app.config['SQLALCHEMY_DATABASE_URI'])
+        if len(df.head(1)) > 0:
+            idconx = df.at[0, 'id']
+
+        #if conexao.id is None:
+            consulta = Consulta()
+            db.session.add(consulta)
+            consulta.conx_id = int(idconx)
+            consulta.tipo = cons['tipo']
+            consulta.cmd_sql = cons['cmd_sql']
+            consulta.fonte = cons['fonte']
+            consulta.habilitada = 'S'
+            consulta.nome = cons['nome']
+            consulta.descricao = cons['descricao']
+            db.session.commit()
 
 class Consulta(db.Model):
     __tablename__ = 'consulta'
