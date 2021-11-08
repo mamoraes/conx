@@ -6,11 +6,10 @@ from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 import jwt
 from app import db, login
+import sqlalchemy
+from sqlalchemy import BigInteger, Column, Integer, String, text, Date
+from sqlalchemy.ext.hybrid import hybrid_property, hybrid_method
 
-#import SQLAlchemy
-from SQLAlchemy.ext.hybrid import hybrid_property, hybrid_method
-
-from SQLAlchemy.ext import BigInteger, Column, Integer, String, text, Date
 import pandas as pd
 from pandas.core.base import DataError
 
