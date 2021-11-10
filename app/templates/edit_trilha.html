@@ -4,17 +4,13 @@
 
 {% block app_content %}
     <h1>{{ title }}</h1>
-<table>
-    <tr>
-	<td>
-    <div class="row">
-        <div class="col-md-4" id="obj_div" style="width: 250px; heigth: 350px;">
+        <div class="col-md-4" id="obj_div" >
             {{ wtf.quick_form(form) }}
 
          </div>
         {% if id %}
 
-        <div class="col-md-4" id="consultas_ente_div" style="width: 450px; heigth: 350px; ">
+        <div class="col-md-4" id="consultas_ente_div" >
             <p style="background-color:LightGreen; Transparency:0.1">CONSULTAS DE ENTES</p>
             <table>
             {% for consulta in trilha.selecao %}
@@ -69,9 +65,4 @@
                 </table>
         </div>
         {% endif %}
-    </div>
-	</td>
-
-    </tr>
-</table>
 {% endblock %}

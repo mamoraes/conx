@@ -33,7 +33,7 @@
         <p>{{ form.submit() }}</p>
 </div>
 {% if consulta %}
-<div id="amostra_tabela" style="font-size:12px" >
+<div id="amostra_tabela" style="font-size:12px;  " >
 
     {{ consulta.verificacoes[0]  }}
 <p>Campos obrigatórios</p>
@@ -57,10 +57,25 @@
         <p>{{ verificacao[0]}} {{ verificacao[1]}}</p>
     {% endfor %}
 
-    {% for table in [consulta.verificacoes[3].head(5).to_html()] %}
+    <div class="p-Widget jp-RenderedHTMLCommon jp-RenderedHTML jp-mod-trusted jp-OutputArea-output" data-mime-type="text/html">
+        <style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
 
-            {{ table|safe }}
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+    {% for table in [consulta.verificacoes[3]] %}
+
+            {{ table.head(5).to_html(classes='table table-striped')|safe }}
 {% endfor %}
+    </div>
 </div>
         {% endif%}
 

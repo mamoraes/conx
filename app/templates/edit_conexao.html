@@ -4,11 +4,7 @@
 
 {% block app_content %}
     <h1>{{ title }}</h1>
-<table>
-    <tr>
-	<td>
-    <div class="row">
-        <div class="col-md-4" id="obj_div" style="width: 250px; heigth: 350px;">
+        <div class="col-md-4" id="obj_div" >
             {{ wtf.quick_form(form) }}
 
             {% if conexao and conexao.ativa %}
@@ -19,7 +15,7 @@
         </div>
         {% if id %}
 
-        <div class="col-md-4" id="consultas_ente_div" style="width: 450px; heigth: 350px; ">
+        <div class="col-md-4" id="consultas_ente_div" >
             <p>CONSULTAS DE ENTES <a class="ferramentaslinhabtn_azul" href="{{ url_for('main.add_consulta', id=id, tipo='E') }}" title="Adicionar consultas de Entes" >{%if emojis%}&#x{{emojis['incluir']}}{%else%}&#x2795;{%endif%}</a></p>
             <table>
             {% for consulta in conexao.consultas %}
@@ -34,7 +30,7 @@
                    <td width="240px">
                        <a href="{{ url_for('main.edit_consulta', id=consulta.id) }}" title="Alterar consulta"> {{ consulta.nome }}</a>
                    </td>
-                   <td width="500px">
+                   <td width="600px">
                    <a href="{{ url_for('main.edit_consulta', id=consulta.id) }}" title="Alterar consulta"> {{ consulta.descricao }} </a>
                    </td>
                    <td width="240px">
@@ -61,7 +57,7 @@
                    <td width="240px">
                        <a href="{{ url_for('main.edit_consulta', id=consulta.id) }}" title="Alterar consulta"> {{ consulta.nome }}</a>
                    </td>
-                   <td width="500px">
+                   <td width="600px">
                    <a href="{{ url_for('main.edit_consulta', id=consulta.id) }}" title="Alterar consulta"> {{ consulta.descricao }} </a>
                    </td>
                    <td width="240px">
@@ -76,9 +72,5 @@
                 </table>
         </div>
         {% endif %}
-    </div>
-	</td>
 
-    </tr>
-</table>
 {% endblock %}
