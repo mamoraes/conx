@@ -5,6 +5,8 @@ from flask import current_app
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 import jwt
+
+import config
 from app import db, login
 import sqlalchemy
 from sqlalchemy.exc import SQLAlchemyError
@@ -67,17 +69,25 @@ def load_user(id):
 def testartemp(conexao):
     ok = True
     try:
-        df = pd.read_sql(sql=f'select * from {temp_entes.__tablename__}', con=config.SQLALCHEMY_DATABASE_URI)
+        sql = f'select * from {temp_entes.__tablename__}'
+        con = config.Config.SQLALCHEMY_DATABASE_URI
+        df = pd.read_sql(sql=sql, con=con)
+        if len(df) == 0:
+            te = temp_entes()
+            te.entes_default()
+            df = pd.read_sql(sql=sql, con=con)
     except:
         ok = False
-        return(_(f'Não encontrou modelo de tabela temporária {temp_entes.__tablename__} em {conexao.string}.'))
+        print(f'Não encontrou modelo de tabela temporária {temp_entes.__tablename__} em {conexao.string}.')
+        return ok
     if not ok:
         return ok
     try:
         df.to_sql(temp_entes.__tablename__, con=conexao.string, if_exists='replace', index=False, index_label='ident')
     except:
         ok = False
-        return(_(f'Não gravou modelo de tabela temporária no bd {conexao.string}'))
+        print(f'Não gravou modelo de tabela temporária no bd {conexao.string}')
+        return ok
 
 
 
@@ -534,5 +544,33 @@ class temp_entes(db.Model):
     data_fim = db.Column(db.String(8))  #sqlalchemy.types.NVARCHAR(length=8)
     em_atividade = db.Column(db.String(1))  #sqlalchemy.types.NVARCHAR(length=1)
     atributos = db.Column(db.String(5000))  # sqlalchemy.types.TEXT()"""
+
+    def entes_default(self):
+        padroes=[]
+        padroes.append({'tipo': 'PJ', 'ident': '33541368000116', 'subtipo':'EMP'})
+        padroes.append({'tipo': 'PJ', 'ident': '00399857000126', 'subtipo':'EMP'})
+        padroes.append({'tipo': 'PJ', 'ident': '42357483000126', 'subtipo':'EMP'})
+        padroes.append({'tipo': 'PF', 'ident': '65147235434 ', 'subtipo':'CPF'})
+        padroes.append({'tipo': 'PF', 'ident': '04688678487 ', 'subtipo':'CPF'})
+
+
+        for ente in padroes:
+            tipo = ente['tipo']
+            ident = ente['ident']
+            subtipo = ente['subtipo']
+            sql = f"select * from {self.__tablename__} where ident = '{ident}' and tipo = '{tipo}' and subtipo = '{subtipo}' "
+            con = current_app.config['SQLALCHEMY_DATABASE_URI']
+            df_ente = pd.read_sql(sql=sql, con=con)
+            if len(df_ente) == 0:
+            #if conexao.id is None:
+                temp_entes = temp_entes()
+                db.session.add(temp_entes)
+                temp_entes.tipo = tipo
+                temp_entes.subtipo = subtipo
+                temp_entes.ident = ident
+                db.session.commit()
+
+
+
 
 
