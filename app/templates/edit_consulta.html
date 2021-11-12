@@ -57,23 +57,25 @@
         <p>{{ verificacao[0]}} {{ verificacao[1]}}</p>
     {% endfor %}
 
-    <div class="p-Widget jp-RenderedHTMLCommon jp-RenderedHTML jp-mod-trusted jp-OutputArea-output" data-mime-type="text/html">
+    <div class="p-Widget jp-RenderedHTMLCommon jp-RenderedHTML jp-mod-trusted jp-OutputArea-output table-responsive " data-mime-type="text/html">
         <style scoped="">
     .dataframe tbody tr th:only-of-type {
         vertical-align: middle;
     }
 
     .dataframe tbody tr th {
-        vertical-align: top;
+        vertical-align: middle;
     }
 
     .dataframe thead th {
-        text-align: right;
+        text-align: middle;
     }
 </style>
     {% for table in [consulta.verificacoes[3]] %}
-
-            {{ table.head(5).to_html(classes='table table-striped')|safe }}
+            {{ table.to_html(decimal=',',max_rows=5,classes='table table-sm table-responsive table-striped table-hover', header = "true", justify = "center").replace("<thead>", "<thead class='thead-light'>")|safe }}
+{% endfor %}
+    {% for table in [consulta.verificacoes[4]] %}
+            {{ table.style.render()|safe }}
 {% endfor %}
     </div>
 </div>

@@ -140,6 +140,29 @@ def verificar_consulta(consulta):
     try:
         df=pd.read_sql(sql=consulta.cmd_sql, con=consulta.conexao.string)
         mensagem = 'Consulta retornou ' + str(len(df)) + ' registro'+('' if len(df) == 1 else 's')+'!'
+
+        # formatacao dataframe
+        s=df.style
+        cell_hover = {  # for row hover use <tr> instead of <td>
+            'selector': 'td:hover',
+            'props': [('background-color', '#ffffb3')]
+        }
+        index_names = {
+            'selector': '.index_name',
+            'props': 'font-style: italic; color: darkgrey; font-weight:normal;'
+        }
+        headers = {
+            'selector': 'th:not(.index_name)',
+            'props': 'background-color: #000066; color: white;'
+        }
+        s.set_table_styles([cell_hover, index_names, headers])
+        s.set_table_styles([
+            {'selector': 'th.col_heading', 'props': 'text-align: center;'},
+            {'selector': 'th.col_heading.level0', 'props': 'font-size: 1.5em;'},
+            {'selector': 'td', 'props': 'text-align: center; font-weight: bold;'},
+        ])
+
+
         if consulta.tipo == 'E':
             campos_obrigatorios, verificacoes = verificar_consulta_ente(df)
         else:
@@ -151,7 +174,7 @@ def verificar_consulta(consulta):
         mensagem = error
         df=pd.DataFrame({'Coluna':['ERRO']})
 
-    return mensagem, campos_obrigatorios, verificacoes, df
+    return mensagem, campos_obrigatorios, verificacoes, df, s
 
 
 
