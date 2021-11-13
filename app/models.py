@@ -174,7 +174,7 @@ def verificar_consulta(consulta):
         mensagem = error
         df=pd.DataFrame({'Coluna':['ERRO']})
 
-    return mensagem, campos_obrigatorios, verificacoes, df, s
+    return mensagem, campos_obrigatorios, verificacoes, df
 
 
 

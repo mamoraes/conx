@@ -5,7 +5,7 @@ from app.email import send_email
 
 def send_password_reset_email(user):
     token = user.get_reset_password_token()
-    send_email(_('Conx/IPÊ Redefinir Senha'),
+    send_email(_('Conx/QRU Redefinir Senha'),
                sender=current_app.config['ADMINS'][0],
                recipients=[user.email],
                text_body=render_template('email/reset_password.txt',
