@@ -58,7 +58,7 @@ class Config(object):
     EXTENSOES_PERMITIDAS = ['csv','doc','docx','eml','epub','gif','jpg','jpeg','json','htm','html','mp3','msg',
                             'odt','ogg','pdf','png','pptx','ps','rtf','tiff','tif','txt','wav','xls','xlsx']
     #  https://www.w3schools.com/charsets/ref_emoji.asp
-    EMOJIS = {'conexoes': '1F4BB;', 'trilhas':'1F4DD;', 'incluir':'2795;', 'excluir':'1F5D1;','alterar':'1F58D;', 'checkedin':'2611;','checkedout':'2610;','default':'26A1;'}
+    EMOJIS = {'conexoes': '1F4BB;', 'trilhas':'1F4DD;', 'pesquisas':'1F50D', 'rede':'1F578','incluir':'2795;', 'excluir':'1F5D1;','alterar':'1F58D;', 'checkedin':'2611;','checkedout':'2610;','default':'26A1;'}
 #'1f4a2'
 
 

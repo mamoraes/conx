@@ -21,8 +21,10 @@
             </div>
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav">
-                    <li><a href="{{ url_for('main.conexoes') }}">&#x1F4BB;{{ _('Conexões BD') }}</a></li>
+                    <li><a href="{{ url_for('main.conexoes') }}">{% if emojis %}&#x{{emojis['conexoes']}}{%endif%}{{ _('Conexões BD') }}</a></li>
                     <li><a href="{{ url_for('main.trilhas') }}">{% if emojis %}&#x{{emojis['trilhas']}}{%endif%}{{ _('Trilhas') }}</a></li>
+                    <li><a href="{{ url_for('main.pesquisas') }}">{% if emojis %}&#x{{emojis['pesquisas']}}{%endif%}{{ _('pesquisas') }}</a></li>
+                    <li><a href="{{ url_for('main.exibir_rede') }}">{% if emojis %}&#x{{emojis['rede']}}{%endif%}{{ _('Rede') }}</a></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
                     {% if current_user.is_anonymous %}

@@ -515,6 +515,32 @@ def selecao_consultas(trilha):
     return df.itertuples()
 
 
+def selecao_trilhas(pesquisa):
+    ok = True
+    trilha=Trilha()
+    pesquisatrilha= PesquisaTrilha()
+
+    sql = f"""select tr.*, 
+              case when (select tc.pesquisa_id from {pesquisatrilha.__tablename__} tc 
+                         where tc.trilha_id = tr.id and tc.pesquisa_id = {pesquisa.id}) isnull 
+                    then 'N' 
+                    else 'S' end as tr_id 
+              from {trilha.__tablename__} tr"""
+    try:
+       # df = pd.read_sql(sql=sql, con=config.SQLALCHEMY_DATABASE_URI)
+       df = pd.read_sql(sql=sql, con=current_app.config['SQLALCHEMY_DATABASE_URI'])
+    except :
+        ok = False
+        print(DataError)
+        #flash(_(f'Erro em consulta'))
+    lista=[]
+    for linha in df.itertuples():
+        #lin={}
+        #lin['tipo'] = linha['tipo']
+        lista.append(linha)
+
+    return df.itertuples()
+
 
 
 
@@ -525,6 +551,7 @@ class Trilha(db.Model):
     nome = db.Column(db.String(50), nullable=False, doc='Nome da consulta')
     descricao = db.Column(db.String(500), nullable=False, doc='Descriçao da finalidade da consulta')
     consultas = db.relationship("TrilhaConsulta", back_populates="trilha")
+    pesquisas = db.relationship("PesquisaTrilha", back_populates="trilhas")
 
     @hybrid_property
     def selecao(self):
@@ -544,6 +571,33 @@ class TrilhaConsulta(db.Model):
 
     def __repr__(self):
         return '{}-{}:{}'.format(self.id,self.trilha_id,self.consulta_id)
+
+
+class Pesquisa(db.Model):
+    __tablename__ = 'pesquisa'
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement='auto')
+    nome = db.Column(db.String(50), nullable=False, doc='Nome da pesquisa')
+    descricao = db.Column(db.String(500), nullable=False, doc='Descriçao da pesquisa')
+    itens_lista = db.Column(db.String(50000), default='', doc='Entes da lista')
+    trilhas = db.relationship("PesquisaTrilha", back_populates="pesquisas")
+    @hybrid_property
+    def selecao(self):
+        return selecao_trilhas(self)
+    def __repr__(self):
+        return '{}-{}:{}'.format(self.id,self.nome,self.descricao)
+
+class PesquisaTrilha(db.Model):
+    __tablename__ = 'pesquisa_trilha'
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement='auto')
+    pesquisa_id = db.Column(db.BigInteger, db.ForeignKey('pesquisa.id'), index=True, nullable=False)
+    trilha_id = db.Column(db.BigInteger, db.ForeignKey('trilha.id'), index=True, nullable=False)
+    trilhas = db.relationship("Trilha", back_populates="pesquisas")
+    pesquisas = db.relationship("Pesquisa", back_populates="trilhas")
+
+    def __repr__(self):
+        return '{}-{}:{}'.format(self.id, self.pesquisa_id, self.trilha_id,)
 
 
 class temp_entes(db.Model):

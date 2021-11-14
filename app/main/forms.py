@@ -61,3 +61,13 @@ class EditTrilhaForm(FlaskForm):
     def __init__(self, id: int, *args, **kwargs):
         super(EditTrilhaForm, self).__init__(*args, **kwargs)
         self.id = id
+
+class EditPesquisaForm(FlaskForm):
+    nome = StringField('Nome', validators=[DataRequired()])
+    descricao = StringField('Descrição',validators=[DataRequired()], description='Descrição da pesquisa' )
+    itens_lista = TextAreaField('PFs e PJs a serem pesquisados', validators=[DataRequired()])
+    submit = SubmitField(_l('OK'))
+
+    def __init__(self, id: int, *args, **kwargs):
+        super(EditPesquisaForm, self).__init__(*args, **kwargs)
+        self.id = id

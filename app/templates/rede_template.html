@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <!-- 
 projeto disponível em https://github.com/rictom/rede-cnpj
 
@@ -22,6 +23,10 @@ https://www.freepik.com/
 <link  rel="stylesheet" href="/static/alertify/css/alertify.css" /><link  rel="stylesheet" href="/static/alertify/css/themes/default.css" />
 <link rel="stylesheet" href="/static/menu/font-awesome_5.14.0_css_all.min.css">
 <link rel="stylesheet" href="/static/menu/menu.css">
+
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 
 <script type="text/javascript">
 
@@ -4019,29 +4024,60 @@ function main() {
 }
 
 </style>
+	    <nav class="navbar navbar-default" style="width: 1570px;">
+        <div class="container"  >
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="{{ url_for('main.index') }}"></a>
+                <img src="../static/images/faviconQ.ico" alt="QRU" width="40" height="40">
+                <link rel="icon" type="image/x-icon" href="../static/images/faviconQ.ico">
+            </div>
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    <li><a href="{{ url_for('main.conexoes') }}">{% if emojis %}&#x{{emojis['conexoes']}}{%endif%}{{ _('Conexões BD') }}</a></li>
+                    <li><a href="{{ url_for('main.trilhas') }}">{% if emojis %}&#x{{emojis['trilhas']}}{%endif%}{{ _('Trilhas') }}</a></li>
+                    <li><a href="{{ url_for('main.exibir_rede') }}">{% if emojis %}&#x{{emojis['rede']}}{%endif%}{{ _('Rede') }}</a></li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    {% if current_user.is_anonymous %}
+                    <li><a href="{{ url_for('auth.login') }}">{{ _('Login') }}</a></li>
+                    {% else %}
+                    <li><a href="{{ url_for('main.user', username=current_user.username) }}">{{ _('Perfil') }}</a></li>
+                    <li><a href="{{ url_for('auth.logout') }}">{{ _('Sair') }}</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
 </head>
-<body id='corpo' onload='main()' style='overflow:hidden;'>
+<body id='corpo' onload='main()' style='overflow:hidden;' >
 <!-- overflow:hidden para não aparecer barra de rolagem -->
-<div id="block_container">
-	<div id='div_botoes'>
-		<button class='botaosuperior' type="button" onclick="javascript:menu_botao(event);" title='Abre opções'>Menu</button>&nbsp;&nbsp;
-		<button class='botaosuperior' type="button" onclick="javascript:menu_inserir(null, event.shiftKey, event.ctrlKey);" title='Inserir{% if parametros.bBaseReceita %} CNPJ ou CPF do Banco de Dados {% endif %}(Tecla I)'><i class="fa fa-user-plus"></i></button>&nbsp;
-		<button class='botaosuperior' type="button" onclick="javascript:menu_incluirCamada('', 1);" title='Expande Vínculos Societários em Camada 1 (Tecla 1)'><i class="fa fa-layer-group"></i></button>&nbsp;
-		<button class='botaosuperior' type="button" onclick="javascript:menu_dados(false)" title='Exibir Dados do Item (D)'><i class="fa fa-newspaper"></i></button>&nbsp;
-		<button class='botaosuperior' type="button" onclick="javascript:menu_rendererAtivarParar(true, true);" title='Ativar Leiaute (Barra de Espaço)'><i class="fa fa-play"></i></button>&nbsp;
-		<button class='botaosuperior' type="button" onclick="javascript:menu_rendererAtivarParar(false, true);" title='Parar Leiaute (Barra de Espaço)'><i class="fa fa-stop"></i></button>&nbsp;
-		<button class='botaosuperior' type="button" onclick="gparam.renderer.reset();" title='Reinicia escala de visualização'><i class="fa fa-compress"></i> </button>&nbsp;
-		<button class='botaosuperior' type="button" onclick="javascript:menu_zoomin(event.shiftKey, event.ctrlKey);" title='Aumenta visualização. A roda do mouse também faz isso. Pressionando SHIFT+click aumenta apenas o tamanho das ligações.'>&nbsp;+&nbsp;</button>&nbsp;
-		<button class='botaosuperior' type="button" onclick="javascript:menu_zoomout(event.shiftKey, event.ctrlKey);" title='Diminui visualização.  A roda do mouse também faz isso. Pressionando SHIFT+click diminui apenas o tamanho das ligações.'>&nbsp;-&nbsp;</button>
+<div id="block_container" style="background-color:grey; width:70px; height:100%">
+	<div id='div_botoes' class="btn-group-vertical">
+		<button class='btn btn-primary' type="button" onclick="javascript:menu_botao(event);" title='Abre opções'>Menu</button>&nbsp;&nbsp;
+		<button class='btn btn-primary' type="button" onclick="javascript:menu_inserir(null, event.shiftKey, event.ctrlKey);" title='Inserir{% if parametros.bBaseReceita %} CNPJ ou CPF do Banco de Dados {% endif %}(Tecla I)'><i class="fa fa-user-plus"></i></button>&nbsp;
+		<button class='btn btn-primary' type="button" onclick="javascript:menu_incluirCamada('', 1);" title='Expande Vínculos Societários em Camada 1 (Tecla 1)'><i class="fa fa-layer-group"></i></button>&nbsp;
+		<button class='btn btn-primary' type="button" onclick="javascript:menu_dados(false)" title='Exibir Dados do Item (D)'><i class="fa fa-newspaper"></i></button>&nbsp;
+		<button class='btn btn-primary' type="button" onclick="javascript:menu_rendererAtivarParar(true, true);" title='Ativar Leiaute (Barra de Espaço)'><i class="fa fa-play"></i></button>&nbsp;
+		<button class='btn btn-primary' type="button" onclick="javascript:menu_rendererAtivarParar(false, true);" title='Parar Leiaute (Barra de Espaço)'><i class="fa fa-stop"></i></button>&nbsp;
+		<button class='btn btn-primary' type="button" onclick="gparam.renderer.reset();" title='Reinicia escala de visualização'><i class="fa fa-compress"></i> </button>&nbsp;
+		<button class='btn btn-primary' type="button" onclick="javascript:menu_zoomin(event.shiftKey, event.ctrlKey);" title='Aumenta visualização. A roda do mouse também faz isso. Pressionando SHIFT+click aumenta apenas o tamanho das ligações.'>&nbsp;+&nbsp;</button>&nbsp;
+		<button class='btn btn-primary' type="button" onclick="javascript:menu_zoomout(event.shiftKey, event.ctrlKey);" title='Diminui visualização.  A roda do mouse também faz isso. Pressionando SHIFT+click diminui apenas o tamanho das ligações.'>&nbsp;-&nbsp;</button>
 		{% if parametros.bBaseReceita %}
-		<button class='botaosuperior' id='btn_github' type="button" onclick="window.open('https://github.com/rictom/rede-cnpj/')"  title='Clique para abrir este projeto no Github. '>Rede</button>&nbsp;&nbsp;
-		<button class='botaosuperior' id='btn_srf' type="button" onclick="window.open('https://www.gov.br/receitafederal/pt-br/assuntos/orientacao-tributaria/cadastros/consultas/dados-publicos-cnpj')" title='Página de dados públicos da SRF'>Dados</button>&nbsp;&nbsp;
+		<button class='btn btn-primary' id='btn_github' type="button" onclick="window.open('https://github.com/rictom/rede-cnpj/')"  title='Clique para abrir este projeto no Github. '>Rede</button>&nbsp;&nbsp;
+		<button class='btn btn-primary' id='btn_srf' type="button" onclick="window.open('https://www.gov.br/receitafederal/pt-br/assuntos/orientacao-tributaria/cadastros/consultas/dados-publicos-cnpj')" title='Página de dados públicos da SRF'>Dados</button>&nbsp;&nbsp;
 		{% endif %}
-	</div>
 	<div id='div_referencia' title="{{ parametros.referenciaBD }}">&nbsp;{{ parametros.referenciaBDCurto }}&nbsp;</div>
 	<div id="drop_area"  ondrop="drop_handler(event);" ondragover="dragover_handler(event);"  title="Arraste uma coluna de CNPJs ou um arquivo .json para esta área. Ver documentação para mais opções.">
-		<i class="fa fa-hand-holding-water"></i>&nbsp;DROP (json ou lista de identificadores)
+		<i class="fa fa-hand-holding-water"></i>&nbsp;DROP (json ou lista de PF/PJ)
 	</div>
+	</div>
+
 </div>
  <!-- 
 <div id="principal" style="width: 100%; height: 100%; position: absolute;  left: 0; top: 30;" charset="utf-8">

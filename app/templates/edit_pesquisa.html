@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block app_content %}
+    <h1>{{ title }}</h1>
+        <div class="col-md-4" id="obj_div" >
+            {{ wtf.quick_form(form) }}
+
+         </div>
+        {% if id %}
+
+        <div class="col-md-4" id="consultas_ente_div" >
+            <p class="bg-primary text-white" >Trilhas</p>
+            <table>
+            {% for trilha in pesquisa.selecao %}
+            <tr>
+                <td width="17px">
+                    {% if trilha.tr_id == 'N'%}
+                    <a href="{{ url_for('main.add_pesquisa_trilha', id_pesquisa=pesquisa.id, id_trilha=trilha.id) }}" title="Incluir trilha na pesquisa">{%if emojis%}&#x{{emojis['checkedout']}}{%else%}&#x2610;{%endif%} </a>
+                    {% else %}
+                    <a href="{{ url_for('main.del_pesquisa_trilha', id_pesquisa=pesquisa.id, id_trilha=trilha.id) }}" title="Excluir trilhs da pesquisa">{%if emojis%}&#x{{emojis['checkedin']}}{%else%}&#x2611;{%endif%} </a>
+                    {% endif %}
+                </td>
+                   <td width="240px" title="Nome">
+                       {{ trilha.nome }}
+                   </td>
+                   <td width="500px" title=Descrição>
+                   {{ trilha.descricao }}
+                   </td>
+
+            </tr>
+
+            {% endfor %}
+                </table>
+        </div>
+        {% endif %}
+{% endblock %}

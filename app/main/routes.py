@@ -217,6 +217,20 @@ def trilhas():
                            trilhas=trilhas.items, next_url=next_url,
                            prev_url=prev_url)
 
+@bp.route('/pesquisas')
+@login_required
+def pesquisas():
+    page = request.args.get('page', 1, type=int)
+    pesquisas = Pesquisa.query.order_by(Pesquisa.nome.asc()).paginate(
+        page, current_app.config['POSTS_PER_PAGE'], False)
+    next_url = url_for('main.pesquisas', page=pesquisas.next_num) \
+        if pesquisas.has_next else None
+    prev_url = url_for('main.pesquisas', page=pesquisas.prev_num) \
+        if pesquisas.has_prev else None
+    return render_template('pesquisas.html', title=_('Pesquisas'), emojis=current_app.config['EMOJIS'],
+                           pesquisas=pesquisas.items, next_url=next_url,
+                           prev_url=prev_url)
+
 @bp.route('/addtrilha', methods=['GET', 'POST'])
 @login_required
 def add_trilha():
@@ -292,6 +306,85 @@ def del_consulta_trilha(id_consulta, id_trilha):
 from sqlalchemy.orm.exc import NoResultFound
 # ...
 
+@bp.route('/addpesquisa', methods=['GET', 'POST'])
+@login_required
+def add_pesquisa():
+    pesquisa=Pesquisa()
+    form = EditPesquisaForm(obj=pesquisa, id=pesquisa.id)
+    if form.validate_on_submit():
+        form.populate_obj(pesquisa)
+        db.session.add(pesquisa)
+        db.session.commit()
+        flash(_('As alterações foram registradas.'))
+        return redirect(url_for('main.pesquisas'))
+    return render_template('edit_pesquisa.html', title=_('Nova Pesquisa'), id=pesquisa.id,
+                           emojis=current_app.config['EMOJIS'], form=form)
+
+
+@bp.route('/editpesquisa/<id>', methods=['GET', 'POST'])
+@login_required
+def edit_pesquisa(id):
+    pesquisa = Pesquisa.query.filter_by(id=id).first_or_404()
+    if pesquisa is None:
+        flash(_('Pesquisa %(id) não encontrada.', id=id))
+        return redirect(url_for('main.pesquisas'))
+
+    form = EditPesquisaForm(obj=pesquisa, id=id)
+    if form.validate_on_submit():
+        form.populate_obj(pesquisa)
+        db.session.commit()
+        flash(_('As alterações foram registradas.'))
+        return redirect(url_for('main.edit_pesquisa', id=id))
+
+    return render_template('edit_pesquisa.html', title=_('Pesquisa'), id=id, form=form,
+                           emojis=current_app.config['EMOJIS'], pesquisa=pesquisa)
+
+@bp.route('/delpesquisa', methods=['GET', 'POST'])
+@login_required
+def del_pesquisa():
+    pesquisa = Pesquisa.query.filter_by(id=id).first_or_404()
+    if pesquisa is None:
+        flash(_('Pesquisa %(id) não encontrada.', id=id))
+    else:
+        db.session.delete(pesquisa)
+    return redirect(url_for('main.pesquisas'))
+
+
+@bp.route('/addpesquisatrilha/<id_pesquisa>/<id_trilha>', methods=['GET', 'POST'])
+@login_required
+def add_pesquisa_trilha(id_pesquisa, id_trilha):
+    pesquisatrilha = PesquisaTrilha.query.filter_by(trilha_id=id_trilha,pesquisa_id=id_pesquisa).first()
+    if pesquisatrilha is None:
+        pesquisatrilha = PesquisaTrilha()
+        db.session.add(pesquisatrilha)
+        pesquisatrilha.pesquisa_id = id_pesquisa
+        pesquisatrilha.trilha_id = id_trilha
+        db.session.commit()
+    else:
+        flash(_('PesquisaTrilha %(id) já existe encontrada.', id=id))
+    return redirect(url_for('main.edit_pesquisa',id=id_trilha))
+
+
+@bp.route('/delpesquisatrilha/<id_pesquisa>/<id_trilha>', methods=['GET', 'POST'])
+@login_required
+def del_pesquisa_trilha(id_pesquisa, id_trilha):
+    pesquisatrilha = PesquisaTrilha.query.filter_by(trilha_id=id_trilha, pesquisa_id=id_pesquisa).first()
+    if pesquisatrilha is None:
+        flash(_('Pesquisatrilha %(id) não encontrada.', id=id))
+    else:
+        try:
+            db.session.delete(pesquisatrilha)
+            db.session.commit()
+        except Exception:
+            flash('Erro ao excluir consulta da pesquisa ')
+    return redirect(url_for('main.edit_pesquisa', id=id_trilha))
+
+from sqlalchemy.orm.exc import NoResultFound
+# ...
+
+
+
+
 def get_or_create(model, **kwargs):
     """
     Usage:
@@ -333,7 +426,9 @@ def get_instance(model, **kwargs):
 @bp.route("/rede/")
 @bp.route("/rede/grafico/<int:camada>/<cpfcnpj>")
 @bp.route("/rede/grafico_no_servidor/<idArquivoServidor>")
-def serve_html_pagina(cpfcnpj='', camada=0, idArquivoServidor=''):
+def exibir_rede(cpfcnpj='', camada=0, idArquivoServidor=''):
+    if True:
+        return render_template('rede_template.html',emojis=current_app.config['EMOJIS'], parametros={})
     mensagemInicial = ''
     inserirDefault = ''
     listaEntrada = ''
