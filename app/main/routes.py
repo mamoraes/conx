@@ -29,7 +29,7 @@ from app.database_aux import * #so_digitos, validar_cpf_cnpj
 #import config
 
 #from app.main.database_aux import dbx
-
+import configrede
 
 @bp.before_app_request
 def before_request():
@@ -452,6 +452,7 @@ def imagensNaPastaF(bRetornaLista=False):
     else:
         return dic
 
+#http://sed-die-hpc02-p:9101/rede/grafico_no_servidor/relacionamento.9204624e.rda.json
 
 @bp.route("/rede/")
 @bp.route("/rede/grafico/<int:camada>/<cpfcnpj>")
@@ -473,10 +474,13 @@ def exibir_rede(cpfcnpj='', camada=0, idArquivoServidor=''):
             'bMenuInserirInicial': False,
             'inserirDefault': ' TESTE',
             'lista': '',
-            'bBaseReceita': 0,
-            'bBaseFullTextSearch': 0,
-            'bBaseLocal': 0,
-                      }
+            'bBaseReceita': '',
+            'bBaseFullTextSearch': '',
+            'bBaseLocal': '',
+            'btextoEmbaixoIcone': True,
+            'referenciaBD': '',
+            'referenciaBDCurto': ''
+        }
         """paramsInicial = {'cpfcnpj': cpfcnpj,
                          'camada': camada,
                          'mensagem': mensagemInicial,
@@ -501,37 +505,37 @@ def exibir_rede(cpfcnpj='', camada=0, idArquivoServidor=''):
     listaEntrada = ''
     listaJson = ''
     # camada = config.par.camadaInicial if config.par.camadaInicial else camada
-    camada = camada if camada else config.par.camadaInicial
+    camada = camada if camada else configrede.par.camadaInicial
     camada = min(gp['camadaMaxima'], camada)
     # print(list(request.args.keys()))
     # print(request.args.get('mensagem_inicial'))
     # if par.idArquivoServidor:
     #     idArquivoServidor =  par.idArquivoServidor
     # idArquivoServidor = config.par.idArquivoServidor if config.par.idArquivoServidor else idArquivoServidor
-    idArquivoServidor = idArquivoServidor if idArquivoServidor else config.par.idArquivoServidor
+    idArquivoServidor = idArquivoServidor if idArquivoServidor else configrede.par.idArquivoServidor
     if idArquivoServidor:
         idArquivoServidor = secure_filename(idArquivoServidor)
     listaImagens = rede_relacionamentos.imagensNaPastaF(True)
-    if config.par.arquivoEntrada:
+    if configrede.par.arquivoEntrada:
         # if os.path.exists(config.par.listaEntrada): checado em config
-        extensao = os.path.splitext(config.par.arquivoEntrada)[1].lower()
+        extensao = os.path.splitext(configrede.par.arquivoEntrada)[1].lower()
         if extensao in ['.py', '.js']:
-            listaEntrada = open(config.par.arquivoEntrada, encoding=config.par.encodingArquivo).read()
+            listaEntrada = open(configrede.par.arquivoEntrada, encoding=configrede.par.encodingArquivo).read()
             if extensao == '.py':  # configura para lista hierarquica
                 listaEntrada = '_>p\n' + listaEntrada
             elif extensao == '.js':
                 listaEntrada = '_>j\n' + listaEntrada
         elif extensao == '.json':
-            listaJson = json.loads(open(config.par.arquivoEntrada, encoding=config.par.encodingArquivo).read())
+            listaJson = json.loads(open(configrede.par.arquivoEntrada, encoding=configrede.par.encodingArquivo).read())
         elif extensao in ['.csv', '.txt']:
-            df = pd.read_csv(config.par.arquivoEntrada, sep=config.par.separador, dtype=str, header=None,
-                             keep_default_na=False, encoding=config.par.encodingArquivo, skip_blank_lines=False)
+            df = pd.read_csv(configrede.par.arquivoEntrada, sep=configrede.par.separador, dtype=str, header=None,
+                             keep_default_na=False, encoding=configrede.par.encodingArquivo, skip_blank_lines=False)
         elif extensao in ['.xlsx', 'xls']:
             # df = pd.read_excel(config.par.arquivoEntrada, sheet_name=config.par.excel_sheet_name, header= config.par.excel_header, dtype=str, keep_default_na=False)
-            df = pd.read_excel(config.par.arquivoEntrada, sheet_name=config.par.excel_sheet_name, header=None,
+            df = pd.read_excel(configrede.par.arquivoEntrada, sheet_name=configrede.par.excel_sheet_name, header=None,
                                dtype=str, keep_default_na=False)
         else:
-            print('arquivo em extensão não reconhecida, deve ser csv, txt ou json:' + config.par.arquivoEntrada)
+            print('arquivo em extensão não reconhecida, deve ser csv, txt ou json:' + configrede.par.arquivoEntrada)
             sys.exit(0)
         if extensao in ['.csv', '.txt', '.xlsx', 'xls']:
             listaEntrada = ''
@@ -540,41 +544,41 @@ def exibir_rede(cpfcnpj='', camada=0, idArquivoServidor=''):
                 # print(listaEntrada)
             df = None
     elif not cpfcnpj and not idArquivoServidor:  # define cpfcnpj inicial, só para debugar.
-        cpfcnpj = config.par.cpfcnpjInicial
+        cpfcnpj = configrede.par.cpfcnpjInicial
         numeroEmpresas = gp['numeroDeEmpresasNaBase']
         if numeroEmpresas:
             tnumeroEmpresas = format(numeroEmpresas, ',').replace(',', '.')
-            if config.par.bExibeMensagemInicial:
-                mensagemInicial = config.config['INICIO'].get('mensagem_advertencia', '').replace('\\n', '\n')
+            if configrede.par.bExibeMensagemInicial:
+                mensagemInicial = configrede.config['INICIO'].get('mensagem_advertencia', '').replace('\\n', '\n')
                 if numeroEmpresas > 40000000:  # no código do template, dois pontos será substituida por .\n
-                    mensagemInicial += f'''\nA base tem {tnumeroEmpresas} empresas.\n''' + config.referenciaBD
+                    mensagemInicial += f'''\nA base tem {tnumeroEmpresas} empresas.\n''' + configrede.referenciaBD
                 else:
                     inserirDefault = ' TESTE'
         else:
-            config.par.bMenuInserirInicial = False
+            configrede.par.bMenuInserirInicial = False
 
-    if config.par.tipo_lista:
-        if config.par.tipo_lista.startswith('_>'):
-            listaEntrada = config.par.tipo_lista + '\n' + listaEntrada
+    if configrede.par.tipo_lista:
+        if configrede.par.tipo_lista.startswith('_>'):
+            listaEntrada = configrede.par.tipo_lista + '\n' + listaEntrada
         else:
-            listaEntrada = config.par.tipo_lista + listaEntrada
+            listaEntrada = configrede.par.tipo_lista + listaEntrada
 
     paramsInicial = {'cpfcnpj': cpfcnpj,
                      'camada': camada,
                      'mensagem': mensagemInicial,
-                     'bMenuInserirInicial': config.par.bMenuInserirInicial,
+                     'bMenuInserirInicial': configrede.par.bMenuInserirInicial,
                      'inserirDefault': inserirDefault,
                      'idArquivoServidor': idArquivoServidor,
                      'lista': listaEntrada,
                      'json': listaJson,
                      'listaImagens': listaImagens,
-                     'bBaseReceita': 1 if config.config['BASE'].get('base_receita', '') else 0,
-                     'bBaseFullTextSearch': 1 if config.config['BASE'].get('base_receita_fulltext', '') else 0,
-                     'bBaseLocal': 1 if config.config['BASE'].get('base_local', '') else 0,
-                     'btextoEmbaixoIcone': config.par.btextoEmbaixoIcone,
-                     'referenciaBD': config.referenciaBD,
-                     'referenciaBDCurto': config.referenciaBD.split(',')[0]}
-    config.par.idArquivoServidor = ''  # apagar para a segunda chamada da url não dar o mesmo resultado.
-    config.par.arquivoEntrada = ''
-    config.par.cpfcnpjInicial = ''
+                     'bBaseReceita': 1 if configrede.config['BASE'].get('base_receita', '') else 0,
+                     'bBaseFullTextSearch': 1 if configrede.config['BASE'].get('base_receita_fulltext', '') else 0,
+                     'bBaseLocal': 1 if configrede.configrede['BASE'].get('base_local', '') else 0,
+                     'btextoEmbaixoIcone': configrede.par.btextoEmbaixoIcone,
+                     'referenciaBD': configrede.referenciaBD,
+                     'referenciaBDCurto': configrede.referenciaBD.split(',')[0]}
+    configrede.par.idArquivoServidor = ''  # apagar para a segunda chamada da url não dar o mesmo resultado.
+    configrede.par.arquivoEntrada = ''
+    configrede.par.cpfcnpjInicial = ''
     return render_template('rede_template.html', parametros=paramsInicial)

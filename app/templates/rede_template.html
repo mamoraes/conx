@@ -35,11 +35,9 @@ var graph = Viva.Graph.graph();
 var graphics = Viva.Graph.View.svgGraphics();
 
 var gparam = {};
-
 	gparam.inicio = {{parametros|tojson}};
 	gparam.inserirDefault = gparam.inicio.inserirDefault;
 	gparam.listaImagens = gparam.inicio.listaImagens;
-	
 	gparam.nodeSize = 20; //24
 	gparam.tamanhoFonte = 10;
 	gparam.corLigacaoLink = 'seagreen';
@@ -1452,6 +1450,7 @@ function menu_importaJSONServidor(idArquivoServidor, bNaoConfirma) {
 	}
 	var url = base + 'arquivos_json/' + idArquivoServidor;
 	//se idArquivoServidor=temporario, o arquivo será apagado do servidor após de ser servido
+	alertify.error('base: '+base+'   url: '+url)
 	fazFetch(url, idArquivoServidor); 
 	function fazFetch(url, idArquivoServidor) {
 		document.body.style.cursor = 'wait';
@@ -1462,7 +1461,7 @@ function menu_importaJSONServidor(idArquivoServidor, bNaoConfirma) {
 			  if (response.status !== 200) {
 				document.body.style.cursor = 'default';
 				console.log('Looks like there was a problem. Status Code: ' +  response.status);
-				alertify.error('Não conseguiu carregar o arquivo ' + idArquivoServidor + '. Aconteceu um erro 11 (' +  response.status + ')');
+				alertify.error('Não conseguiu carregar o arquivo ' + idArquivoServidor + '. Aconteceu um erro 11 (' +  response.status + ')'+url);
 				return;
 			  }
 			  // Examine the text in the response
@@ -3870,6 +3869,7 @@ alertifyfake = {
 function ajustaAmbiente_adicionarListaIconesAoMenu() {
 	//var menuIcone = document.getElementById('menu_selecao_icone');
 	var menuIconeOptions = document.getElementById('menu_selecao_icone_options');
+
 	for (item of gparam.listaImagens) {
 		/*
 		var itemMenu = document.createElement('li');
@@ -3878,6 +3878,8 @@ function ajustaAmbiente_adicionarListaIconesAoMenu() {
 			<i class="fa fa-tags"></i><span class="menu-text">' + item + '</span> \
 			</button>	'	
 		itemMenu.setAttribute('class', "menu-item"); */
+
+
 		var itemOption = document.createElement('option');
         //itemOption.onchange = 'menu_alteraIcone("' + item + '");';
 		itemOption.text = item;
