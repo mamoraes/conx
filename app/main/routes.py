@@ -21,7 +21,7 @@ import csv
 import copy
 import json
 import os
-
+import glob
 from app.main.gerargrafo import Aresta, Nodo, NoPF, NoPJ, NoCaso, NoRinf
 
 from app.database_aux import dbaux as dbx
@@ -442,6 +442,17 @@ def get_instance(model, **kwargs):
         return None
 
 
+def imagensNaPastaF(bRetornaLista=False):
+    dic = {}
+    for item in glob.glob('app/static/imagem/**/*.png', recursive=True):
+        if '/nao_usado/' not in item.replace("\\", "/"):
+            dic[os.path.split(item)[1]] = item.replace("\\", "/")
+    if bRetornaLista:
+        return sorted(list(dic.keys()))
+    else:
+        return dic
+
+
 @bp.route("/rede/")
 @bp.route("/rede/grafico/<int:camada>/<cpfcnpj>")
 @bp.route("/rede/grafico_no_servidor/<idArquivoServidor>")
@@ -451,12 +462,37 @@ def exibir_rede(cpfcnpj='', camada=0, idArquivoServidor=''):
         extensao = os.path.splitext(idArquivoServidor)[1].lower()
         listaJson = json.loads(open(idArquivoServidor).read()) if extensao == '.json' else ''
         camada = camada if camada else 0
+        listaImagens = imagensNaPastaF(True)
         parametros = {
             'cpfcnpj': cpfcnpj,
             'camada': camada,
             'idArquivoServidor': idArquivoServidor,
-            'json': listaJson
+            'json': listaJson,
+            'listaImagens': listaImagens,
+            'mensagem': 'mensagemInicial',
+            'bMenuInserirInicial': False,
+            'inserirDefault': ' TESTE',
+            'lista': '',
+            'bBaseReceita': 0,
+            'bBaseFullTextSearch': 0,
+            'bBaseLocal': 0,
                       }
+        """paramsInicial = {'cpfcnpj': cpfcnpj,
+                         'camada': camada,
+                         'mensagem': mensagemInicial,
+                         'bMenuInserirInicial': config.par.bMenuInserirInicial,
+                         'inserirDefault': inserirDefault,
+                         'idArquivoServidor': idArquivoServidor,
+                         'lista': listaEntrada,
+                         'json': listaJson,
+                         'listaImagens': listaImagens,
+                         'bBaseReceita': 1 if config.config['BASE'].get('base_receita', '') else 0,
+                         'bBaseFullTextSearch': 1 if config.config['BASE'].get('base_receita_fulltext', '') else 0,
+                         'bBaseLocal': 1 if config.config['BASE'].get('base_local', '') else 0,
+                         'btextoEmbaixoIcone': config.par.btextoEmbaixoIcone,
+                         'referenciaBD': config.referenciaBD,
+                         'referenciaBDCurto': config.referenciaBD.split(',')[0]}
+"""
         return render_template('rede_template.html',
                                emojis=current_app.config['EMOJIS'],
                                parametros=parametros)

@@ -1201,7 +1201,7 @@ function menu_dados(bNovaJanela, idNo) {
 		function(response) {
 		  if (response.status !== 200) {
 			console.log('Looks like there was a problem. Status Code: ' +  response.status);
-			alertify.error('Aconteceu um erro (' +  response.status + ')');
+			alertify.error('Aconteceu um erro 2 (' +  response.status + ')');
 			return;
 		  }
 		  response.json().then(function(data) {
@@ -1233,7 +1233,7 @@ function menu_dados(bNovaJanela, idNo) {
 	  )
 	  .catch(function(err) {
 		console.log('Fetch Error :-S', err);
-		alertify.error('Aconteceu um erro (Fetch error ' + err + ')');
+		alertify.error('Aconteceu um erro 3 (Fetch error ' + err + ')');
 	  });
 }//.function menu_dados
 
@@ -1293,7 +1293,7 @@ function menu_importarJsonArquivo(evt, tipo) {
 						gparam.debug = contents;
 						inserirJson(content_parse, 'Leitura de arquivo. ');
 					} catch (e) {
-						alertify.error('Aconteceu um erro ' + e);
+						alertify.error('Aconteceu um erro 4 ' + e);
 					}
 				} else if (f.name.endsWith('.py')){
 					//importaJSON(contents);
@@ -1352,7 +1352,7 @@ function menu_exportaJSONServidorParaBaseLocal(bSoSelecionados, comentario, acao
 				if (response.status !== 200) {
 				document.body.style.cursor = 'default';
 				console.log('Looks like there was a problem. Status Code: ' +  response.status);
-				alertify.error('Aconteceu um erro (' +  response.status + ')');
+				alertify.error('Aconteceu um erro 5 (' +  response.status + ')');
 				return;
 				}
 				// Examine the text in the response
@@ -1368,7 +1368,7 @@ function menu_exportaJSONServidorParaBaseLocal(bSoSelecionados, comentario, acao
 						}	
 						exibe_mensagem(textoMensagem, data.mensagem);
 					} else {
-						alertify.error('Aconteceu um erro. ' + data.mensagem.popup);
+						alertify.error('Aconteceu um erro. 6 ' + data.mensagem.popup);
 					}					
 			    });
 			}
@@ -1376,7 +1376,7 @@ function menu_exportaJSONServidorParaBaseLocal(bSoSelecionados, comentario, acao
 		  .catch(function(err) {
 			document.body.style.cursor = 'default';
 			console.log('Fetch Error :-S', err);
-			alertify.error('Aconteceu um erro (Fetch error ' + err + ')');
+			alertify.error('Aconteceu um erro 7 (Fetch error ' + err + ')');
 		  });
 	}
 }//.function menu_exportaJSONServidorParaBaseLocal
@@ -1412,7 +1412,7 @@ function menu_exportaJSONServidor(bSoSelecionados, bMostraAlerta, idArquivoServi
 			  if (response.status !== 200) {
 				document.body.style.cursor = 'default';
 				console.log('Looks like there was a problem. Status Code: ' +  response.status);
-				alertify.error('Aconteceu um erro (' +  response.status + ')');
+				alertify.error('Aconteceu um erro 8 (' +  response.status + ')');
 				return;
 			  }
 			  // Examine the text in the response
@@ -1429,7 +1429,7 @@ function menu_exportaJSONServidor(bSoSelecionados, bMostraAlerta, idArquivoServi
 						setTimeout(function(){ novaJanela.document.title = nomeNovaAba; }, 3000); //se o gráfico for muito grande, o tempo pode não ser suficiente
 					}
 				} else {
-					alertify.error('Aconteceu um erro. ' + data.mensagem.popup);
+					alertify.error('Aconteceu um erro. 9 ' + data.mensagem.popup);
 				}
 			  });
 			}
@@ -1437,7 +1437,7 @@ function menu_exportaJSONServidor(bSoSelecionados, bMostraAlerta, idArquivoServi
 		  .catch(function(err) {
 			document.body.style.cursor = 'default';
 			console.log('Fetch Error :-S', err);
-			alertify.error('Aconteceu um erro (Fetch error ' + err + ')');
+			alertify.error('Aconteceu um erro 10 (Fetch error ' + err + ')');
 		  });
 	}
 	//return novaJanela; novaJanela só retorna null
@@ -1462,7 +1462,7 @@ function menu_importaJSONServidor(idArquivoServidor, bNaoConfirma) {
 			  if (response.status !== 200) {
 				document.body.style.cursor = 'default';
 				console.log('Looks like there was a problem. Status Code: ' +  response.status);
-				alertify.error('Não conseguiu carregar o arquivo ' + idArquivoServidor + '. Aconteceu um erro (' +  response.status + ')');
+				alertify.error('Não conseguiu carregar o arquivo ' + idArquivoServidor + '. Aconteceu um erro 11 (' +  response.status + ')');
 				return;
 			  }
 			  // Examine the text in the response
@@ -1476,7 +1476,7 @@ function menu_importaJSONServidor(idArquivoServidor, bNaoConfirma) {
 		  .catch(function(err) {
 			document.body.style.cursor = 'default';
 			console.log('Fetch Error :-S', err);
-			alertify.error('Aconteceu um erro (Fetch error ' + err + ')');
+			alertify.error('Aconteceu um erro 12 (Fetch error ' + err + ')');
 		  });
 	}
 }//.function menu_importaJSONServidor
@@ -1662,7 +1662,7 @@ function menu_incluirCamada(idin, camada, tipo, bNaoConfirma) {
 			  if (response.status !== 200) {
 				document.body.style.cursor = 'default';
 				console.log('Looks like there was a problem. Status Code: ' +  response.status);
-				alertify.error('Aconteceu um erro (' +  response.status + ')');
+				alertify.error('Aconteceu um erro 13 (' +  response.status + ') '+ url);
 				return;
 			  }
 			  // Examine the text in the response
@@ -1684,7 +1684,7 @@ function menu_incluirCamada(idin, camada, tipo, bNaoConfirma) {
 		  .catch(function(err) {
 			document.body.style.cursor = 'default';
 			console.log('Fetch Error :-S', err);
-			alertify.error('Aconteceu um erro (Fetch error ' + err + ')');
+			alertify.error('Aconteceu um erro 14 (Fetch error ' + err + ')');
 		  });
 	}
 	function dialogoParametrosLink() {
@@ -1848,7 +1848,7 @@ function menu_abrirNovaAba(idno, bNosSelecionados) {
 			function(response) {
 			  if (response.status !== 200) {
 				console.log('Looks like there was a problem. Status Code: ' +  response.status);
-				alertify.error('Aconteceu um erro (' +  response.status + ')');
+				alertify.error('Aconteceu um erro 15 (' +  response.status + ')');
 				return;
 			  }
 			  // Examine the text in the response
@@ -1862,7 +1862,7 @@ function menu_abrirNovaAba(idno, bNosSelecionados) {
 			}
 			)
 			.catch(function(err) {
-				alertify.error('Aconteceu um erro (Fetch error ' + err + ')');
+				alertify.error('Aconteceu um erro 16 (Fetch error ' + err + ')');
 			});
 
 		return;
@@ -3089,7 +3089,7 @@ function inserir_lista(entrada, bNaoConfirma) {
 			  if (response.status !== 200) {
 				document.body.style.cursor = 'default'
 				console.log('Looks like there was a problem. Status Code: ' +  response.status);
-				alertify.error('Aconteceu um erro (' +  response.status + ')');
+				alertify.error('Aconteceu um erro 17(' +  response.status + ')');
 				return;
 			  }
 			  // Examine the text in the response
@@ -3112,7 +3112,7 @@ function inserir_lista(entrada, bNaoConfirma) {
 		  .catch(function(err) {
 			document.body.style.cursor = 'default';
 			console.log('Fetch Error :-S', err);
-			alertify.error('Aconteceu um erro (Fetch error ' + err + ')');
+			alertify.error('Aconteceu um erro 18 (Fetch error ' + err + ')');
 		  });
 	}//.function fazFetchCnpjs
 }//.function inserir_lista
