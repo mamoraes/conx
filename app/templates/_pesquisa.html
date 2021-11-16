@@ -1,8 +1,19 @@
         <tr>
+            <td width="17px">
+               <a class="ferramentaslinhabtn_verde" href="{{ url_for('main.edit_pesquisa', id=pesquisa.id) }}" title="Alterar Pesquisa">{%if emojis%}&#x{{emojis['alterar']}}{%else%}✎{%endif%}</a>
+            </td>
+            <td width="17px">
+               <a class="ferramentaslinhabtn_vermelho" href="{{ url_for('main.del_pesquisa', id=pesquisa.id) }}" title="Excluir">{%if emojis%}&#x{{emojis['excluir']}}{%else%}✎&#x1F5D1;{%endif%}</a>
+            </td>
+
             <td width="200px">
                 <a href="{{ url_for('main.edit_pesquisa', id=pesquisa.id) }}"> {{ pesquisa.nome }} </a>
             </td>
             <td>
                 <a href="{{ url_for('main.edit_pesquisa', id=pesquisa.id) }}"> {{ pesquisa.descricao }} </a>
+            </td>
+            <td></td>
+            <td>
+               <a href="{{ url_for('main.exibir_rede', camada=1, cpfcnpj='05011658000112') }}">   &#x1F575;</a>
             </td>
         </tr>

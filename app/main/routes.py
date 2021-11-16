@@ -339,6 +339,25 @@ def edit_pesquisa(id):
     return render_template('edit_pesquisa.html', title=_('Pesquisa'), id=id, form=form,
                            emojis=current_app.config['EMOJIS'], pesquisa=pesquisa)
 
+@bp.route('/exexpesquisa/<id>', methods=['GET', 'POST'])
+@login_required
+def exec_pesquisa(id):
+    pesquisa = Pesquisa.query.filter_by(id=id).first_or_404()
+    if pesquisa is None:
+        flash(_('Pesquisa %(id) não encontrada.', id=id))
+        return redirect(url_for('main.pesquisas'))
+
+    form = EditPesquisaForm(obj=pesquisa, id=id)
+    if form.validate_on_submit():
+        form.populate_obj(pesquisa)
+        db.session.commit()
+        flash(_('As alterações foram registradas.'))
+        return redirect(url_for('main.edit_pesquisa', id=id))
+
+    return render_template('edit_pesquisa.html', title=_('Pesquisa'), id=id, form=form,
+                           emojis=current_app.config['EMOJIS'], pesquisa=pesquisa)
+
+
 @bp.route('/delpesquisa', methods=['GET', 'POST'])
 @login_required
 def del_pesquisa():
@@ -428,7 +447,19 @@ def get_instance(model, **kwargs):
 @bp.route("/rede/grafico_no_servidor/<idArquivoServidor>")
 def exibir_rede(cpfcnpj='', camada=0, idArquivoServidor=''):
     if True:
-        return render_template('rede_template.html',emojis=current_app.config['EMOJIS'], parametros={})
+        idArquivoServidor = secure_filename(idArquivoServidor) if idArquivoServidor else 'x.x'
+        extensao = os.path.splitext(idArquivoServidor)[1].lower()
+        listaJson = json.loads(open(idArquivoServidor).read()) if extensao == '.json' else ''
+        camada = camada if camada else 0
+        parametros = {
+            'cpfcnpj': cpfcnpj,
+            'camada': camada,
+            'idArquivoServidor': idArquivoServidor,
+            'json': listaJson
+                      }
+        return render_template('rede_template.html',
+                               emojis=current_app.config['EMOJIS'],
+                               parametros=parametros)
     mensagemInicial = ''
     inserirDefault = ''
     listaEntrada = ''

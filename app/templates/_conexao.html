@@ -1,4 +1,11 @@
         <tr>
+            <td width="17px">
+               <a class="ferramentaslinhabtn_verde" href="{{ url_for('main.edit_conexao', id=conexao.id) }}" title="Alterar Conexão">{%if emojis%}&#x{{emojis['alterar']}}{%else%}✎{%endif%}</a>
+            </td>
+            <td width="17px">
+               <a class="ferramentaslinhabtn_vermelho" href="{{ url_for('main.del_conexao', id=conexao.id) }}" title="Excluir">{%if emojis%}&#x{{emojis['excluir']}}{%else%}✎&#x1F5D1;{%endif%}</a>
+            </td>
+
             <td width="200px">
                 <a href="{{ url_for('main.edit_conexao', id=conexao.id) }}"> {{ conexao.nome }} </a>
             </td>

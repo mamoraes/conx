@@ -8,9 +8,33 @@
             {{ wtf.quick_form(form) }}
 
          </div>
-        {% if id %}
 
-        <div class="col-md-4" id="consultas_ente_div" >
+<div class="col-md-4">
+<!--
+<ul class="nav nav-pills">
+  <li class="active" style="width:80%;"><input type="text" id="lname1" name="lname1" value="Lista 1" style="width:80%; background-color:red"></li>
+  <li style="width:80%;"><input type="text" id="lname2" name="lname2" value="Lista 2" style="width:80%; background-color:orange"></li>
+  <li style="width:80%;"><input type="text" id="lname3" name="lname3" value="Lista 3" style="width:80%; background-color:green"></li>
+</ul>
+
+<div class="tab-content" >
+  <div id="lista1" class="tab-pane fade in active">
+  <textarea name="message" style="width:100%; height:200px;">
+The cat was playing in the garden.
+</textarea>
+  </div>
+  <div id="lista2" class="tab-pane fade"> <input type="text">
+    <h3>Menu 1</h3>
+    <p>Some content in menu 1.</p>
+  </div>
+  <div id="lista3" class="tab-pane fade"> <input type="text">
+    <h3>Menu 2</h3>
+    <p>Some content in menu 2.</p>
+  </div>
+</div>
+
+-->
+        {% if id %}
             <p class="bg-primary text-white" >Trilhas</p>
             <table>
             {% for trilha in pesquisa.selecao %}
