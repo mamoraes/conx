@@ -459,7 +459,7 @@ def imagensNaPastaF(bRetornaLista=False):
 @bp.route("/rede/grafico_no_servidor/<idArquivoServidor>")
 def exibir_rede(cpfcnpj='', camada=0, idArquivoServidor=''):
     if True:
-        idArquivoServidor = secure_filename(idArquivoServidor) if idArquivoServidor else 'x.x'
+        idArquivoServidor = secure_filename(idArquivoServidor) if idArquivoServidor else ''
         extensao = os.path.splitext(idArquivoServidor)[1].lower()
         listaJson = json.loads(open(idArquivoServidor).read()) if extensao == '.json' else ''
         camada = camada if camada else 0
