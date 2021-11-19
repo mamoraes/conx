@@ -454,6 +454,7 @@ def imagensNaPastaF(bRetornaLista=False):
 
 #http://sed-die-hpc02-p:9101/rede/grafico_no_servidor/relacionamento.9204624e.rda.json
 
+@bp.route("/rederel/")
 @bp.route("/rede/")
 @bp.route("/rede/grafico/<int:camada>/<cpfcnpj>")
 @bp.route("/rede/grafico_no_servidor/<idArquivoServidor>")
@@ -464,7 +465,7 @@ def exibir_rede(cpfcnpj='', camada=0, idArquivoServidor=''):
         listaJson = json.loads(open(idArquivoServidor).read()) if extensao == '.json' else ''
         camada = camada if camada else 0
         listaImagens = imagensNaPastaF(True)
-        parametros = {
+        paramsInicial = {
             'cpfcnpj': cpfcnpj,
             'camada': camada,
             'idArquivoServidor': idArquivoServidor,
@@ -499,7 +500,7 @@ def exibir_rede(cpfcnpj='', camada=0, idArquivoServidor=''):
 """
         return render_template('rede_template.html',
                                emojis=current_app.config['EMOJIS'],
-                               parametros=parametros)
+                               parametros=paramsInicial)
     mensagemInicial = ''
     inserirDefault = ''
     listaEntrada = ''

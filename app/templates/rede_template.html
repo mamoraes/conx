@@ -64,9 +64,9 @@ var gparam = {};
 	gparam.springLength=150;
 	gparam.bRenderAtivado = true;
 	gparam.fScale = graphics.scale;
-
+alert('debug imagens: '+gparam.inicio.listaimagens[0])
 // variáveis globais
-var base = '/rede/',
+var base = '/',
 	gdebug = null,
 	markerSeta = null,
 	defs = null,
@@ -1160,7 +1160,6 @@ function menu_dados(bNovaJanela, idNo) {
 	if (!idin) return;
 	function mostraResultado(idin, ht) {
 		if (bNovaJanela) { 
-				//var win = window.open('/rede/dados_janela/'+gparam.idnoSelecionado, gparam.idnoSelecionado,'resizable,scrollbars,status,menubar=no, toolbar=no, personalbar=no, location=no, titlebar=0, height=500, width=400');
 				var win = window.open('', idin,'resizable,scrollbars,status,menubar=no, toolbar=no, personalbar=no, location=no, titlebar=0, height=500, width=400');
 				win.document.body.innerHTML = "<!DOCTYPE html><html><head><title>" + idin + "</title></head><body  >" + ht + "</body></html>";
 		} else {
@@ -1256,7 +1255,6 @@ function menu_listaSelecao(bNovaJanela) {
 	if (ht) {
 		//document.getElementById("corpo").disabled = true; 
 		if (bNovaJanela) { 
-			//var win = window.open('/rede/dados_janela/'+gparam.idnoSelecionado, gparam.idnoSelecionado,'resizable,scrollbars,status,menubar=no, toolbar=no, personalbar=no, location=no, titlebar=0, height=500, width=400');
 			var win = window.open('', gparam.idnoSelecionado,'resizable,scrollbars,status,menubar=no, toolbar=no, personalbar=no, location=no, titlebar=0, height=500, width=400');
 			win.document.body.innerHTML = "<!DOCTYPE html><html><head><title>Itens Selecionados</title></head><body  >" + ht + "</body></html>";
 		} else {
@@ -1728,18 +1726,12 @@ function menu_incluirCamada(idin, camada, tipo, bNaoConfirma) {
 			valorMaximo = (valorMaximo!='NaN')?valorMaximo:'0';
 			numeroItens = (numeroItens!='NaN')?numeroItens:'0';
 			camada = (camada!='NaN')?camada:'0';
-			//alert('valores: ' + valorMinimo + ' '+ valorMaximo + ' ' + numeroItens + ' '+camadas);
-			//console.log(valorMinimo, valorMaximo, numeroItens, camada);
 			ativaAtalhos(true);
-			//dlgLink.outerHTML = dlLinkhtml;
-			//url = "/rede/grafojson/links/"  + camada + "/" + idin  + "/" + numeroItens + '/' + valorMinimo + '/' + valorMaximo;
 			url = base + 'grafojson/links/'  + camada +  '/' + numeroItens + '/' + valorMinimo + '/' + valorMaximo  + '/' ;
 			fazFetch(url, idin);
 			//dlgLink.outerHTML = dlLinkhtml; 
 			ativaAtalhos(true); 
 		}, function() { 
-			//console.log('cancel'); 
-			//dlgLink.outerHTML = dlLinkhtml; 
 			ativaAtalhos(true); }
 		).set('oncancel', function() { ativaAtalhos(true);  })
 		.set('title',"Inserir Ligacoes");
@@ -3319,6 +3311,7 @@ function getXMLdeSVG() {
 		for (let nomeImagem of listaImagens) {
 			var img = new Image();
 			img.src = base + 'static/imagem/' + nomeImagem;
+
 			img_home.appendChild(img);
 			if (1) {
 				c.height = img.naturalHeight;
@@ -3941,6 +3934,9 @@ function ajustaAmbiente() {
 }//.function ajustaAmbiente
 
 function main() {
+//var loc = window.location.pathname;
+//var dir = loc.substring(0, loc.lastIndexOf('/'));
+//alert('debug: '+dir)
 	ajustaAmbiente();
 	gparam.layout = Viva.Graph.Layout.forceDirected(graph, {
 		   springLength : gparam.springLength, //170, //140, //80,
@@ -3954,7 +3950,9 @@ function main() {
 			layout: gparam.layout,
 			container  : document.getElementById('principal')
 		});
+
 	gparam.renderer.run();
+
 	gparam.geom = Viva.Graph.geom();
 	if (gparam.mobile) {
 		menu_zoomin(false, false);
@@ -3962,9 +3960,12 @@ function main() {
 	} else {
 		//Ajusta região para drag and drop de arquivo ou do excel
 		ajustaRegiaoDrop();
+alert('debug: MAIN')
+alert('debug: MAIN'+gparam.camada)
 		gparam.AreaSelecaoRetangular.Setup();
 		ativaAtalhos(true);
 	}
+
 	if (gparam.inicio.cpfcnpj) {
 		menu_incluirCamada(gparam.inicio.cpfcnpj, gparam.inicio.camada, null, true);
 	} else if (gparam.inicio.idArquivoServidor ) {
