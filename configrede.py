@@ -85,3 +85,16 @@ import pysos #data persistence
 nomes_bloqueados = pysos.List('pysos_nomes_bloqueados')
 urls_bloqueados = pysos.List('pysos_urls_bloqueados')
 '''
+class para():
+    arquivoEntrada = ''
+    encodingArquivo= 'utf8'
+    excel_sheet_name = 0
+    cpfcnpjInicial = ''
+    camadaInicial = 1
+    bExibeMensagemInicial = False
+    bMenuInserirInicial = False
+    tipo_lista = ''
+    btextoEmbaixoIcone = True
+
+
+par = para()
