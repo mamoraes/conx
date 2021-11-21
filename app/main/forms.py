@@ -1,7 +1,7 @@
 from flask import request, flash
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, TextAreaField, FieldList, FormField, SelectField, FileField, IntegerField, validators
-from wtforms.ext.sqlalchemy.fields import QuerySelectField
+from wtforms_sqlalchemy.fields import QuerySelectField
 from wtforms.validators import ValidationError, DataRequired, Length, InputRequired
 from flask_babel import _, lazy_gettext as _l
 from app.models import User, Conexao

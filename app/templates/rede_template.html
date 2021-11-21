@@ -64,9 +64,9 @@ var gparam = {};
 	gparam.springLength=150;
 	gparam.bRenderAtivado = true;
 	gparam.fScale = graphics.scale;
-alert('debug imagens: '+gparam.inicio.listaimagens[0])
+
 // variáveis globais
-var base = '/',
+var base = '/rede/',
 	gdebug = null,
 	markerSeta = null,
 	defs = null,
@@ -3960,8 +3960,6 @@ function main() {
 	} else {
 		//Ajusta região para drag and drop de arquivo ou do excel
 		ajustaRegiaoDrop();
-alert('debug: MAIN')
-alert('debug: MAIN'+gparam.camada)
 		gparam.AreaSelecaoRetangular.Setup();
 		ativaAtalhos(true);
 	}
