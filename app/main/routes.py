@@ -452,8 +452,21 @@ def imagensNaPastaF(bRetornaLista=False):
     else:
         return dic
 
+
+def imagensNaPastaF(bRetornaLista=False):
+    dic = {}
+    for item in glob.glob('app/static/imagem/**/*.png', recursive=True):
+        if '/nao_usado/' not in item.replace("\\", "/"):
+            dic[os.path.split(item)[1]] = item.replace("\\", "/")
+    if bRetornaLista:
+        return sorted(list(dic.keys()))
+    else:
+        return dic
+
+
 #http://sed-die-hpc02-p:9101/rede/grafico_no_servidor/relacionamento.9204624e.rda.json
 
+@bp.route("/rederel/")
 @bp.route("/rede/")
 @bp.route("/rede/grafico/<int:camada>/<cpfcnpj>")
 @bp.route("/rede/grafico_no_servidor/<idArquivoServidor>")
@@ -464,7 +477,7 @@ def exibir_rede(cpfcnpj='', camada=0, idArquivoServidor=''):
         listaJson = json.loads(open(idArquivoServidor).read()) if extensao == '.json' else ''
         camada = camada if camada else 0
         listaImagens = imagensNaPastaF(True)
-        parametros = {
+        paramsInicial = {
             'cpfcnpj': cpfcnpj,
             'camada': camada,
             'idArquivoServidor': idArquivoServidor,
@@ -474,48 +487,48 @@ def exibir_rede(cpfcnpj='', camada=0, idArquivoServidor=''):
             'bMenuInserirInicial': False,
             'inserirDefault': ' TESTE',
             'lista': '',
-            'bBaseReceita': '',
-            'bBaseFullTextSearch': '',
+            'bBaseReceita': 0,
+            'bBaseFullTextSearch': 0,
             'bBaseLocal': '',
             'btextoEmbaixoIcone': True,
-            'referenciaBD': '',
+            'referenciaBD': 0,
             'referenciaBDCurto': ''
         }
-        """paramsInicial = {'cpfcnpj': cpfcnpj,
+        paramsInicial = {'cpfcnpj': cpfcnpj,
                          'camada': camada,
-                         'mensagem': mensagemInicial,
-                         'bMenuInserirInicial': config.par.bMenuInserirInicial,
-                         'inserirDefault': inserirDefault,
+                         'mensagem': 'mensagemInicial',
+                         'bMenuInserirInicial': True, #config.par.bMenuInserirInicial,
+                         'inserirDefault': True, # inserirDefault,
                          'idArquivoServidor': idArquivoServidor,
-                         'lista': listaEntrada,
-                         'json': listaJson,
+                         'lista': [], #listaEntrada,
+                         'json': [], #listaJson,
                          'listaImagens': listaImagens,
-                         'bBaseReceita': 1 if config.config['BASE'].get('base_receita', '') else 0,
-                         'bBaseFullTextSearch': 1 if config.config['BASE'].get('base_receita_fulltext', '') else 0,
-                         'bBaseLocal': 1 if config.config['BASE'].get('base_local', '') else 0,
-                         'btextoEmbaixoIcone': config.par.btextoEmbaixoIcone,
-                         'referenciaBD': config.referenciaBD,
-                         'referenciaBDCurto': config.referenciaBD.split(',')[0]}
-"""
-        return render_template('rede_template.html',
+                         'bBaseReceita': 1 ,#if config.config['BASE'].get('base_receita', '') else 0,
+                         'bBaseFullTextSearch': 1 ,#if config.config['BASE'].get('base_receita_fulltext', '') else 0,
+                         'bBaseLocal': 1, # if config.config['BASE'].get('base_local', '') else 0,
+                         'btextoEmbaixoIcone': 1, #config.par.btextoEmbaixoIcone,
+                         'referenciaBD': '' ,# config.referenciaBD,
+                         'referenciaBDCurto': '' #config.referenciaBD.split(',')[0]
+         }
+        trilhas = Trilha.query.order_by(Trilha.nome.asc())
+        pesquisas = Pesquisa.query.order_by(Pesquisa.nome.asc())
+        return render_template('vis_rede.html',
                                emojis=current_app.config['EMOJIS'],
-                               parametros=parametros)
-    mensagemInicial = ''
+                               parametros=paramsInicial,
+                               trilhas=trilhas,
+                               pesquisas=pesquisas)
+
+    """mensagemInicial = ''
     inserirDefault = ''
     listaEntrada = ''
     listaJson = ''
     # camada = config.par.camadaInicial if config.par.camadaInicial else camada
-    camada = camada if camada else configrede.par.camadaInicial
-    camada = min(gp['camadaMaxima'], camada)
-    # print(list(request.args.keys()))
-    # print(request.args.get('mensagem_inicial'))
-    # if par.idArquivoServidor:
-    #     idArquivoServidor =  par.idArquivoServidor
-    # idArquivoServidor = config.par.idArquivoServidor if config.par.idArquivoServidor else idArquivoServidor
-    idArquivoServidor = idArquivoServidor if idArquivoServidor else configrede.par.idArquivoServidor
+    camada = 2 #camada if camada else configrede.par.camadaInicial
+    camada =  2 #min(gp['camadaMaxima'], camada)
+    idArquivoServidor = 'rede.json' #idArquivoServidor if idArquivoServidor else configrede.par.idArquivoServidor
     if idArquivoServidor:
         idArquivoServidor = secure_filename(idArquivoServidor)
-    listaImagens = rede_relacionamentos.imagensNaPastaF(True)
+    listaImagens = imagensNaPastaF(True)
     if configrede.par.arquivoEntrada:
         # if os.path.exists(config.par.listaEntrada): checado em config
         extensao = os.path.splitext(configrede.par.arquivoEntrada)[1].lower()
@@ -572,13 +585,16 @@ def exibir_rede(cpfcnpj='', camada=0, idArquivoServidor=''):
                      'lista': listaEntrada,
                      'json': listaJson,
                      'listaImagens': listaImagens,
-                     'bBaseReceita': 1 if configrede.config['BASE'].get('base_receita', '') else 0,
-                     'bBaseFullTextSearch': 1 if configrede.config['BASE'].get('base_receita_fulltext', '') else 0,
-                     'bBaseLocal': 1 if configrede.configrede['BASE'].get('base_local', '') else 0,
+                     'bBaseReceita': 1 ,#if configrede.config['BASE'].get('base_receita', '') else 0,
+                     'bBaseFullTextSearch': 0, #1 if configrede.config['BASE'].get('base_receita_fulltext', '') else 0,
+                     'bBaseLocal': 1, #if configrede.configrede['BASE'].get('base_local', '') else 0,
                      'btextoEmbaixoIcone': configrede.par.btextoEmbaixoIcone,
                      'referenciaBD': configrede.referenciaBD,
                      'referenciaBDCurto': configrede.referenciaBD.split(',')[0]}
     configrede.par.idArquivoServidor = ''  # apagar para a segunda chamada da url não dar o mesmo resultado.
     configrede.par.arquivoEntrada = ''
     configrede.par.cpfcnpjInicial = ''
+
+
     return render_template('rede_template.html', parametros=paramsInicial)
+"""

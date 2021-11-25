@@ -1,33 +1,3 @@
-<!DOCTYPE html>
-
-<!-- 
-projeto disponível em https://github.com/rictom/rede-cnpj
-
-utilizando os seguintes códigos e recursos:
-https://github.com/anvaka/VivaGraphJS
-https://www.cssscript.com/beautiful-multi-level-context-menu-with-pure-javascript-and-css3/
-https://fabien-d.github.io/alertify.js/
-https://fontawesome.com/v4.7.0/
-https://github.com/encharm/Font-Awesome-SVG-PNG
-https://www.freepik.com/
--->
-<html>
-<head>
-<meta http-equiv="content-type" content="text/html; charset=UTF-8">
-<meta charset="utf-8">
-<title>Rede</title>
-<link rel="shortcut icon" href="/static/imagem/favicon.ico" type="imagem/x-icon">
-<link rel="icon" href="/static/imagem/favicon.ico" type="imagem/x-icon">
-<link  rel="stylesheet" href="/static/alertify/css/alertify.css" /><link  rel="stylesheet" href="/static/alertify/css/themes/default.css" />
-<link rel="stylesheet" href="/static/menu/font-awesome_5.14.0_css_all.min.css">
-<link rel="stylesheet" href="/static/menu/menu.css">
-<script type="text/javascript" src="/static/vivagraph/vivagraph.js"></script>
-<script type="text/javascript" src="/static/alertify/alertify.min.js"></script>
-
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-
 <script type="text/javascript">
 
 // adaptado de http://jsfiddle.net/ibigd/z7ymfpmm/
@@ -43,7 +13,7 @@ var gparam = {};
 	gparam.corLigacaoLink = 'seagreen';
 	gparam.bMostraLigacao = true;
 	gparam.kligacoes = 0;
-	gparam.btextoEmbaixoIcone = gparam.inicio.btextoEmbaixoIcone; 
+	gparam.btextoEmbaixoIcone = gparam.inicio.btextoEmbaixoIcone;
 	//gparam.idLigacoes = {};
 	gparam.idnoSelecionado = null;
 	gparam.idNosSelecionados = new Set();
@@ -71,7 +41,7 @@ var base = '/rede/',
 	markerSeta = null,
 	defs = null,
 	menu = null;
-	
+
 /*
 createMarker = function(id) {
 	return Viva.Graph.svg('marker')
@@ -118,8 +88,8 @@ defs.innerHTML = ' \
 	values="-1  0  0 0 0  0 -1  0 0 0 0 0 -1 0 0 1 1 1 0 0"/>\
 	</filter> \
 	';
-defs.append(markerSeta);	
-	
+defs.append(markerSeta);
+
 function labelsNo(node, tipoResumido) {
 	//antes se passava node.data.label, mas era redundante com id e descricao
 	var idno = node.data.id;
@@ -141,7 +111,7 @@ function labelsNo(node, tipoResumido) {
 	} else if (idno.startsWith('ID_')) {
 		idno = idno.substr(3);
 		if (idno.includes('__')) {
-			idno = idno.substr(idno.indexOf('__')+2); 
+			idno = idno.substr(idno.indexOf('__')+2);
 		}
 	} else {
 		idno = idno.substr(3);
@@ -162,8 +132,8 @@ function textoTooltip(node, todoTexto){ // se todoTexto=false, exibe apenas dado
 	var texto = node.id;
 	if (node.id.startsWith('PJ_')) {
 		texto += LF + node.data.descricao + LF + sv(node.data.logradouro) + LF + junta(node.data.municipio, '/', node.data.uf); //sv(node.data.municipio) + '/' + sv(node.data.uf);
-	} else if (node.id.startsWith('PF_')) {	
-	
+	} else if (node.id.startsWith('PF_')) {
+
 	} else if (node.id.startsWith('LI_')) {
 		texto = node.id.substr(3) + (node.data.descricao ? LF +  LF + node.data.descricao :  '')
 		texto += LF + LF + 'Clique duplo para abrir o link';
@@ -182,16 +152,16 @@ function textoTooltip(node, todoTexto){ // se todoTexto=false, exibe apenas dado
 			}
 		}
 	} else if (node.id.startsWith('ID_')) {
-		if (node.id.includes('__')) { 
+		if (node.id.includes('__')) {
 			texto = node.id.split('__')[0] + '...' + LF + node.id.substr(node.id.indexOf('__')+2);
-		} 
+		}
 		if (node.data.descricao) {
 			texto += '\r' + node.data.descricao;
 		}
 	} else { //outros tipos
 		if (node.data.descricao) {
 			texto += '\r' + node.data.descricao;
-		}	
+		}
 	}
 	if (node.data.nota) {
 		texto += '\r' + node.data.nota;
@@ -249,29 +219,29 @@ graphics.node(function(node) {
 	//ui.posYRel = - gparam.nodeSize/2;
 	img.attr('width', gparam.nodeSize)
 		.attr('height', gparam.nodeSize)
-		.link(urlImagem); 
+		.link(urlImagem);
 	//if (!node.data.situacao_ativa) {
 	if (node.data.situacao_ativa==false) {
 		img.attr('filter','url(#filtroPB)');
-	};	
+	};
 	let corFundo = node.data.cor ? node.data.cor:'transparent';
 	let	rectCor = Viva.Graph.svg('rect')
 			//.attr('stroke', 'black')
-			//.attr('stroke-width', 0)		
-			.attr('fill', corFundo) //corFundoImagemF(node)) 
+			//.attr('stroke-width', 0)
+			.attr('fill', corFundo) //corFundoImagemF(node))
 			.attr('width', gparam.nodeSize)
 			.attr('height', gparam.nodeSize)
 			.attr('visibility', 'visible');  //hidden or visible
-	
+
 	let	rect = Viva.Graph.svg('rect') //destacar se está selecionado
-			.attr('visibility', 'hidden') //hidden or visible	
+			.attr('visibility', 'hidden') //hidden or visible
 			.attr('stroke', 'black') //'crimson'
-			.attr('stroke-width', 1.5)	
-			.attr('fill', 'transparent') 
+			.attr('stroke-width', 1.5)
+			.attr('fill', 'transparent')
 			.attr('width', gparam.nodeSize)
 			.attr('height', gparam.nodeSize)
 			.attr('stroke-dasharray', '6, 6');
-			
+
 	/*
 	if (!urlImagem) {
 		rectCor.attr('x', 0).attr('y', gparam.nodeSize);
@@ -287,33 +257,33 @@ graphics.node(function(node) {
 	var [identificador, nome, nota] = labelsNo(node, gparam.kTipoRotulo); //node.data.label.split('\n');
 	//var nota = node.data.nota? node.data.nota: '';
 	node.data.nota = nota;
-	
+
 	if (gparam.btextoEmbaixoIcone) { //textp embaixo do ícone
 		var svgText = Viva.Graph.svg('text')
 			.attr('pointer-events', 'none') //o texto não é mais clicável
-			.attr('y', gparam.tamanhoFonte*1.1 + gparam.nodeSize) 
-			.attr('x', gparam.nodeSize/2).attr('text-anchor','middle')  
-			.attr('font-size',gparam.tamanhoFonte+'px'); 
+			.attr('y', gparam.tamanhoFonte*1.1 + gparam.nodeSize)
+			.attr('x', gparam.nodeSize/2).attr('text-anchor','middle')
+			.attr('font-size',gparam.tamanhoFonte+'px');
 		var textspan = Viva.Graph.svg('tspan').attr('x', gparam.nodeSize/2).attr('dy', 0).text(identificador);
-		var textspan2 = Viva.Graph.svg('tspan').attr('x', gparam.nodeSize/2).attr('dy', gparam.tamanhoFonte*1.1).text(nome);		
+		var textspan2 = Viva.Graph.svg('tspan').attr('x', gparam.nodeSize/2).attr('dy', gparam.tamanhoFonte*1.1).text(nome);
 		var textspan3 = Viva.Graph.svg('tspan').attr('x', gparam.nodeSize/2).attr('dy', gparam.tamanhoFonte*1.5)
 			.attr('font-size',gparam.tamanhoFonte*1.5+'px').text(nota);
 	} else { //texto à direita do ícone
 		var svgText = Viva.Graph.svg('text')
 			.attr('pointer-events', 'none')
 			.attr('y',  gparam.nodeSize*0.5+gparam.tamanhoFonte*0.5)
-			.attr('x', gparam.nodeSize).attr('text-anchor','left')  
+			.attr('x', gparam.nodeSize).attr('text-anchor','left')
 			.attr('font-size',gparam.tamanhoFonte+'px')
-			.attr('style','font-family:Comic Sans MS;') ; 	
+			.attr('style','font-family:Comic Sans MS;') ;
 		var textspan = Viva.Graph.svg('tspan').attr('x', gparam.nodeSize*1.2).attr('dy', 0).text(identificador);
-		var textspan2 = Viva.Graph.svg('tspan').attr('x', gparam.nodeSize*1.2).attr('dy', gparam.tamanhoFonte*1.1).text(nome);	
+		var textspan2 = Viva.Graph.svg('tspan').attr('x', gparam.nodeSize*1.2).attr('dy', gparam.tamanhoFonte*1.1).text(nome);
 		var textspan3 = Viva.Graph.svg('tspan').attr('x', gparam.nodeSize*1.2).attr('dy', gparam.tamanhoFonte*1.5)
 			.attr('font-size',gparam.tamanhoFonte*1.5+'px').text(nota);
 	}
 
 	svgText.append(textspan);
-	svgText.append(textspan2);			
-	svgText.append(textspan3);	
+	svgText.append(textspan2);
+	svgText.append(textspan3);
 	ui.insertAdjacentHTML('beforeEnd','<title>' + textoTooltip(node, true) + '</title>'); //title deve ser a primeira coisa apos g para funcionar no firefox 48
 	ui.append(rectCor);
 	ui.append(img);
@@ -321,21 +291,21 @@ graphics.node(function(node) {
 	ui.append(svgText);
 	//eventos com os nós:
 	/*
-	ui.onclick = function(event) { 
+	ui.onclick = function(event) {
 		event.preventDefault();
-		pausarLayout(300); 
+		pausarLayout(300);
 		return true;
 	}; */
 
 	ui.onmousedown = function(event) {  //estava onmouseup, assim dá pra congelar após click
 		if (event.which == 1) {
 			if (event.altKey) {
-				event.preventDefault();		
-				menu_abrirNovaAba(node.id);			
+				event.preventDefault();
+				menu_abrirNovaAba(node.id);
 				return;
 			}
 			if (!event.ctrlKey) {
-				event.preventDefault();				
+				event.preventDefault();
 				selecionaNoid(node.id, event.shiftKey);
 				//pinarNoTemp(1000);
 				pausarLayout(500); //delay para facilitar duplo clique
@@ -360,7 +330,7 @@ graphics.node(function(node) {
 			}
 		};
 		return;
-	}; 
+	};
 	ui.ontouchstart = function(event) {
 		gparam.inicioToque = new Date().getTime();
 	};
@@ -387,20 +357,20 @@ graphics.node(function(node) {
 		gparam.ultimoToque = currentTime;
 		return false;
 	};
-	ui.onmouseover = function(event) { 
+	ui.onmouseover = function(event) {
 		gparam.idNoOnHover = node.id;
 		return;
 	};
-	ui.onmouseleave = function(event) { 
+	ui.onmouseleave = function(event) {
 		gparam.idNoOnHover = null;
-		return; 
+		return;
 	};
 	return ui;
 }).placeNode(function(nodeUI, pos) {
 	// 'g' element doesn't have convenient (x,y) attributes, instead
 	// we have to deal with transforms: http://www.w3.org/TR/SVG/coords.html#SVGGlobalTransformAttribute
 	nodeUI.attr('transform', 'translate(' + (pos.x - gparam.nodeSize/2) + ',' + (pos.y - gparam.nodeSize/2) + ')');
-}); //.graphics.node(function(node) 
+}); //.graphics.node(function(node)
 
 graphics.link(function(link){
 	var label = Viva.Graph.svg('text')
@@ -409,14 +379,14 @@ graphics.link(function(link){
 		.attr('font-size',gparam.tamanhoFonte+'px')
 		.attr('fill',link.data.cor)
 		.text(filtraTextoLigacao(String(link.data.label)));
-	label.insertAdjacentHTML('beforeEnd','<title>' + String(link.data.label) + '</title>'); 
+	label.insertAdjacentHTML('beforeEnd','<title>' + String(link.data.label) + '</title>');
 	//gparam.idLigacoes[link.data.origem + '\n' + link.data.destino] = link.data.id;
 	graphics.getSvgRoot().childNodes[0].append(label);
 	var vpath = Viva.Graph.svg('path')
 		.attr('stroke', link.data.cor) // 'gray')
 		.attr('marker-end', 'url(#Triangle)')
 		.attr('id', link.data.id);
-	//if ((link.data.origem.startsWith('ID_')) || (link.data.destino.startsWith('ID_')) || (link.data.destino.startsWith('EN_')) 
+	//if ((link.data.origem.startsWith('ID_')) || (link.data.destino.startsWith('ID_')) || (link.data.destino.startsWith('EN_'))
 	//	|| (link.data.destino.startsWith('EM_')) || (link.data.destino.startsWith('TE_')) || (link.data.tipoDescricao=='link')) {
 	if (link.data.tipoDescricao=='link') {
 		vpath.attr('stroke-dasharray', '5, 5');
@@ -460,7 +430,7 @@ graphics.link(function(link){
 				angulo = 180.0 + angulo;
 				baseline = '-2';
 			}
-			elemento.attr("transform","rotate(" + parseFloat(angulo) + " " + parseInt((from.x + to.x) / 2) + "," 
+			elemento.attr("transform","rotate(" + parseFloat(angulo) + " " + parseInt((from.x + to.x) / 2) + ","
 				+ parseInt((from.y + to.y) / 2) + ") translate(0," + baseline + ")")
 				.attr('text-anchor','middle')
 				.attr('visibility', gparam.bMostraLigacao? 'visible' : 'hidden');
@@ -481,7 +451,7 @@ function filtraTextoLigacao(texto) {
 		} else {
 			palavras.push(k);
 		}
-	}	
+	}
 	return palavras.join('; ');
 }//.filtraTextoLigacao
 
@@ -490,15 +460,15 @@ function ajustaRetanguloAnimado(nodeid, bSeleciona) {
 	let nodeUI = graphics.getNodeUI(nodeid)
 	let uirect = nodeUI.getElementsByTagName('rect')[1];
 	if (bSeleciona) {
-		
+
 		//console.log(textBox);
-		
+
 		/* //criar o retangulo depois faz com que o item não aceite duplo clique
 		var	uirect = Viva.Graph.svg('rect') //destacar se está selecionado
-		//.attr('visibility', 'hidden') //hidden or visible	
+		//.attr('visibility', 'hidden') //hidden or visible
 		.attr('stroke', 'black') //'crimson'
-		.attr('stroke-width', 1.5)	
-		.attr('fill', 'transparent') 
+		.attr('stroke-width', 1.5)
+		.attr('fill', 'transparent')
 		.attr('width', gparam.nodeSize)
 		.attr('height', gparam.nodeSize)
 		.attr('stroke-dasharray', '6, 6')
@@ -513,7 +483,7 @@ function ajustaRetanguloAnimado(nodeid, bSeleciona) {
 		var animateRect = Viva.Graph.svg('animate');
 		animateRect.attr('attributeName','stroke-dashoffset').attr('values','0;180;0').attr('dur', '60s').attr('repeatCount','indefinite');
 		uirect.appendChild(animateRect);
-		
+
 		//uirect.setAttribute('class', 'disabled');
 		//var uitexto = nodeUI.getElementsByTagName('text')[0];
 		//nodeUI.appendBefore(uirect, uitexto);
@@ -548,9 +518,9 @@ function selecionaNoid(nodeid, shift_pressionado, selecionaRetangular) {
 	} else {
 		for (let n of gparam.idNosSelecionados) {
 			ajustaRetanguloAnimado(n, false);
-			//graphics.getNodeUI(n).getElementsByTagName('rect')[1].setAttribute('visibility', 'hidden');  //hidden or visible)		
+			//graphics.getNodeUI(n).getElementsByTagName('rect')[1].setAttribute('visibility', 'hidden');  //hidden or visible)
 		}
-		gparam.idNosSelecionados = new Set(); 
+		gparam.idNosSelecionados = new Set();
 		gparam.idnoSelecionado = null;
 		return;
 	}
@@ -569,9 +539,9 @@ function selecionaNoid(nodeid, shift_pressionado, selecionaRetangular) {
 	} else {
 		for (let n of gparam.idNosSelecionados) {
 			ajustaRetanguloAnimado(n, false);
-			//graphics.getNodeUI(n).getElementsByTagName('rect')[1].setAttribute('visibility', 'hidden');  //hidden or visible)		
+			//graphics.getNodeUI(n).getElementsByTagName('rect')[1].setAttribute('visibility', 'hidden');  //hidden or visible)
 		}
-		gparam.idNosSelecionados = new Set(); 
+		gparam.idNosSelecionados = new Set();
 		gparam.idnoSelecionado = nodeid;
 		if (nodeid) {
 			ajustaRetanguloAnimado(nodeid, true);
@@ -611,7 +581,7 @@ gparam.AreaSelecaoRetangular = {
 		var domOverlay = document.querySelector('.graph-overlay');
 		var overlay = gparam.AreaSelecaoRetangular.createOverlay(domOverlay);
 		overlay.onAreaSelected(handleAreaSelected);
-	  
+
 		return overlay;
 
 		function handleAreaSelected(area) {
@@ -638,7 +608,7 @@ gparam.AreaSelecaoRetangular = {
 				selecionaNoid(node.id, true, true);
 			}
 		}
-		 
+
 		function isInside(nodeId, topLeft, bottomRight) {
 			var nodePos = layout.getNodePosition(nodeId);
 			return ((topLeft.x < nodePos.x) && (nodePos.x < bottomRight.x) &&
@@ -652,7 +622,7 @@ gparam.AreaSelecaoRetangular = {
 			selectionIndicator = document.createElement('div');
 			selectionIndicator.className = selectionClasName;
 			overlayDom.appendChild(selectionIndicator);
-		}	
+		}
 
 		var notify = [];
 		var dragndrop = Viva.Graph.Utils.dragndrop(overlayDom);
@@ -715,7 +685,7 @@ gparam.AreaSelecaoRetangular = {
 			selectionIndicator.style.top = (selectedArea.y) + 'px';
 			selectionIndicator.style.width = selectedArea.width + 'px';
 			selectionIndicator.style.height = selectedArea.height + 'px';
-		}	
+		}
 	}
 }//gparam.AreaSelecaoRetangular
 
@@ -748,18 +718,18 @@ gparam.AreaSelecaoRetangular = {
 /*    function createSvgRoot() {
         var svgRoot = svg("svg");
 		//https://github.com/gg4u/VivaGraphJS/commit/0547568448ea7e17e6558798fadbaa054ca4f104#diff-2ee351279fcef17bd76b6d9d4eef748e1a133b3fa07bd336c64778e64b9f61e7
-		//readability in svg : group nodes and links 
+		//readability in svg : group nodes and links
         svgContainer = svg("g")
               //.attr("buffered-rendering", "dynamic");
               .attr("buffered-rendering", "dynamic").attr("id", "scene");
 
-        // group nodes and links for readability of elements  
+        // group nodes and links for readability of elements
         svgNodes = svg("g").attr("id", "nodes");
         svgEdges = svg("g").attr("id", "edges");
 
         svgContainer.appendChild(svgEdges);
         svgContainer.appendChild(svgNodes);
-		//.readability in svg : group nodes and links 
+		//.readability in svg : group nodes and links
         svgRoot.appendChild(svgContainer);
 
         return svgRoot;
@@ -768,8 +738,8 @@ gparam.AreaSelecaoRetangular = {
 
 function localizaNo(texto, bFiltroNosSelecionados) { //retorna n. de nos localizados
 	//bFiltroNosSelecionados, só procura em idNosSelecionados, senão procura em todos os itens
-	var textoU = texto.toUpperCase(); 
-	var idNosLocalizados= new Set(); 
+	var textoU = texto.toUpperCase();
+	var idNosLocalizados= new Set();
 	var primeiroNoid = null;
 	texto = texto.replace(/\n/g,';').replace(/\t/g,';');
 	graph.forEachNode(function(node){
@@ -817,10 +787,10 @@ function menu_localiza(bFiltroNosSelecionados) {
 	//bFiltroNosSelecionados, só procura em idNosSelecionados, senão procura em todos os itens
 	ativaAtalhos(false);
 	var brenderer = menu_rendererAtivarParar(false, false);
-	var tmensagem = bFiltroNosSelecionados? 'Filtrar nos itens selecionados':'Localizar item na tela'; 
+	var tmensagem = bFiltroNosSelecionados? 'Filtrar nos itens selecionados':'Localizar item na tela';
 	alertify.prompt( tmensagem, 'Digite partes do Nome, CNPJ ou CPF. Utilize ponto e vírgula (;) como separador para buscar mais de um termo.', ''
-	   , function(evt, texto) { 
-			if (texto) { 
+	   , function(evt, texto) {
+			if (texto) {
 				contagem = localizaNo(texto, bFiltroNosSelecionados);
 				if (contagem) {
 					alertify.success('Localizou '+ contagem + ' ocorrencias(s) de ' + texto);
@@ -830,7 +800,7 @@ function menu_localiza(bFiltroNosSelecionados) {
 			}
 			menu_rendererAtivarParar(brenderer, false);
 			ativaAtalhos(true);
-		}, function() { 
+		}, function() {
 			ativaAtalhos(true);
 			menu_rendererAtivarParar(brenderer, false);
 		});
@@ -840,7 +810,7 @@ function menu_localizaPorCampo(bFiltroNosSelecionados) {
 	//bFiltroNosSelecionados, só procura em idNosSelecionados, senão procura em todos os itens
 	function localizaNoPorCampo(texto, bFiltroNosSelecionados) { //retorna n. de nos localizados
 		//bFiltroNosSelecionados, só procura em idNosSelecionados, senão procura em todos os itens
-		var idNosLocalizados= new Set(); 
+		var idNosLocalizados= new Set();
 		var primeiroNoid = null;
 		var comparacoes = texto.split(';');
 		graph.forEachNode(function(node){
@@ -867,10 +837,10 @@ function menu_localizaPorCampo(bFiltroNosSelecionados) {
 	}//.function localizaNoPorCampo
 	ativaAtalhos(false);
 	var brenderer = menu_rendererAtivarParar(false, false);
-	var tmensagem = bFiltroNosSelecionados? 'Filtrar nos itens selecionados':'Localizar item na tela por campo'; 
+	var tmensagem = bFiltroNosSelecionados? 'Filtrar nos itens selecionados':'Localizar item na tela por campo';
 	alertify.prompt( tmensagem, 'Digite o nome do parâmetro do campo, por exemplo, cor="red"', ''
-	   , function(evt, texto) { 
-			if (texto) { 
+	   , function(evt, texto) {
+			if (texto) {
 				contagem = localizaNoPorCampo(texto, bFiltroNosSelecionados);
 				if (contagem) {
 					alertify.success('Localizou '+ contagem + ' ocorrencias(s) de ' + texto);
@@ -880,7 +850,7 @@ function menu_localizaPorCampo(bFiltroNosSelecionados) {
 			}
 			menu_rendererAtivarParar(brenderer, false);
 			ativaAtalhos(true);
-		}, function() { 
+		}, function() {
 			ativaAtalhos(true);
 			menu_rendererAtivarParar(brenderer, false);
 		});
@@ -894,15 +864,15 @@ function menu_localiza_adjacentes(bFiltroNosSelecionados) {
 	for (let noId of gparam.idNosSelecionados) {
 		graph.forEachLinkedNode(noId, function(nodeaux, link){
 			idNosLocalizados.add(nodeaux.id);
-		});	
+		});
 	}
 	menu_rendererAtivarParar(brenderer, false);
 	if (idNosLocalizados.size) {
 		//selecionaNoid(null, false); //apaga seleção primeiro
 		for (let n of idNosLocalizados) {
-			//graphics.getNodeUI(n).getElementsByTagName('rect')[1].setAttribute('visibility', 'visible'); 
+			//graphics.getNodeUI(n).getElementsByTagName('rect')[1].setAttribute('visibility', 'visible');
 			//gparam.idNosSelecionados.add(n);
-			selecionaNoid(n, true, true); 
+			selecionaNoid(n, true, true);
 		}
 		alertify.success('Localizou '+ idNosLocalizados.size + ' adjacentes');
 		return idNosLocalizados.size;
@@ -921,7 +891,7 @@ function menu_localiza_componente() {
 		for (let noId of idNosLocalizadosFor) {
 			graph.forEachLinkedNode(noId, function(nodeaux, link){
 				idNosLocalizados.add(nodeaux.id);
-			});	
+			});
 		}
 		if (tamanhoAnterior==idNosLocalizados.size) {
 			break;
@@ -932,11 +902,11 @@ function menu_localiza_componente() {
 	if (idNosLocalizados.size) {
 		//selecionaNoid(null, false); //apaga seleção primeiro
 		for (let n of idNosLocalizados) {
-			//graphics.getNodeUI(n).getElementsByTagName('rect')[1].setAttribute('visibility', 'visible'); 
+			//graphics.getNodeUI(n).getElementsByTagName('rect')[1].setAttribute('visibility', 'visible');
 			//gparam.idNosSelecionados.add(n);
-			selecionaNoid(n, true, true); 
+			selecionaNoid(n, true, true);
 		}
-		if (gparam.idNosSelecionados.size == graph.getNodesCount()) { 
+		if (gparam.idNosSelecionados.size == graph.getNodesCount()) {
 			alertify.success('Todo o gráfico foi selecionado, com '+ idNosLocalizados.size + ' itens');
 		} else {
 			alertify.success('Localizou '+ idNosLocalizados.size + ' adjacentes');
@@ -1019,7 +989,7 @@ function menu_rendererAtivarParar(bAtivar, bMostraMensagem) {
 function pausarLayout(milissegundos) {
 	gparam.renderer.pause();
 	setTimeout(
-		function() { 
+		function() {
 			if (gparam.bRenderAtivado) {
 				gparam.renderer.resume();
 			};
@@ -1027,7 +997,7 @@ function pausarLayout(milissegundos) {
 	);
 }//.function pausarLayout
 
-function removeIdNo(noId) { 
+function removeIdNo(noId) {
 	//remover o nó da lista de nós
 	//remover ligações que partem do nó e que chegam ao nó
 	//procura label do link para remover
@@ -1056,10 +1026,10 @@ function menu_excluirNosSelecionados(bSemConfirmar) {
 	}
 	var tmensagem = (gparam.idNosSelecionados.size==1) ? 'Excluir 1 nó.' : ('Excluir '+ gparam.idNosSelecionados.size + ' nós selecionados.');
 	var tsucesso = (gparam.idNosSelecionados.size==1) ? '1 nó foi excluído.' : (gparam.idNosSelecionados.size + ' nós foram excluídos.');
-	var fExcluir = function(){ 
+	var fExcluir = function(){
 		for (let n of gparam.idNosSelecionados) {
 			removeIdNo(n);
-		}			
+		}
 		gparam.idnoSelecionado=null;
 		alertify.success(tsucesso);
 	};
@@ -1067,7 +1037,7 @@ function menu_excluirNosSelecionados(bSemConfirmar) {
 		fExcluir();
 		return;
 	}
-	alertify.confirm(tmensagem, 'Deseja prosseguir? Não será possível reverter a exclusão.', 
+	alertify.confirm(tmensagem, 'Deseja prosseguir? Não será possível reverter a exclusão.',
 			fExcluir
             , function(){ ;}
 	);
@@ -1075,21 +1045,21 @@ function menu_excluirNosSelecionados(bSemConfirmar) {
 
 function menu_excluirTudo() {
 	var setNos = new Set();
-	graph.forEachNode( function(node) { 
+	graph.forEachNode( function(node) {
 		setNos.add(node.id);
 	});
-	alertify.confirm('Excluir todos os '+ setNos.size +  ' nós.', 'Deseja prosseguir? Não será possível reverter a exclusão.', 
-			function(){ 
+	alertify.confirm('Excluir todos os '+ setNos.size +  ' nós.', 'Deseja prosseguir? Não será possível reverter a exclusão.',
+			function(){
 				for (let n of setNos) {
 					removeIdNo(n);
-				}			
-				alertify.success(setNos.size + ' nós foram excluídos.') 
+				}
+				alertify.success(setNos.size + ' nós foram excluídos.')
 			}
             , function(){ ;}
 	);
 }//.function menu_excluirTudo
 
-function excluirNoMantendoLinks() { 
+function excluirNoMantendoLinks() {
 	if (gparam.idNosSelecionados.size!=3) {
 		alertify.error('Para usar esta rotina, deve haver três itens selecionados.');
 		return;
@@ -1131,7 +1101,7 @@ function dadosEmHtmlPJ(d, noData) {
 	ht += "<b>Opção MEI:</b> "+d['opcao_mei'] +"<br>";
 	ht += "<b>Endereço:</b> "+d['endereco'] +"<br>";
 	ht += "<b>Municipio:</b> "+d['municipio']+"/"+d['uf'] + " - <b>CEP:</b>" + d['cep'] +"<br>";
-	if (d['nm_cidade_exterior'] || d['nome_pais']) { 
+	if (d['nm_cidade_exterior'] || d['nome_pais']) {
 		ht += "<b>Endereço Exterior:</b> "+d['nm_cidade_exterior'] +" <b>País:</b> "+d['nome_pais']+"<br>";
 	}
 	ht += "<b>Telefone:</b> "+d['ddd1']+" "+ d['telefone1']+"  "+d['ddd2']+" "+d['telefone2'] +"<br>";
@@ -1154,25 +1124,24 @@ function dadosEmHtmlPJ(d, noData) {
 
 function menu_dados(bNovaJanela, idNo) {
 	var idin = gparam.idnoSelecionado;
-	if (idNo) { 
-		idin = idNo; 
+	if (idNo) {
+		idin = idNo;
 	}
 	if (!idin) return;
 	function mostraResultado(idin, ht) {
-		if (bNovaJanela) { 
-				//var win = window.open('/rede/dados_janela/'+gparam.idnoSelecionado, gparam.idnoSelecionado,'resizable,scrollbars,status,menubar=no, toolbar=no, personalbar=no, location=no, titlebar=0, height=500, width=400');
+		if (bNovaJanela) {
 				var win = window.open('', idin,'resizable,scrollbars,status,menubar=no, toolbar=no, personalbar=no, location=no, titlebar=0, height=500, width=400');
 				win.document.body.innerHTML = "<!DOCTYPE html><html><head><title>" + idin + "</title></head><body  >" + ht + "</body></html>";
 		} else {
 			alertify.alert("Dados de "+idin, ht, function(){});
-		}	
+		}
 	}
 	var noData = graph.getNode(idin).data;
 	var ht = '';
 	if (!idin.startsWith('PJ_')) {
 		if (idin.startsWith('PF_')) {
 			ht += "<b>ID: </b> " + idin + "<br>";
-			if (noData.descricao) { 
+			if (noData.descricao) {
 				ht += "<b>Descrição: </b> "+ noData.descricao + "<br>";
 			}
 			if (noData.nota) {
@@ -1208,7 +1177,7 @@ function menu_dados(bNovaJanela, idNo) {
 
 			if (data) {
 				if (idin.startsWith('PJ_')) {
-					ht = dadosEmHtmlPJ(data, noData) 
+					ht = dadosEmHtmlPJ(data, noData)
 				} // else {
 					//ht += noData;
 				htadicional = ''
@@ -1224,7 +1193,7 @@ function menu_dados(bNovaJanela, idNo) {
 					ht +=  "<b>--------------</b> "+ "<br>" + htadicional;
 				}
 				//}
-			} 
+			}
 			mostraResultado(idin, ht);
 		  });
 		}
@@ -1236,14 +1205,14 @@ function menu_dados(bNovaJanela, idNo) {
 }//.function menu_dados
 
 function menu_listaSelecao(bNovaJanela) {
-	if (!gparam.idNosSelecionados) { 
-		return; 
+	if (!gparam.idNosSelecionados) {
+		return;
 	}
 	var ht = '';
 	for (let n of gparam.idNosSelecionados) {
 		var noData = graph.getNode(n).data;
 		ht += "<b>ID: </b> " + noData.id;
-		if (noData.descricao && (!noData.id.includes(noData.descricao))) { 
+		if (noData.descricao && (!noData.id.includes(noData.descricao))) {
 			ht += " ("+ noData.descricao + ")<br>";
 			ht += " ("+ noData.descricao + ")<br>";
 		} else {
@@ -1254,15 +1223,14 @@ function menu_listaSelecao(bNovaJanela) {
 		}
 	}
 	if (ht) {
-		//document.getElementById("corpo").disabled = true; 
-		if (bNovaJanela) { 
-			//var win = window.open('/rede/dados_janela/'+gparam.idnoSelecionado, gparam.idnoSelecionado,'resizable,scrollbars,status,menubar=no, toolbar=no, personalbar=no, location=no, titlebar=0, height=500, width=400');
+		//document.getElementById("corpo").disabled = true;
+		if (bNovaJanela) {
 			var win = window.open('', gparam.idnoSelecionado,'resizable,scrollbars,status,menubar=no, toolbar=no, personalbar=no, location=no, titlebar=0, height=500, width=400');
 			win.document.body.innerHTML = "<!DOCTYPE html><html><head><title>Itens Selecionados</title></head><body  >" + ht + "</body></html>";
 		} else {
 			alertify.alert("Itens selecionados: \n" + ht, function(){});
 		}
-	} 
+	}
 }//.function menu_lista_selecao
 
 
@@ -1280,7 +1248,7 @@ function menu_importarJsonArquivo(evt, tipo) {
 		reader.onload = (function(f) {
 			return function(e) {
 				var contents = e.target.result;
-				//alert( "Got the file.n"  +"name: " + f.name + "n"  +"type: " + f.type + "n"  +"size: " + f.size + " bytesn"  + "starts with: " + contents.substr(1, contents.indexOf("n"))); 
+				//alert( "Got the file.n"  +"name: " + f.name + "n"  +"type: " + f.type + "n"  +"size: " + f.size + " bytesn"  + "starts with: " + contents.substr(1, contents.indexOf("n")));
 				if (f.name.endsWith('.csv')) {
 					inserir_lista(contents);
 					console.log(contents);
@@ -1306,14 +1274,14 @@ function menu_importarJsonArquivo(evt, tipo) {
 					var descricao = prompt('Digite uma descrição para o arquivo ' + f.name, '');
 					if (graph.hasNode(idNovo)) {
 						alert('Já existe um arquivo com o nome ' + f.name);
-						
+
 					} else {
 						var no = {'id': idNovo,
 						   'descricao': descricao,
 						   'camada': 0,
 						   'situacao_ativa': true,
 						   'imagem': iconeF(idNovo), //'icone-grafo-id.png',
-						   'cor': 'yellow'};					
+						   'cor': 'yellow'};
 						};
 						graph.addNode(idNovo, JSON.parse(JSON.stringify(no)));
 					}
@@ -1339,9 +1307,9 @@ function menu_exportaJSONServidorParaBaseLocal(bSoSelecionados, comentario, acao
 			return;
 		}
 		url = base + 'json_para_base/' + encodeURIComponent(comentario);
-	} 
-	
-	fazFetch(url, jsonDados); 
+	}
+
+	fazFetch(url, jsonDados);
 	function fazFetch(url) {
 		document.body.style.cursor = 'wait';
 		fetch(url, {method: 'post', body:JSON.stringify(jsonDados), headers: {"Content-type": "application/json"}, cache: "no-store"}) // mode: 'cors',
@@ -1363,11 +1331,11 @@ function menu_exportaJSONServidorParaBaseLocal(bSoSelecionados, comentario, acao
 						} else {
 							//alert('Os dados foram inseridos na base local.');
 							var textoMensagem = 'Os dados foram inseridos na base local.';
-						}	
+						}
 						exibe_mensagem(textoMensagem, data.mensagem);
 					} else {
 						alertify.error('Aconteceu um erro. 6 ' + data.mensagem.popup);
-					}					
+					}
 			    });
 			}
 		)
@@ -1401,7 +1369,7 @@ function menu_exportaJSONServidor(bSoSelecionados, bMostraAlerta, idArquivoServi
 	}
 	var url = base + 'arquivos_json_upload/' + encodeURIComponent(idArquivoServidor);
 
-	fazFetch(url, jsonDados, nomeNovaAba); 
+	fazFetch(url, jsonDados, nomeNovaAba);
 	function fazFetch(url, idArquivoServidor) {
 		document.body.style.cursor = 'wait';
 		fetch(url, {method: 'post', body:JSON.stringify(jsonDados), headers: {"Content-type": "application/json"}, cache: "no-store"}) // mode: 'cors',
@@ -1451,7 +1419,7 @@ function menu_importaJSONServidor(idArquivoServidor, bNaoConfirma) {
 	var url = base + 'arquivos_json/' + idArquivoServidor;
 	//se idArquivoServidor=temporario, o arquivo será apagado do servidor após de ser servido
 	alertify.error('base: '+base+'   url: '+url)
-	fazFetch(url, idArquivoServidor); 
+	fazFetch(url, idArquivoServidor);
 	function fazFetch(url, idArquivoServidor) {
 		document.body.style.cursor = 'wait';
 		//fetch(url, {method: 'get'}) // mode: 'cors',
@@ -1490,16 +1458,16 @@ function inserirJson(jsonIn, texto, bNaoConfirma) {
 	var kNosAInserir = 0;
 	/* isto dá um valor muito maior que o real (há nós duplicados no json??)
 	for (let noaux of Object.values(no)) { //verifica quantos nós serão inseridos
-		if (!graph.hasNode(noaux.id)) { 
+		if (!graph.hasNode(noaux.id)) {
 			kNosAInserir += 1;
 		}
 	}*/
 	var sNosInserir = new Set();
 	for (let noaux of Object.values(no)) { //verifica quantos nós serão inseridos
-		if (!graph.hasNode(noaux.id)) { 
+		if (!graph.hasNode(noaux.id)) {
 			sNosInserir.add(noaux.id);
 		}
-	}	
+	}
 	kNosAInserir = sNosInserir.size;
 	if (!bNaoConfirma) {
 		if (kNosAInserir > gparam.confirmaAntesDeInserirNNos) {
@@ -1512,13 +1480,13 @@ function inserirJson(jsonIn, texto, bNaoConfirma) {
 			gparam.confirmaAntesDeInserirNNos = kNosAInserir;
 		}
 	}
-	if (kNosAInserir>100) { 
+	if (kNosAInserir>100) {
 		pinarNoTemp(Math.sqrt(kNosAInserir)*200); //fixa temporariamente o nó selecionado
 	}
 	for (let noaux of Object.values(no)) {
-		if (!graph.hasNode(noaux.id)) { 
+		if (!graph.hasNode(noaux.id)) {
 			graph.addNode(noaux.id, JSON.parse(JSON.stringify(noaux)));
-			if (noaux.posicao) { 
+			if (noaux.posicao) {
 				if ((noaux.posicao.x) && (noaux.posicao.y)) {
 				gparam.layout.setNodePosition(noaux.id, noaux.posicao.x, noaux.posicao.y);
 				//refreshPosicoes = true;
@@ -1527,14 +1495,14 @@ function inserirJson(jsonIn, texto, bNaoConfirma) {
 				let posicaoReferencia = gparam.layout.getNodePosition(gparam.idnoSelecionado);
 				gparam.layout.setNodePosition(noaux.id, posicaoReferencia.x + Math.random()*gparam.springLength-gparam.springLength/2, posicaoReferencia.y + Math.random()*gparam.springLength-gparam.springLength/2);
 			}
-			gparam.layout.pinNode(noaux, noaux.pinado); 
+			gparam.layout.pinNode(noaux, noaux.pinado);
 			kn += 1;
 			idNosInseridos.add(noaux.id);
 			if (!noaux.camada) {
 				idNosCamadaZero.add(noaux.id);
 			}
-		} else { //nó já existe TODO: verificar se precisa atualizar .data 
-		
+		} else { //nó já existe TODO: verificar se precisa atualizar .data
+
 		}
 	}
 	if (idNosInseridos.size) {
@@ -1552,7 +1520,7 @@ function inserirJson(jsonIn, texto, bNaoConfirma) {
 		if (!ligExistente) {
 			ligExistente = graph.hasLink(ligaux.destino, ligaux.origem);
 		}
-		if (ligExistente) { 
+		if (ligExistente) {
 			labelLigacao = ligExistente.data.label ? ligExistente.data.label : '';
 			var conjLabel = new Set(labelLigacao.split(';')); //; é separador dos tipos de ligação
 			//var conjNovo = new Set(ligaux.label.split(';')); //bug, quando a ligacao.label é null
@@ -1561,7 +1529,7 @@ function inserirJson(jsonIn, texto, bNaoConfirma) {
 			uniao.delete('');
 			ligExistente.data.label = [...uniao].join(';')
 			document.getElementById('link_label_'+ligExistente.data.id).text(filtraTextoLigacao(ligExistente.data.label));
-		} else { //if (!graph.hasLink(ligaux.origem, ligaux.destino)) { 
+		} else { //if (!graph.hasLink(ligaux.origem, ligaux.destino)) {
 			ligaux.id = gparam.kligacoes;
 			if (1) { //((graph.hasNode(ligaux.origem)) && (graph.hasNode(ligaux.destino))) {
 				try { //dava erro com a rede de teste
@@ -1586,7 +1554,7 @@ function inserirJson(jsonIn, texto, bNaoConfirma) {
 		for (let n of idNosCamadaZero) {
 			selecionaNoid(n, true);
 		}
-	} 
+	}
 	var textoMensagem = texto;
 	if (kn)	textoMensagem += ' Foram inseridos ' + kn + ' itens';
 	if (kl) {
@@ -1597,7 +1565,7 @@ function inserirJson(jsonIn, texto, bNaoConfirma) {
 		}
 	}
 	if ((!kn) && (!kl)) textoMensagem += 'Não encontrou novos itens';
-	exibe_mensagem(textoMensagem, jsonIn.mensagem); 
+	exibe_mensagem(textoMensagem, jsonIn.mensagem);
 	/*
 	if (!jsonIn.mensagem) {
 		jsonIn.mensagem = {'lateral': '', 'popup': '', 'confirmar': ''};
@@ -1614,12 +1582,12 @@ function inserirJson(jsonIn, texto, bNaoConfirma) {
 	if (kn  && !gparam.bRenderAtivado) { //ativa leiaute por 1 segundo para exibir novos itens
 		gparam.renderer.resume();
 		setTimeout(
-			function() { 
+			function() {
 				if (!gparam.bRenderAtivado) {
 					gparam.renderer.pause();
 				};
 			}, 500
-		);	
+		);
 	}
 }//.function inserirJson
 
@@ -1671,7 +1639,7 @@ function menu_incluirCamada(idin, camada, tipo, bNaoConfirma) {
 				if (data.no.length) {
 					inserirJson(data, idin + ' em camada ' + camada +'. ', bNaoConfirma);
 				} else {
-					if (isNumeric(idin.replace(/[\.\-\//]/g, '').trim()) || idin.includes('*')) { 
+					if (isNumeric(idin.replace(/[\.\-\//]/g, '').trim()) || idin.includes('*')) {
 						alertify.error('Não encontrou ' + idin + ' na base.');
 					} else {
 						alertify.error('Não encontrou ' + idin + ' na base. Utilize o caractere curinga, por exemplo, ' + idin + '*');
@@ -1696,7 +1664,7 @@ function menu_incluirCamada(idin, camada, tipo, bNaoConfirma) {
 		//document.getElementById('dlgLink_camadas').value = camada;
 		//var dlLinkhtml = dlgLink.outerHTML;
 		//var dlLinkhtml = dlgLink.outerHTML;
-		dlgLinkOriginal.parentNode.appendChild(dlgLink); 
+		dlgLinkOriginal.parentNode.appendChild(dlgLink);
 		dlgLink.outerHTML = ''; //isso funciona no firefox mas no chrome dá erro no chrome sem a linha de cima
 		/*
 		try {
@@ -1705,12 +1673,12 @@ function menu_incluirCamada(idin, camada, tipo, bNaoConfirma) {
 			console.log(e);
 		}*/
 		ativaAtalhos(false);
-		alertify.confirm(dlgLink).set('onok', function(closeevent, value) { 
+		alertify.confirm(dlgLink).set('onok', function(closeevent, value) {
 			/*
 			var valorMinimo = parseFloat(dlgLink.getElementById('dlgLink_valorMinimo').value).toString();
 			var valorMaximo = parseFloat(dlgLink.getElementById('dlgLink_valorMaximo').value).toString();
 			var numeroItens = parseInt(dlgLink.getElementById('dlgLink_numeroItens').value).toString();
-			var camada = parseInt(dlgLink.getElementById('dlgLink_camadas').value).toString();*/	
+			var camada = parseInt(dlgLink.getElementById('dlgLink_camadas').value).toString();*/
 			var listaInput = dlgLink.getElementsByTagName('input');
 			var valorMinimo = parseFloat(listaInput.dlgLink_valorMinimo.value).toString();
 			var valorMaximo = parseFloat(listaInput.dlgLink_valorMaximo.value).toString();
@@ -1722,24 +1690,18 @@ function menu_incluirCamada(idin, camada, tipo, bNaoConfirma) {
 			listaInputOriginal.dlgLink_valorMaximo.value = listaInput.dlgLink_valorMaximo.value;
 			listaInputOriginal.dlgLink_numeroItens.value = listaInput.dlgLink_numeroItens.value;
 			listaInputOriginal.dlgLink_camadas.value = listaInput.dlgLink_camadas.value;
-			/* Insert your code to work with the two values */ 	
+			/* Insert your code to work with the two values */
 			// await new Promise(r => setTimeout(r, 1000)); //delay de 1 segundo
-			valorMinimo = (valorMinimo!='NaN')?valorMinimo:'0';			
+			valorMinimo = (valorMinimo!='NaN')?valorMinimo:'0';
 			valorMaximo = (valorMaximo!='NaN')?valorMaximo:'0';
 			numeroItens = (numeroItens!='NaN')?numeroItens:'0';
 			camada = (camada!='NaN')?camada:'0';
-			//alert('valores: ' + valorMinimo + ' '+ valorMaximo + ' ' + numeroItens + ' '+camadas);
-			//console.log(valorMinimo, valorMaximo, numeroItens, camada);
 			ativaAtalhos(true);
-			//dlgLink.outerHTML = dlLinkhtml;
-			//url = "/rede/grafojson/links/"  + camada + "/" + idin  + "/" + numeroItens + '/' + valorMinimo + '/' + valorMaximo;
 			url = base + 'grafojson/links/'  + camada +  '/' + numeroItens + '/' + valorMinimo + '/' + valorMaximo  + '/' ;
 			fazFetch(url, idin);
-			//dlgLink.outerHTML = dlLinkhtml; 
-			ativaAtalhos(true); 
-		}, function() { 
-			//console.log('cancel'); 
-			//dlgLink.outerHTML = dlLinkhtml; 
+			//dlgLink.outerHTML = dlLinkhtml;
+			ativaAtalhos(true);
+		}, function() {
 			ativaAtalhos(true); }
 		).set('oncancel', function() { ativaAtalhos(true);  })
 		.set('title',"Inserir Ligacoes");
@@ -1772,15 +1734,15 @@ function menu_inserir(textoDefault, teclaShift, teclaCtrl) {
 	}
 	textoPrompt += ' A busca por nome está limitada por padrão a 10 registros. Se desejar mais registros, coloque o nome seguido de @ e número, por exemplo, FULANO@20 para 20 registros. Para exibir Matriz e 10 filiais, digite apenas o Radical do CNPJ seguido de @10. Digite TESTE para visualizar um CNPJ aleatório.';
 	alertify.prompt( 'Inserir item no gráfico', textoPrompt , itensDefault
-               , function(evt, cnpjs) { 
+               , function(evt, cnpjs) {
 					gparam.inserirDefault = cnpjs;
 					var cn = cnpjs.trim().toUpperCase();
-					if (cn) { 
+					if (cn) {
 						if (cn=='T') {
 							cn='TESTE';
 						}
 						if (cn=='TESTE') {
-							if (gparam.numeroInsercoes==0) { //se for primeira insercao de teste, já coloca camada 2 
+							if (gparam.numeroInsercoes==0) { //se for primeira insercao de teste, já coloca camada 2
 								camada = 1;
 							}
 						}
@@ -1802,7 +1764,7 @@ function menu_buscaEmSite(siteUrl){
 	if (!parametro) {
 		parametro = graph.getNode(gparam.idnoSelecionado).data.id.substr(3);
 	}
-	var strUrl = siteUrl + '"' + parametro + '"';		
+	var strUrl = siteUrl + '"' + parametro + '"';
 	window.open(strUrl).focus();
 } //.function menu_buscaEmSite
 
@@ -1821,11 +1783,11 @@ function menu_abrirNovaAba(idno, bNosSelecionados) {
 	var novaJanela=null;
 	if ((!idno)&&(!bNosSelecionados)) {
 		novaJanela=window.open(base + '?pula_mensagem=sim');
-		novaJanela.focus(); 
+		novaJanela.focus();
 		return;
 	}
 	if ((!idno)&&bNosSelecionados) { //abre numa nova aba os nós selecionados
-		menu_exportaJSONServidor(true, false, 'temporario', null, document.title + '-parcial')	
+		menu_exportaJSONServidor(true, false, 'temporario', null, document.title + '-parcial')
 		return;
 	}
 	if (idno.startsWith('LI_')) {
@@ -1843,7 +1805,7 @@ function menu_abrirNovaAba(idno, bNosSelecionados) {
 		}
 		let bodyjson = JSON.stringify([idno.substr(3)]); //JSON.stringify([...gparam.idNosSelecionados]);
 		fetch(url, {method: 'post', body: bodyjson, headers: {"Content-type": "application/json"}, cache: "no-store"}) // mode: 'cors',
-			.then( 
+			.then(
 			function(response) {
 			  if (response.status !== 200) {
 				console.log('Looks like there was a problem. Status Code: ' +  response.status);
@@ -1868,13 +1830,13 @@ function menu_abrirNovaAba(idno, bNosSelecionados) {
 	}
 	/*
 	ativaAtalhos(false);
-	alertify.prompt( 'Abrir ' + idno+  ' em nova aba', 'Selecione camadas', '1', 
-		function(evt, cam) { 	
+	alertify.prompt( 'Abrir ' + idno+  ' em nova aba', 'Selecione camadas', '1',
+		function(evt, cam) {
 			ativaAtalhos(true);
 			var strUrl = base + 'grafico/' + cam + '/' + idno;
 			novaJanela=window.open(strUrl);
-			novaJanela.focus();} , 
-		function() { ativaAtalhos(true);}	
+			novaJanela.focus();} ,
+		function() { ativaAtalhos(true);}
 	) ;
 	*/
 }//.function menu_abrirNovaAba
@@ -1891,7 +1853,7 @@ function menu_selecionarTudo() {
 		function(node) {
 			//var nodeUI = graphics.getNodeUI(node.id);
 			selecionaNoid(node.id, true, true);
-		}	
+		}
 	);
 	alertify.success('Foram selecionados ' + graph.getNodesCount() + ' itens.');
 }//.function menu_selecionarTudo
@@ -1906,7 +1868,7 @@ function menu_selecionarInverte() {
 				//var nodeUI = graphics.getNodeUI(node.id);
 				selecionaNoid(node.id, true, true);
 			}
-		}	
+		}
 	);
 	alertify.success('Foram selecionados ' + gparam.idNosSelecionados.size+ ' itens.');
 }//.function menu_selecionarInverte
@@ -1927,18 +1889,18 @@ function menu_pinarNo(bfixar){
 //	layout.pinNode(no, !layout.isNodePinned(no));
 }//.function menu_pinarNo
 
-function menu_pinarDesfazerTudo(){ 
+function menu_pinarDesfazerTudo(){
 	var layout = gparam.layout;
 	graph.forEachNode(
 		function(node) {
 			gparam.layout.pinNode(node, false);
-		}	
+		}
 	);
 	alertify.success('Todos os nós foram desafixados.');
 }//.function menu_pinarDesfazerTudo
 
-function menu_pinarUmNoEmCadaGrupo(bfixar){ 
-	var listaGrupos = separaGrupos(0); //lista de sets 
+function menu_pinarUmNoEmCadaGrupo(bfixar){
+	var listaGrupos = separaGrupos(0); //lista de sets
 	var sfixados = new Set();
 	for (let sgrupo of listaGrupos) {
 		let nid = [...sgrupo][0];
@@ -1959,25 +1921,25 @@ function pinarNoTemp(milissegundos) {
 	if (layout.isNodePinned(no)) {
 		return;
 	}
-	layout.pinNode(no, true); 
+	layout.pinNode(no, true);
 	//gparam.scale = graphics.scale;
 	//desabilita scale temporariamente (se tiver muitos nós, mexer na escala pode travar o browser
 	gparam.mensagem_alerta_zoom_desativado = 'O zoom foi temporariamente desativado. Aguarde alguns segundos.';
-	graphics.scale = function(a,b) { 
+	graphics.scale = function(a,b) {
 		//alertify.error('O zoom foi temporariamente desativado. Aguarde alguns segundos.');
 		if (gparam.mensagem_alerta_zoom_desativado) { alertify.error(gparam.mensagem_alerta_zoom_desativado); };
 		gparam.mensagem_alerta_zoom_desativado = ''; //exibe mensagem só uma vez
-		return gparam.renderer.getTransform().scale; 
-	}; 
+		return gparam.renderer.getTransform().scale;
+	};
 	setTimeout(
-		function() { 
-			layout.pinNode(no, false); 
+		function() {
+			layout.pinNode(no, false);
 			graphics.scale = gparam.fScale;
 		}, milissegundos
-	); 
+	);
 }//.function pinarNoTemp
 
-function menu_rotulosCompletos(bTipo) { 
+function menu_rotulosCompletos(bTipo) {
 	if (bTipo===null) {
 		gparam.kTipoRotulo = (gparam.kTipoRotulo + 1) % 4;
 	} else if (bTipo) {
@@ -1986,7 +1948,7 @@ function menu_rotulosCompletos(bTipo) {
 		gparam.kTipoRotulo=2;
 	}
 	graph.forEachNode( function(node) {
-		var ui=graphics.getNodeUI(node.id); 
+		var ui=graphics.getNodeUI(node.id);
 		var [identificador, nome, nota] = labelsNo(node, gparam.kTipoRotulo); //node.data.label.split('\n');
 		ui.getElementsByTagName('tspan')[0].text(identificador);
 		ui.getElementsByTagName('tspan')[1].text(nome);
@@ -1994,7 +1956,7 @@ function menu_rotulosCompletos(bTipo) {
 	});
 }//.function menu_rotulosCompletos
 
-function menu_ligacoesExibe(bTipo) { 
+function menu_ligacoesExibe(bTipo) {
 	if (bTipo===null) {
 		gparam.bMostraLigacao = !gparam.bMostraLigacao;
 	} else if (bTipo) {
@@ -2007,9 +1969,9 @@ function menu_ligacoesExibe(bTipo) {
 	gparam.renderer.zoomOut();
 }//.function menu_ligacoesExibe
 
-function menu_rotulosPosicao(bTipo) { 
+function menu_rotulosPosicao(bTipo) {
 	if (bTipo===null) {
-		
+
 	} else if (bTipo) {
 		gparam.btextoEmbaixoIcone=true;
 	} else {
@@ -2033,7 +1995,7 @@ function menu_colorir(corEscolhida) {
 		alertify.alert('Colorir', 'Não há itens selecionados para colorir. Selecione e tente novamente.', function(){ ; });
 		return;
 	}
-	var cor = document.querySelector("#palheta").value; 
+	var cor = document.querySelector("#palheta").value;
 	if (corEscolhida) {
 		cor = corEscolhida;
 	}
@@ -2041,7 +2003,7 @@ function menu_colorir(corEscolhida) {
 	var tsucesso = (gparam.idNosSelecionados.size==1) ? '1 nó foi colorido.' : (gparam.idNosSelecionados.size + ' nós foram coloridos.');
 	for (let n of gparam.idNosSelecionados) {
 		colorir(n, cor);
-	}			
+	}
 	alertify.success(tsucesso);
 }//.function menu_colorir
 
@@ -2056,7 +2018,7 @@ function menu_ligar_selecionados(bEstrela, nomeLigacao, bSemMensagem) {
 	}
 	let label = nomeLigacao?nomeLigacao:'';
 	let primeiroNo = [...gparam.idNosSelecionados][0];
-	
+
 	if (!bSemMensagem) {
 		var mensagem = bEstrela ? 'Deseja ligar o item ' +  primeiroNo + ' aos itens ' + (gparam.idNosSelecionados.size-1) + ' selecionados?' : 'Deseja ligar os ' + gparam.idNosSelecionados.size + ' itens selecionados?';
 		mensagem += '\nDigite o texto da ligaçao (opcional):';
@@ -2064,7 +2026,7 @@ function menu_ligar_selecionados(bEstrela, nomeLigacao, bSemMensagem) {
 			if (nomeLigacao==='') {
 				if (!confirm(mensagem)) {
 					label = null;
-				} 
+				}
 			} else {
 				label = prompt(mensagem, '');
 			}
@@ -2086,12 +2048,12 @@ function menu_ligar_selecionados(bEstrela, nomeLigacao, bSemMensagem) {
 			ligacoes.push({'origem': anterior,
 						   'destino': destino,
 						   'cor': gparam.corLigacaoLink, //'green',
-						   'camada': 1,		   
+						   'camada': 1,
 						   'tipoDescricao': '', //'link',
 						   'label': label});
 			if (!bEstrela) {
 				anterior = destino;
-			} 
+			}
 		}
 	}
 	/*
@@ -2100,10 +2062,10 @@ function menu_ligar_selecionados(bEstrela, nomeLigacao, bSemMensagem) {
 		ligacoes.push({'origem': anterior,
 								   'destino': inicial,
 								   'cor': gparam.corLigacaoLink, //'green',
-								   'camada': 1,		   
+								   'camada': 1,
 								   'tipoDescricao': '', //'link',
 								   'label': label});
-	} */ 
+	} */
 	var noLigacoes = {'no':[], 'ligacao':ligacoes, 'mensagem':{'lateral': '', 'popup': '', 'confirmar': ''}};
 	inserirJson(noLigacoes,' Ligações. ');
 	return true;
@@ -2141,7 +2103,7 @@ function menu_desligar_selecionados(bRemoverTodasLigacoes) {
 			if (link) {
 				if ( (gparam.idNosSelecionados.has(link.fromId) && gparam.idNosSelecionados.has(link.toId)) ||
 					 ( bRemoverTodasLigacoes && (gparam.idNosSelecionados.has(link.fromId) || gparam.idNosSelecionados.has(link.toId)) ) ) {
-						slinkIds.add(link); 
+						slinkIds.add(link);
 				}
 			}
 		});
@@ -2160,7 +2122,7 @@ function menu_desligar_selecionados(bRemoverTodasLigacoes) {
 				if (!resp) {
 					return;
 				}
-				bRemoverTodasLigacoes = true;	
+				bRemoverTodasLigacoes = true;
 			}
 		}
 	}
@@ -2171,7 +2133,7 @@ function menu_desligar_selecionados(bRemoverTodasLigacoes) {
 			element=document.getElementById('link_label_'+linkUIaux.attr('id'));
 			element.parentNode.removeChild(element);
 			graph.removeLink(link);
-		} catch (e){; };		
+		} catch (e){; };
 	}
 }//menu_desligar_selecionados
 
@@ -2186,19 +2148,19 @@ function junta(a, separador, b) {
 		return ''+a;
 	} else if (b) {
 		return ''+b;
-	}	
+	}
 	return ''
 }
 
 function removeGalhos(bExibeMensagem) {
-	var quantidadeLigacoes;	
-	var sNosRemover;	
+	var quantidadeLigacoes;
+	var sNosRemover;
 	var contagem=0;
 	if (!confirm('Deseja simplificar o gráfico, mantendo apenas os itens com mais de uma ligação ou que tenha alguma anotação ou cor? Não será possível reverter!!')) {
 		return;
 	}
 	while (true) {
-		sNosRemover = new Set();	
+		sNosRemover = new Set();
 		graph.forEachNode(function(node) {
 			if (node) {
 				quantidadeLigacoes = 0 + graph.getLinks(node.id).length;
@@ -2229,7 +2191,7 @@ function menu_quebraGraficoEmPartes(){
 		return;
 	}
 	if (ngrupos>10) {
-		alertify.error('Escolha uma quantidade menor de novas abas.'); 
+		alertify.error('Escolha uma quantidade menor de novas abas.');
 		return;
 	}
 	var tamanho = Math.floor(graph.getNodesCount()/ngrupos)+1;
@@ -2243,7 +2205,7 @@ function menu_quebraGraficoEmPartes(){
 	for (let conj of conjuntos) {
 		var sconj = new Set(conj);
 		//este alert serve para criar um delay entre as requisições... Se não houver pausa o servidor tenta criar arquivos json com nome repetido o que vai dar erro depois.
-		resp = confirm('Deseja criar uma nova aba com ' + sconj.size + ' elementos?'); 
+		resp = confirm('Deseja criar uma nova aba com ' + sconj.size + ' elementos?');
 		if (resp) {
 			k += 1;
 			menu_exportaJSONServidor(null, null, 'temporario', sconj, document.title + '-' + k);
@@ -2283,7 +2245,7 @@ function separaGrupos(tamanhoGrupo) {
 			di[link.fromId] = menor;
 			di[link.toId] = menor;
 		});
-		
+
 		sgrupos = new Set(Object.values(di));
 		if ((sgrupos.size==contagemAnterior)&&(!bMudou)) {
 			break;
@@ -2299,7 +2261,7 @@ function separaGrupos(tamanhoGrupo) {
 		if (value == null) {
 			dgrupo[v] = new Set();
 		}
-		dgrupo[v].add(k);	
+		dgrupo[v].add(k);
 	}
 
 	//cada elemento de listaGrupos é set com itens conectados
@@ -2316,7 +2278,7 @@ function separaGrupos(tamanhoGrupo) {
 	}
 	//conjuntos, tenta separar os conjuntos com no máximo tamanhoGrupo, preservando as ligações
 	//se o grupo conexo já for maior que tamanhoGrupo, coloca sem quebrá-lo
-	
+
 	var conjuntos = [];
 	var tamanhoAux = 0;
 	var caux = []; //new Set();
@@ -2338,7 +2300,7 @@ function separaGrupos(tamanhoGrupo) {
 	return conjuntos; //[ lista1, lista2,..]
 } //separaGrupos
 
-function menu_selecionaGruposComDuasCores(){ 
+function menu_selecionaGruposComDuasCores(){
 	//seleciona os grupos com duas cores (entradas e alvos)
 	var conjuntos = separaGrupos(0);
 	var k = 1;
@@ -2368,16 +2330,16 @@ function menu_selecionaGruposComDuasCores(){
 }//function menu_selecionaGruposComDuasCores
 
 function removeIsolados(bExibeMensagem) {
-	var quantidadeLigacoes;	
-	var sNosRemover;	
+	var quantidadeLigacoes;
+	var sNosRemover;
 	var contagem=0;
 	if (!confirm('Deseja remover os itens sem ligação? Não será possível reverter!!')) {
 		return;
 	}
-	sNosRemover = new Set();	
+	sNosRemover = new Set();
 	graph.forEachNode(function(node) {
 		if (node) {
-			
+
 			quantidadeLigacoes = 0 ;
 			getlinks = graph.getLinks(node.id);
 			if (getlinks) {
@@ -2421,7 +2383,7 @@ function criarNovoNo(idNovo, descricaoNovo, nota, nomeLigacao, dados) {
 	//nodados.situacao_ativa = nodados.situacao_ativa ? nodados.situacao_ativa : true;
 	nodados.imagem = nodados.imagem ? nodados.imagem : iconeF(idNovo);
 	nodados.cor = nodados.cor ? nodados.cor : 'yellow';
-	
+
 	graph.addNode(idNovo, JSON.parse(JSON.stringify(nodados)));
 	if (gparam.idnoSelecionado) {
 		var position = gparam.layout.getNodePosition(gparam.idnoSelecionado);
@@ -2434,7 +2396,7 @@ function criarNovoNo(idNovo, descricaoNovo, nota, nomeLigacao, dados) {
 	let ids = [...gparam.idNosSelecionados];
 	ids.unshift(idNovo);
 	gparam.idNosSelecionados = new Set(ids);
-	gparam.idnoSelecionado = idNovo; 
+	gparam.idnoSelecionado = idNovo;
 	gparam.listaIdNosInseridos.push(new Set([idNovo]));
 	if (gparam.idNosSelecionados.size==1) {
 		return;
@@ -2461,8 +2423,8 @@ function menu_ligar_novo(idNovo, descricaoNovo) {
 	dlgItemOriginal.parentNode.appendChild(dlgItem); // para dlgItem.outerHTML = '' funcionar no chrome
 	dlgItem.outerHTML = ''; //receita de bolo. sem isso  a linha de cima dava erro no chrome
 	ativaAtalhos(false);
-	alertify.confirm(dlgItem).set('onok', function(closeevent, value) { 
-		ativaAtalhos(true); 
+	alertify.confirm(dlgItem).set('onok', function(closeevent, value) {
+		ativaAtalhos(true);
 		var camposTexto = dlgItem.getElementsByClassName('ajs-input');
 		//idNovo = camposTexto[0].value.toUpperCase().trim();
 		idNovo = camposTexto[0].value.trim();
@@ -2497,7 +2459,7 @@ function menu_ligar_novo(idNovo, descricaoNovo) {
 		}*/
 		descricaoNovo = idNovo.startsWith('PF_')?idNovo.substr(15):descricaoNovo;
 		criarNovoNo(idNovo, descricaoNovo, tnota, tligacao, {});
-	}, function() { 
+	}, function() {
 		ativaAtalhos(true); }
 	).set('oncancel', function() { ativaAtalhos(true);  })
 	.set('title',"Novo Item");
@@ -2514,7 +2476,7 @@ function menu_editar_no(noid) {
 		alert(noid + ' não foi encontrado.')
 		return;
 	}
-	var ui=graphics.getNodeUI(noid); 
+	var ui=graphics.getNodeUI(noid);
 	var dlgItemOriginal = document.getElementById('dlgItemEditar');
 	var dlgItem = document.getElementById('dlgItemEditar').cloneNode(true); //clone para não mexer no original, soluciona problema de instabilidade (parava de funcionar depois de misturar tipos de consulta, cnpj e link)
 	var camposTexto = dlgItem.getElementsByClassName('ajs-input');
@@ -2525,8 +2487,8 @@ function menu_editar_no(noid) {
 	dlgItemOriginal.parentNode.appendChild(dlgItem); // para dlgItem.outerHTML = '' funcionar no chrome
 	dlgItem.outerHTML = ''; //receita de bolo para usar o alertify.confirm. sem isso  a linha de cima dava erro no chrome
 	ativaAtalhos(false);
-	alertify.confirm(dlgItem).set('onok', function(closeevent, value) { 
-		ativaAtalhos(true); 
+	alertify.confirm(dlgItem).set('onok', function(closeevent, value) {
+		ativaAtalhos(true);
 		var camposTexto = dlgItem.getElementsByClassName('ajs-input');
 		//idNovo = camposTexto[0].value;
 		var idNovo = camposTexto[0].value;
@@ -2548,7 +2510,7 @@ function menu_editar_no(noid) {
 			node.data.nota = camposTexto[2].value;
 			ui.getElementsByTagName('tspan')[1].text(node.data.descricao);
 			ui.getElementsByTagName('tspan')[2].text(node.data.nota);
-			
+
 		} else {
 			if (graph.hasNode(idNovo)) {
 				alert('Item novo:\n\nO identificador ' + idNovo + ' já existe no gráfico.\nTente novamente com identificador diferente.');
@@ -2556,14 +2518,14 @@ function menu_editar_no(noid) {
 			} else {
 				criarNovoNo(idNovo, node.data.descricao, node.data.nota, tligacao, node.data);
 			}
-		}		
-	}, function() { 
+		}
+	}, function() {
 		ativaAtalhos(true); }
 	).set('oncancel', function() { ativaAtalhos(true);  })
 	.set('title',"Editar Item");
 }//.function menu_editar_no
 
-function soDigitos(id) { 
+function soDigitos(id) {
 //usar com cautela, só deixar digitos para verificar cpf/cnpj pode dar resultado incorreto, p. ex: XX12345678901 seria considerado cpf
 	return id.replace(/\D+/g, '');
 }//.function soDigitos
@@ -2578,8 +2540,8 @@ function tipoPresumido(id) {
 	if (!id) {
 		return '';
 	}
-	if ((id.length>3) && (id.substr(2,1) == '_') && (id.substr(0,2)==id.substr(0,2).toUpperCase()) && (!isNumeric(id.substr(0,2)))) { 
-		return id.trim(); 
+	if ((id.length>3) && (id.substr(2,1) == '_') && (id.substr(0,2)==id.substr(0,2).toUpperCase()) && (!isNumeric(id.substr(0,2)))) {
+		return id.trim();
 	}
 	//var digitos = soDigitos(id); //problema em usar soDigitos, pode ter letra + 14 ou 11 numeros
 	var idlimpo = id.replace(/[\.\-\//]/g, '').trim();
@@ -2592,11 +2554,11 @@ function tipoPresumido(id) {
 	}
 }//.function tipoPresumido
 
-function alterarItens(dadosNos) {//altera dados do item a partir de lista de dados de nos, corrige elemento visível (nota, cor ou imagem) 
+function alterarItens(dadosNos) {//altera dados do item a partir de lista de dados de nos, corrige elemento visível (nota, cor ou imagem)
 	for (let no of dadosNos) {
 		var noid = no['id'];
 		var node = graph.getNode(noid);
-		var ui=graphics.getNodeUI(noid); 
+		var ui=graphics.getNodeUI(noid);
 		for (const [chave, valor] of Object.entries(no)) {
 			if (chave=='id') {
 				continue;
@@ -2604,7 +2566,7 @@ function alterarItens(dadosNos) {//altera dados do item a partir de lista de dad
 			var valorAux = valor.trim();
 			if ((chave=='nota') && (valorAux.startsWith('+'))) { //se começar com +, adiciona a nota existente
 				valorAux = node.data['nota'] + ' ' + valorAux.substr(1);
-			} 
+			}
 			node.data[chave] = valorAux;
 			if (chave=='nota') {
 				ui.getElementsByTagName('tspan')[2].text(valorAux);
@@ -2614,13 +2576,13 @@ function alterarItens(dadosNos) {//altera dados do item a partir de lista de dad
 			} else if (chave=='cor') {
 				try {
 					ui.getElementsByTagName('rect')[0].setAttribute('fill',valor);
-				} catch (e){console.log(e); };		
+				} catch (e){console.log(e); };
 			} else if (chave=='imagem') {
 				try {
 					ui.getElementsByTagName('image')[0].setAttribute('xlink:href', base + 'static/imagem/' + valor);
-				} catch (e){console.log(e); };			
+				} catch (e){console.log(e); };
 			}
-		}		
+		}
 	}
 }//.function alterarItens
 
@@ -2656,7 +2618,7 @@ function entrada_hierarquico_pyjs(entrada) {
 	}*/
 	if (cab.includes('n')) {
 		mostraNumero = true;
-	}		
+	}
 	if (cab.search(/\d/g)!=-1) {
 		kidentadores = parseInt(cab.match(/\d/g)[0]);
 		kidentadores = kidentadores ? kidentadores : 1;
@@ -2693,7 +2655,7 @@ function entrada_hierarquico_pyjs(entrada) {
 		}
 		kl += 1;
 	}
-	return  entradaTabs.join('\n');	
+	return  entradaTabs.join('\n');
 }
 
 function inserir_lista(entrada, bNaoConfirma) {
@@ -2703,7 +2665,7 @@ function inserir_lista(entrada, bNaoConfirma) {
 	//1 underscore na primeira célula, por dupla de colunas (fila). Colunas A,B,C,D, gera ligações A->B, B->C, C->D, considera a primeira linha nome das colunas
 	//2 underscores na primeira célula, por dupla de colunas (estrela). Colunas A,B,C,D, gera ligações A->B, A->C, C->D, considere a primeira linha como nome das colunas
 	//1 undercore + sharp (_#). Coluna _#A, B, C, altera parametro B ou C do id A
-   	
+
 	//var itens = entrada.replace(/\n/g,';');
 	var max = 0;
 	var lista = [];
@@ -2726,7 +2688,7 @@ function inserir_lista(entrada, bNaoConfirma) {
 	var linhaHierarquica = new Array(max);
 	var itensLinha = [];
 	var cabecalhos;
-	
+
 	for (let linha of entrada.split('\n')){
 		elems = linha.split('\t');
 		elems.map(s => s.trim()); //trim elementos
@@ -2763,9 +2725,9 @@ function inserir_lista(entrada, bNaoConfirma) {
 			bPrimeiraLinha = false;
 			continue;
 		}
-		bPrimeiraLinha = false;		
+		bPrimeiraLinha = false;
 		var dadosExtrasNo = {};
-		if (tipoLista == 'ligacao') { 
+		if (tipoLista == 'ligacao') {
 			//colunas A,B,C,D,E, cria ligacoes A->B com descrição de ligação C. D e E são descrições dos identificadores A e B
 			switch(elems.length) {
 				case 0:
@@ -2779,16 +2741,16 @@ function inserir_lista(entrada, bNaoConfirma) {
 				case 3:
 					lista.push([tipoPresumido(elems[0]), tipoPresumido(elems[1]), elems[2], '', '']);
 					break;
-			    case 4: 
+			    case 4:
 					lista.push([tipoPresumido(elems[0]), tipoPresumido(elems[1]), elems[2], elems[3], '']);
 					break;
 				default:
 					lista.push([tipoPresumido(elems[0]), tipoPresumido(elems[1]), elems[2], elems[3], elems[4]]);
 			}
-		} else if (tipoLista == 'alteraDados') { 
-			//colunas _#A,B,C,D,E, altera parametros definidos pelos rótulos B,C,D,E nos elementos da coluna A	
+		} else if (tipoLista == 'alteraDados') {
+			//colunas _#A,B,C,D,E, altera parametros definidos pelos rótulos B,C,D,E nos elementos da coluna A
 			var idPre = tipoPresumido(elems[0]);
-			idPre = tipoPresumido(cabecalhos[0]? cabecalhos[0] + ' ' + elems[0] : elems[0]);	
+			idPre = tipoPresumido(cabecalhos[0]? cabecalhos[0] + ' ' + elems[0] : elems[0]);
 			dadosExtrasNo['id'] = idPre;
 			for (let k=1; k<=elems.length; k++) {
 				if (cabecalhos[k]) {
@@ -2802,7 +2764,7 @@ function inserir_lista(entrada, bNaoConfirma) {
 			itensLinhaAnterior = JSON.parse(JSON.stringify(itensLinha)); //usado em hierarquica e |
 
 			itensLinha = [];
-			
+
 			for (let k=0; k<elems.length; k++) {
 				if (cabecalhos[k].startsWith('_-') || !elems[k])  { //ignora essa coluna
 					itensLinha.push('');
@@ -2832,12 +2794,12 @@ function inserir_lista(entrada, bNaoConfirma) {
 				}
 			}
 			//itensLinhaAnterior = JSON.parse(JSON.stringify(itensLinha)); //usado em hierarquica e |
-					
+
 			if (tipoLista == 'estrela') { // _* undercore + estrela
 				//converte tabela para ligacões, por dupla de colunas (estrela). Colunas A,B,C,D, gera ligações A->B, A->C, C->D
 				//se algum rotulo começar com 1 underscores, adiciona o texto como ligacao, senão adiciona nos elementos
 				for (let k=1; k<itensLinha.length; k++) {
-					var idPre1 = itensLinha[0]; 
+					var idPre1 = itensLinha[0];
 					var idPre2 = itensLinha[k];
 					if (!idPre1 ||  !idPre2) {
 						continue;
@@ -2846,19 +2808,19 @@ function inserir_lista(entrada, bNaoConfirma) {
 					var nomeLigacao = '';
 					if (cabecalhok.startsWith('|')) { //vinculo vertical
 						cabecalhok = cabecalhok.substr(1);
-					} 
+					}
 					if (cabecalhok.startsWith('$')) { //se $ no nome da coluna, coloca o texto também na ligação
 						cabecalhok = cabecalhok.substr(1);
 						nomeLigacao = cabecalhok
 					}
 					lista.push([idPre1, idPre2, nomeLigacao, '', '']);
 
-				}				
+				}
 			} else if (tipoLista == 'fila')  { //um underscore + _+
 				//converte tabela para ligacões, por dupla de colunas (fila). Colunas A,B,C,D, gera ligações A->B, B->C, C->D
 				//se algum rotulo começar com 1 underscores, adiciona o texto como ligacao, senão adiciona nos elementos
 				for (let k=0; (k+1)<elems.length; k++) {
-					var idPre1 = itensLinha[k]; 
+					var idPre1 = itensLinha[k];
 					var idPre2 = itensLinha[k+1];
 					if (!idPre1 ||  !idPre2) {
 						if (idPre1) {
@@ -2873,7 +2835,7 @@ function inserir_lista(entrada, bNaoConfirma) {
 					var nomeLigacao = '';
 					if (cabecalhok1.startsWith('|')) { //vinculo vertical
 						cabecalhok1 = cabecalhok1.substr(1);
-					} 
+					}
 					if (cabecalhok1.startsWith('$')) { //se $ no nome da coluna, coloca o texto também na ligação
 						cabecalhok1 = cabecalhok1.substr(1);
 						nomeLigacao = cabecalhok1;
@@ -2882,7 +2844,7 @@ function inserir_lista(entrada, bNaoConfirma) {
 				}
 			} else if (tipoLista == 'hierarquica')  { //um underscore >  (_/)
 
-				for (let k=0; k<itensLinha.length; k++) { 
+				for (let k=0; k<itensLinha.length; k++) {
 					if (!itensLinha[k]) {
 						continue;
 					}
@@ -2893,11 +2855,11 @@ function inserir_lista(entrada, bNaoConfirma) {
 							lista.push([itensLinhaAnterior[0], itensLinha[0] , '', '', '']);
 						} else {
 							lista.push([itensLinha[0],'' , '', '', '']);
-						}	
+						}
 						linhaHierarquica = new Array(max).fill('');
 						linhaHierarquica[0] = itensLinha[0];
 						/*
-						if (itensLinha.length>1) { 
+						if (itensLinha.length>1) {
 							if (itensLinha[k+1]) {
 								lista.push([itensLinha[k], itensLinha[k+1], '>>>', '', '']);
 								linhaHierarquica[k+1] = itensLinha[k+1];
@@ -2907,23 +2869,23 @@ function inserir_lista(entrada, bNaoConfirma) {
 						lista.push([itensLinha[k-1], itensLinha[k], '<<>>', '', '']);
 						for (let m=k; m<linhaHierarquica.length; m++) {
 							linhaHierarquica[m] = '';
-						}		
-						linhaHierarquica[k] = itensLinha[k];				
+						}
+						linhaHierarquica[k] = itensLinha[k];
 					} else if (!itensLinha[k-1]) {
 						if (itensLinhaAnterior[k]) {
 							lista.push([itensLinhaAnterior[k], itensLinha[k], '', '', '']);
 							linhaHierarquica[k] = itensLinha[k];
 						} else if (itensLinhaAnterior[k-1]) {
 							lista.push([itensLinhaAnterior[k-1], itensLinha[k], '<<>>', '', '']);
-							linhaHierarquica[k] = itensLinha[k];								
-						}  
+							linhaHierarquica[k] = itensLinha[k];
+						}
 						else if (linhaHierarquica[k]) {
 							lista.push([linhaHierarquica[k], itensLinha[k], '', '', '']);
 							linhaHierarquica[k] = itensLinha[k];
-						} else { 
+						} else {
 							console.log('Algo errado - hierarquica');
-							
-						
+
+
 						}
 					} else {
 						alertify.error('Algo errado...');
@@ -2934,8 +2896,8 @@ function inserir_lista(entrada, bNaoConfirma) {
 								linhaHierarquica[m] = '';
 						}
 					}
-							
-					
+
+
 					/*
 					if (itensLinha[k]) {
 						linhaHierarquica[k] = itensLinha[k];
@@ -2944,10 +2906,10 @@ function inserir_lista(entrada, bNaoConfirma) {
 			} else {
 				console.log('erro...');
 			}
-		} 
+		}
 
 	}
-	
+
 	if (!lista.length) {
 		alertify.error('Formato não reconhecido.');
 		return;
@@ -2967,17 +2929,17 @@ function inserir_lista(entrada, bNaoConfirma) {
 	var cnpjsids = new Set();
 	var cnpjDescricao = {};
     for (let linha of lista) {
-		var id1 = linha[0]; 
-		var id2 = linha[1]; 
+		var id1 = linha[0];
+		var id2 = linha[1];
 		//var id1limpo = id1.replace(/[\.\-\//]/g, '');
 		//var id2limpo = id2.replace(/[\.\-\//]/g, '');
 		//TODO verificar se sem pontos e virgulas tem 14 dígitos
 		if ((!id1) && (!id2)) {
 			continue;
-		}	
+		}
 		if (id1.startsWith('PJ_')) {
 			cnpjsids.add(id1);
-			cnpjDescricao[id1] = linha[3];			
+			cnpjDescricao[id1] = linha[3];
 		} else if (id1) {
 			let descricaoaux = id1.startsWith('PF_')?id1.substr(15):linha[3];
 			if (!nosid.has(id1)) {
@@ -3023,7 +2985,7 @@ function inserir_lista(entrada, bNaoConfirma) {
 	}
 	return;
 	/*
-    var entradaExemplo = [['ID_a1','ID_a2','l1','nome 1','nome 2'], 
+    var entradaExemplo = [['ID_a1','ID_a2','l1','nome 1','nome 2'],
 					['ID_a1','ID_a3','l2', 'nome 1', 'nome 3'],
 					['ID_a3','ID_a4','l3', 'nome 3', 'nome 4'] ]; */
 	function ajustarArvore(lista, bSoConta, kGrupo) {
@@ -3035,7 +2997,7 @@ function inserir_lista(entrada, bNaoConfirma) {
 		var contagemIds = {}; //itens que não são cpf/cnpj ou EN_
 		//conta elementos ID_ para abrir arvore
 		for (let linha of lista) {
-			var id1 = linha[0]; 
+			var id1 = linha[0];
 			if (id1.substr(0,3)=='ID_') {
 				if (! contagemIds[id1]) {
 					contagemIds[id1] = 0;
@@ -3058,7 +3020,7 @@ function inserir_lista(entrada, bNaoConfirma) {
 		var listaSaida = [];
 		for (let linha of lista) {
 			let linhaSaida = [...linha];
-			var id1 = linha[0]; 
+			var id1 = linha[0];
 			if (idsArvore.has(id1)) {
 				if (!contagemIds[id1]) {
 					contagemIds[id1]=0;
@@ -3076,7 +3038,7 @@ function inserir_lista(entrada, bNaoConfirma) {
 	}//.function ajustarArvore
 
 	function fazFetchCnpjs(cnpjsids, nos, ligacoes) {
-		//var idin = [...cnpjsids].join(';');		
+		//var idin = [...cnpjsids].join(';');
 		var idinlista = [...cnpjsids];
 		document.body.style.cursor = 'wait';
 		let bodyjson = JSON.stringify(idinlista);
@@ -3117,14 +3079,14 @@ function inserir_lista(entrada, bNaoConfirma) {
 }//.function inserir_lista
 
 function menu_editarNota(noid){
-	var ui=graphics.getNodeUI(noid); 
+	var ui=graphics.getNodeUI(noid);
 	var nota = graph.getNode(noid).data.nota;
 	nota = nota? nota: '';
 	ativaAtalhos(false);
 	var brenderer = menu_rendererAtivarParar(false, false);
 	alertify.prompt( 'Editar Nota', 'Digite texto de anotação:', nota
-	   , function(evt, texto) { 
-			if (texto) { 
+	   , function(evt, texto) {
+			if (texto) {
 				ui.getElementsByTagName('tspan')[2].text(texto);
 				graph.getNode(noid).data.nota = texto;
 				try {
@@ -3133,15 +3095,15 @@ function menu_editarNota(noid){
 			}
 			menu_rendererAtivarParar(brenderer, false);
 			ativaAtalhos(true);
-		}, function() { 
+		}, function() {
 			ativaAtalhos(true);
 			menu_rendererAtivarParar(brenderer, false);
 	});
 }//.function menu_editarNota
 
-function menu_alterarIcone(bparam) { 
+function menu_alterarIcone(bparam) {
 	var menuIconeOptions = document.getElementById('menu_selecao_icone_options');
-	if (bparam) { 
+	if (bparam) {
 		var nomeIcone = menuIconeOptions.value;
 		for (let noid of gparam.idNosSelecionados) {
 			let no = graph.getNode(noid);
@@ -3150,15 +3112,15 @@ function menu_alterarIcone(bparam) {
 			try {
 				node.getElementsByTagName('image')[0].setAttribute('xlink:href', base + 'static/imagem/' + nomeIcone);
 			} catch (e){; };
-		}		
-	} 
-	menuIconeOptions.value=0; 
+		}
+	}
+	menuIconeOptions.value=0;
 }//.function menu_alterarIcone
 
 function saveTextAsFile(textToSave, nomeArquivo, mime) {   //salva arquivo texto sem precisar mandar para o servidor.
 	var textToSaveAsBlob = new Blob([textToSave], mime); //{type:"text/plain"});
 	var textToSaveAsURL = window.URL.createObjectURL(textToSaveAsBlob);
-	var fileNameToSaveAs = nomeArquivo; 
+	var fileNameToSaveAs = nomeArquivo;
 	var downloadLink = document.createElement("a");
 	downloadLink.download = fileNameToSaveAs;
 	downloadLink.innerHTML = "Download File";
@@ -3209,7 +3171,7 @@ function menu_exportaExcel(bSoSelecionados) {
 	//iframeAuxiliar.exportaSoSelecionados = bSoSelecionados;
 }//.function menu_exportaExcel
 
-function getRedeNosLigacoes(bSoSelecionados, setNos) {	
+function getRedeNosLigacoes(bSoSelecionados, setNos) {
 	//se setNos=null, pega todos os itens do gráfico ou apenas ou selecionados
 	//se setNos for especificado, pega esses da lista
 	//return dojo.toJson({'no':listaNoInicial, 'ligacao':listaLigacaoInicial});
@@ -3217,20 +3179,20 @@ function getRedeNosLigacoes(bSoSelecionados, setNos) {
 	var nosAux=[], ligacoesAux=[];
 	//pega dados apartir do vivagraph, assim não é preciso fazer ajustes em listaLigacaoInicial ou listaNoInicial
 	var setAux = setNos ? setNos : gparam.idNosSelecionados;
-	
+
 	if (!setNos && !bSoSelecionados) { // || setNos) {
-		graph.forEachNode( 
+		graph.forEachNode(
 			function(node) {
 				var nodedata = JSON.parse(JSON.stringify(node.data));
 				nodedata['posicao'] = gparam.layout.getNodePosition(node.id);
 				nodedata['pinado'] = gparam.layout.isNodePinned(node);
-				if (setNos) { 
+				if (setNos) {
 					if (setNos.has(node.id)) {
-						nosAux.push(nodedata);	
+						nosAux.push(nodedata);
 					}
 				} else {
 					if ((!bSoSelecionados) || gparam.idNosSelecionados.has(node.id)) {
-						nosAux.push(nodedata);			
+						nosAux.push(nodedata);
 					}
 				}
 			}
@@ -3242,7 +3204,7 @@ function getRedeNosLigacoes(bSoSelecionados, setNos) {
 				var nodedata = JSON.parse(JSON.stringify(node.data));
 				nodedata['posicao'] = gparam.layout.getNodePosition(node.id);
 				nodedata['pinado'] = gparam.layout.isNodePinned(node);
-				nosAux.push(nodedata);				
+				nosAux.push(nodedata);
 			}
 		}
 	}
@@ -3256,16 +3218,16 @@ function getRedeNosLigacoes(bSoSelecionados, setNos) {
 			"label": link.data.label
 			}
 		); */
-		if (setNos) { 
+		if (setNos) {
 			if (setNos.has(link.fromId) && setNos.has(link.toId)) {
-				ligacoesAux.push(link.data);	
-			}		
+				ligacoesAux.push(link.data);
+			}
 		} else {
 			if ((!bSoSelecionados) || (gparam.idNosSelecionados.has(link.fromId) && gparam.idNosSelecionados.has(link.toId))) {
-				ligacoesAux.push(JSON.parse(JSON.stringify(link.data)));	
+				ligacoesAux.push(JSON.parse(JSON.stringify(link.data)));
 			}
 		}
-	}); 
+	});
 	return {'no':nosAux, 'ligacao':ligacoesAux};
 }//.function getRedeNosLigacoes
 
@@ -3277,14 +3239,14 @@ function menu_exportaJsonArquivo(bSoSelecionados) {
 function replaceAll(texto, textoAProcurar, textoASubstituir) {
 	//return texto.split(textoAProcurar).join(textoASubstituir);
 	if (texto) {
-		return texto.replace(new RegExp(textoAProcurar,'g'), textoASubstituir); 
+		return texto.replace(new RegExp(textoAProcurar,'g'), textoASubstituir);
 	} else {
 		return '';
 	}
 }//.function replaceAll
 
 function getXMLdeSVG() {
-	var svg_xml = (new XMLSerializer).serializeToString(document.getElementsByTagName('svg')[0]); 
+	var svg_xml = (new XMLSerializer).serializeToString(document.getElementsByTagName('svg')[0]);
 	svg_xml = replaceAll(svg_xml,'xmlns:xlink="http://www.w3.org/1999/xlink"',''); //esse link é acrescentado em campo de texto, causando erro no svg
 	svg_xml = svg_xml.replace('<svg ', '<svg xmlns:xlink="http://www.w3.org/1999/xlink" '); //define namespace para link
 	/*
@@ -3319,6 +3281,7 @@ function getXMLdeSVG() {
 		for (let nomeImagem of listaImagens) {
 			var img = new Image();
 			img.src = base + 'static/imagem/' + nomeImagem;
+
 			img_home.appendChild(img);
 			if (1) {
 				c.height = img.naturalHeight;
@@ -3330,8 +3293,8 @@ function getXMLdeSVG() {
 			}
 		}
 		return dicionarioBase64;
-	} //.function converteImagens2Base64() 
-	//ver http://d3export.housegordon.org/ exemplo para exportação svg		
+	} //.function converteImagens2Base64()
+	//ver http://d3export.housegordon.org/ exemplo para exportação svg
 	var dicionario = converteImagens2Base64();
 	for (let key of listaImagens) {
 		var baseStr=dicionario[key];
@@ -3397,8 +3360,8 @@ function menu_teclaUp(bSemMensagem) { //segue direção da seta
 			proximoNo = link.fromId;
 			return;
 		}
-	});	
-	
+	});
+
 	if (proximoNo) {
 		selecionaNoid(proximoNo, false, false);
 	} else if (!bSemMensagem) {
@@ -3427,8 +3390,8 @@ function menu_teclaRight(bSemMensagem) { //segue direção contrária da seta?
 				}
 			}
 		}
-	});	
-	
+	});
+
 	if (proximoNo) {
 		selecionaNoid(proximoNo, false, false);
 	} else if (!bSemMensagem) {
@@ -3448,9 +3411,9 @@ function menu_teclaLeft(bSemMensagem) { //segue direção da seta
 		if (link.fromId==gparam.idnoSelecionado) {
 			proximoNo = link.toId;
 			return;
-		}		
-	});	
-	
+		}
+	});
+
 	if (proximoNo) {
 		selecionaNoid(proximoNo, false, false);
 	} else if (!bSemMensagem) {
@@ -3489,28 +3452,28 @@ function menu_teclaDown(bSemMensagem) { //segue direção da seta, se chega no f
 			if (!bSemMensagem)  {
 				alertify.error('Não encontrou item seguinte.');
 			}
-				break;			
-		}		
+				break;
+		}
 		var knos = 0;
 		var proximoNo = null;
 		graph.forEachLinkedNode(gparam.idnoSelecionado, function(nodeaux, link){
-			if (link.fromId==gparam.idnoSelecionado) { 
+			if (link.fromId==gparam.idnoSelecionado) {
 				knos += 1;
 				if (knos==2) {
 					proximoNo = link.toId;
 					return;
 				}
-			}		
-		});	
+			}
+		});
 		if (knos>1) {
 			selecionaNoid(proximoNo, false, false);
 			if (!nosCaminho.has(gparam.idnoSelecionado)) {
 				//console.log('saiu x1');
-				break; 
+				break;
 			} else {
 				menu_teclaUp(true);
 			}
-		}	
+		}
 		noid =  gparam.idnoSelecionado;
 	}
 }//function menu_teclaDown
@@ -3521,27 +3484,27 @@ function menu_configurar_nodeSize() {
 		return;
 	}
 	gparam.nodeSize = parseInt(parametro);
-	//pra funcionar corretamente, é necessário mudar todos os elementos visuais que usam nodeSize, como rect, etc... 
+	//pra funcionar corretamente, é necessário mudar todos os elementos visuais que usam nodeSize, como rect, etc...
 	graph.forEachNode( function(node) {
-		var ui=graphics.getNodeUI(node.id); 
+		var ui=graphics.getNodeUI(node.id);
 		if (gparam.btextoEmbaixoIcone) { //se houver items criados com um estado ou outro, pode ficar inconsistente e isso não resolve.
-			ui.getElementsByTagName('text')[0].attr('x', gparam.nodeSize/2).attr('y', String(gparam.tamanhoFonte*1.1 + gparam.nodeSize) + 'px');;		
-			ui.getElementsByTagName('tspan')[0].attr('x', gparam.nodeSize/2);		
+			ui.getElementsByTagName('text')[0].attr('x', gparam.nodeSize/2).attr('y', String(gparam.tamanhoFonte*1.1 + gparam.nodeSize) + 'px');;
+			ui.getElementsByTagName('tspan')[0].attr('x', gparam.nodeSize/2);
 			ui.getElementsByTagName('tspan')[1].attr('x', gparam.nodeSize/2);
 			ui.getElementsByTagName('tspan')[2].attr('x', gparam.nodeSize/2);
 			ui.getElementsByTagName('image')[0].attr('width', gparam.nodeSize).attr('height', gparam.nodeSize);
 			ui.getElementsByTagName('rect')[0].attr('width', gparam.nodeSize).attr('height', gparam.nodeSize);
 			ui.getElementsByTagName('rect')[1].attr('width', gparam.nodeSize).attr('height', gparam.nodeSize);
 		} else {
-			ui.getElementsByTagName('text')[0].attr('x', gparam.nodeSize).attr('y', gparam.nodeSize*0.5+gparam.tamanhoFonte*0.5);;		
-			ui.getElementsByTagName('tspan')[0].attr('x', gparam.nodeSize*1.2);		
+			ui.getElementsByTagName('text')[0].attr('x', gparam.nodeSize).attr('y', gparam.nodeSize*0.5+gparam.tamanhoFonte*0.5);;
+			ui.getElementsByTagName('tspan')[0].attr('x', gparam.nodeSize*1.2);
 			ui.getElementsByTagName('tspan')[1].attr('x', gparam.nodeSize*1.2);
 			ui.getElementsByTagName('tspan')[2].attr('x', gparam.nodeSize*1.2);
 			ui.getElementsByTagName('image')[0].attr('width', gparam.nodeSize).attr('height', gparam.nodeSize);
 			ui.getElementsByTagName('rect')[0].attr('width', gparam.nodeSize).attr('height', gparam.nodeSize);
-			ui.getElementsByTagName('rect')[1].attr('width', gparam.nodeSize).attr('height', gparam.nodeSize);		
+			ui.getElementsByTagName('rect')[1].attr('width', gparam.nodeSize).attr('height', gparam.nodeSize);
 		}
-	}); 
+	});
 }//.function menu_configurar_nodeSize
 
 function menu_configurar_springLength(zoomInOut) {
@@ -3719,10 +3682,10 @@ function evento_teclasDown(e) {
 			return false;
 		} else if (pressCtrl!=e.ctrlKey) {
 			return false;
-		} 
+		}
 		return true;
 	}
-	
+
 	if (e.code.startsWith('Digit') && (e.code.length==6)) {
 		if (gparam.idnoSelecionado) {
 			if (([ 'LI_', 'AR_'].includes(gparam.idnoSelecionado.substr(0,3))) || ((gparam.idnoSelecionado.substr(0,3)=='ID_') && !gparam.inicio.bBaseLocal))  {
@@ -3744,91 +3707,91 @@ function evento_teclasDown(e) {
 			e.preventDefault();
 			return;
 		}
-	} else if (testa('KeyZ', false, true)) { 
+	} else if (testa('KeyZ', false, true)) {
 		menu_inserirDesfazer();
-	} else if (testa('KeyF', false, false)) { 
+	} else if (testa('KeyF', false, false)) {
 		menu_localiza();
-	} else if (testa('KeyJ', false, false)) { 
+	} else if (testa('KeyJ', false, false)) {
 		menu_localiza_adjacentes();
-	} else if (testa('KeyJ', true, false)) { 
+	} else if (testa('KeyJ', true, false)) {
 		menu_localiza_componente();
-	} else if (testa('KeyJ', false, true)) { 
+	} else if (testa('KeyJ', false, true)) {
 		menu_localiza_itensComMaisLigacoes();
-	} else if (testa('KeyI', false, false)) { 
+	} else if (testa('KeyI', false, false)) {
 		menu_inserir();
-	} else if (testa('KeyU', false, false)) { 
+	} else if (testa('KeyU', false, false)) {
 		menu_ligar_novo();
-	} else if (testa('KeyD', false, false)) { 
+	} else if (testa('KeyD', false, false)) {
 		menu_dados(false, gparam.idNoOnHover);
-	} else if (testa('KeyD', true, false)) { 
+	} else if (testa('KeyD', true, false)) {
 		menu_dados(true, gparam.idNoOnHover);
-	} else if (testa('KeyD', false, true)) { 
+	} else if (testa('KeyD', false, true)) {
 		menu_listaSelecao(true);
-	} else if (testa('KeyA', false, false)) { 
+	} else if (testa('KeyA', false, false)) {
 		menu_abrirNovaAba(null, true);
-	} else if (testa('KeyA', true, false)) { 
+	} else if (testa('KeyA', true, false)) {
 		menu_abrirNovaAba(null);
-	} else if (testa('KeyA', false, true)) { 
+	} else if (testa('KeyA', false, true)) {
 		menu_selecionarTudo();
-	} else if (testa('KeyA', true, true)) { 
+	} else if (testa('KeyA', true, true)) {
 		menu_selecionarInverte();
 	} else if (testa('KeyQ', false, false)) {
 		menu_quebraGraficoEmPartes();
-	} else if (testa('KeyE', false, false)) { 
+	} else if (testa('KeyE', false, false)) {
 		menu_editar_no();
-	} else if (testa('KeyG', false, false)) { 
+	} else if (testa('KeyG', false, false)) {
 		menu_buscaEmSite('https://www.google.com/search?q=');;
-	} else if (testa('KeyG', true, false)) { 
+	} else if (testa('KeyG', true, false)) {
 		menu_GoogleMaps();;
-	} else if (testa('KeyN', false, false)) { 
+	} else if (testa('KeyN', false, false)) {
 		menu_rotulosCompletos(null);
-	} else if (testa('KeyN', true, false)) { 
+	} else if (testa('KeyN', true, false)) {
 		menu_ligacoesExibe(null);
-	} else if (testa('KeyF', false, false)) { 
+	} else if (testa('KeyF', false, false)) {
 		menu_localiza();
-	} else if (testa('KeyF', true, false)) { 
+	} else if (testa('KeyF', true, false)) {
 		menu_localiza(true);
-	} else if (testa('KeyF', false, true)) { 
+	} else if (testa('KeyF', false, true)) {
 		menu_localizaPorCampo(false);
-	} else if (testa('KeyL', false, false)) { 
+	} else if (testa('KeyL', false, false)) {
 		menu_ligar_selecionados(true);
-	} else if (testa('KeyL', true, false)) { 
+	} else if (testa('KeyL', true, false)) {
 		menu_desligar_selecionados(false);
-	} else if (testa('KeyK', false, false)) { 
+	} else if (testa('KeyK', false, false)) {
 		menu_ligar_selecionados(false);
-	} else if (testa('Delete', false, false)) { 
+	} else if (testa('Delete', false, false)) {
 		menu_excluirNosSelecionados();
-	} else if (testa('Delete', true, false)) { 
+	} else if (testa('Delete', true, false)) {
 		menu_excluirTudo();
-	} else if (testa('Delete', false, true)) { 
+	} else if (testa('Delete', false, true)) {
 		removeIsolados(true);
-	} else if (testa('Backspace', true, false)) { 
+	} else if (testa('Backspace', true, false)) {
 		excluirNoMantendoLinks();
-	} else if (testa('KeyP', false, false)) { 
+	} else if (testa('KeyP', false, false)) {
 		menu_pinarNo(null);
-	} else if (testa('KeyP', true, false)) { 
+	} else if (testa('KeyP', true, false)) {
 		menu_pinarDesfazerTudo();
-	} else if (testa('KeyP', false, true)) { 
-		menu_pinarUmNoEmCadaGrupo();		
-	} else if (testa('KeyC', false, false)) { 
+	} else if (testa('KeyP', false, true)) {
+		menu_pinarUmNoEmCadaGrupo();
+	} else if (testa('KeyC', false, false)) {
 		menu_colorir();
-	} else if (testa('KeyC', true, false)) { 
+	} else if (testa('KeyC', true, false)) {
 		menu_colorir('transparent');
-	} else if (testa('Space', false, false)) { 
+	} else if (testa('Space', false, false)) {
 		menu_rendererAtivarParar(!gparam.bRenderAtivado, true);
-	} else if (testa('ArrowLeft', false, false)) { 
+	} else if (testa('ArrowLeft', false, false)) {
 		menu_teclaLeft(false);
-	} else if (testa('ArrowRight', false, false)) { 
-		menu_teclaRight(false);	
-	} else if (testa('ArrowUp', false, false)) { 
+	} else if (testa('ArrowRight', false, false)) {
+		menu_teclaRight(false);
+	} else if (testa('ArrowUp', false, false)) {
 		menu_teclaUp(false);
-	} else if (testa('ArrowDown', false, false)) { 
-		menu_teclaDown(false);	
-	} else if (testa('KeyO', false, false)) { 
+	} else if (testa('ArrowDown', false, false)) {
+		menu_teclaDown(false);
+	} else if (testa('KeyO', false, false)) {
 		menu_exportaJSONServidorParaBaseLocal(true, '', 'operacao' );
 	} else {
 		return;
-	} 
+	}
 	e.preventDefault();
 }//.function evento_teclasDown
 
@@ -3854,7 +3817,7 @@ alertifyfake = {
 	'alert':function(titulo, texto, func) {
 		menuOnClick();
 		texto = texto.replace(/<b>/g, '').replace(/<\/b>/g, '').replace(/<br>/g, '')
-		setTimeout(function(){ alert(titulo + '\n\n' + texto);}, 500);	
+		setTimeout(function(){ alert(titulo + '\n\n' + texto);}, 500);
 	},
 	'success':function(texto) {
 		menuOnClick();
@@ -3876,7 +3839,7 @@ function ajustaAmbiente_adicionarListaIconesAoMenu() {
 		itemMenu.innerHTML = '\
 			<button type="button" class="menu-btn" onclick="menu_alteraIcone('+item+');"> \
 			<i class="fa fa-tags"></i><span class="menu-text">' + item + '</span> \
-			</button>	'	
+			</button>	'
 		itemMenu.setAttribute('class', "menu-item"); */
 
 
@@ -3902,16 +3865,16 @@ function ajustaAmbiente() {
 			document.querySelector('.menu').style.width='500px';
 			menu = document.querySelector('.menu');
 			document.querySelector('body').style.fontSize='xx-large'; //para alterar tamanho do texto no alertify
-			for (let botao of document.getElementsByClassName('botaosuperior')) { 
+			for (let botao of document.getElementsByClassName('botaosuperior')) {
 				botao.style.fontSize = '60px'; //="font-size:60px;";
-			}	
+			}
 		} else 	{ //safari
 			gparam.safari = true;
 			alertify.prompt = alertifyfake.prompt;
 			alertify.confirm = alertifyfake.confirm;
-			alertify.alert = alertifyfake.alert; 
+			alertify.alert = alertifyfake.alert;
 			//alertify.success = alertifyfake.success;
-			//alertify.error = alertifyfake.error;	
+			//alertify.error = alertifyfake.error;
 			//safari, trocar onclick por ontouchend nos botoes
     		var botoes = document.getElementsByClassName('botaosuperior');
     		for (var i=0; i<botoes.length; i++) { //ipad antigo não aceita let
@@ -3925,7 +3888,7 @@ function ajustaAmbiente() {
 			document.querySelectorAll('.menu-text').forEach(function(element,key) {element.style.marginLeft='40px'});
 			document.querySelector('.menu').style.width='300px';
 			//document.getElementById('botaoDadosBasicos').ontouchend = "";
-		} 
+		}
 		alert('Isto não funciona corretamente no celular ou tablet... Se der erro, tente em um computador com o Firefox, Chrome ou Edge.');
 		document.getElementById("drop_area").style.display = "none"; //esconde área de drop em mobile
 		document.getElementById('div_referencia').textContent=""; //apaga referencia
@@ -3939,14 +3902,31 @@ function ajustaAmbiente() {
 		ajustaAmbiente_adicionarListaIconesAoMenu();
 	}
 }//.function ajustaAmbiente
+function changeVisibility() {
+    var prin = document.getElementById('principal');
+    var seg =  document.getElementById('segundo');
+    if (prin.style.visibility === "visible")
+    {
+    prin.style.visibility = "hidden";
+    seg.style.visibility = "visible";
+    }
+    else
+    {
+    prin.style.visibility = "visible";
+    seg.style.visibility = "hidden";
+    }
 
+}
 function main() {
+//var loc = window.location.pathname;
+//var dir = loc.substring(0, loc.lastIndexOf('/'));
+//alert('debug: '+dir)
 	ajustaAmbiente();
 	gparam.layout = Viva.Graph.Layout.forceDirected(graph, {
 		   springLength : gparam.springLength, //170, //140, //80,
 		   springCoeff : 0.0002, //0.0002,
-		   dragCoeff : 0.02, 
-		   gravity : -1.2, 
+		   dragCoeff : 0.02,
+		   gravity : -1.2,
 		   theta : 0.8
 	});
 	gparam.renderer = Viva.Graph.View.renderer(graph, {
@@ -3954,7 +3934,9 @@ function main() {
 			layout: gparam.layout,
 			container  : document.getElementById('principal')
 		});
+
 	gparam.renderer.run();
+
 	gparam.geom = Viva.Graph.geom();
 	if (gparam.mobile) {
 		menu_zoomin(false, false);
@@ -3965,6 +3947,7 @@ function main() {
 		gparam.AreaSelecaoRetangular.Setup();
 		ativaAtalhos(true);
 	}
+
 	if (gparam.inicio.cpfcnpj) {
 		menu_incluirCamada(gparam.inicio.cpfcnpj, gparam.inicio.camada, null, true);
 	} else if (gparam.inicio.idArquivoServidor ) {
@@ -3988,563 +3971,3 @@ function main() {
 }//.main()
 
 </script>
-
-<style type="text/css" media="screen"> 
-	html, body, svg { width: 100%; height: 100%;
-	/* para acertar texto dos botoes no safari */
-	-ms-text-size-adjust: 200%;
-	-webkit-text-size-adjust: 200%;
-	}
-	.graph-overlay {
-	  position: absolute;
-	  left: 0;
-	  top: 0;
-	  width: 100%;
-	  height: 100%;
-	  display: none;
-	}
-	.graph-selection-indicator {
-	  position: absolute;
-	  left: 0;
-	  top: 0;
-	  background: transparent;
-	  border: dashed orange;
-	}
-#drop_area {
-  border: 2px dashed #ccc;
-  border-radius: 20px;
-}
-#drop_area.highlight {
-  border-color: purple;
-}
-#drop_area:hover {
-  background: #ddd;
-}
-#block_container {
-    display: flex;
-    justify-content: left;
-}
-
-</style>
-	{% include 'basenavbar.html' %}
-</head>
-<body id='corpo' onload='main()' style='overflow:hidden;' >
-<!-- overflow:hidden para não aparecer barra de rolagem -->
-<div id="block_container" style="background-color:grey; width:70px; height:100%">
-	<div id='div_botoes' class="btn-group-vertical">
-		<button class='btn btn-primary' type="button" onclick="javascript:menu_botao(event);" title='Abre opções'>Menu</button>&nbsp;&nbsp;
-		<button class='btn btn-primary' type="button" onclick="javascript:menu_inserir(null, event.shiftKey, event.ctrlKey);" title='Inserir{% if parametros.bBaseReceita %} CNPJ ou CPF do Banco de Dados {% endif %}(Tecla I)'><i class="fa fa-user-plus"></i></button>&nbsp;
-		<button class='btn btn-primary' type="button" onclick="javascript:menu_incluirCamada('', 1);" title='Expande Vínculos Societários em Camada 1 (Tecla 1)'><i class="fa fa-layer-group"></i></button>&nbsp;
-		<button class='btn btn-primary' type="button" onclick="javascript:menu_dados(false)" title='Exibir Dados do Item (D)'><i class="fa fa-newspaper"></i></button>&nbsp;
-		<button class='btn btn-primary' type="button" onclick="javascript:menu_rendererAtivarParar(true, true);" title='Ativar Leiaute (Barra de Espaço)'><i class="fa fa-play"></i></button>&nbsp;
-		<button class='btn btn-primary' type="button" onclick="javascript:menu_rendererAtivarParar(false, true);" title='Parar Leiaute (Barra de Espaço)'><i class="fa fa-stop"></i></button>&nbsp;
-		<button class='btn btn-primary' type="button" onclick="gparam.renderer.reset();" title='Reinicia escala de visualização'><i class="fa fa-compress"></i> </button>&nbsp;
-		<button class='btn btn-primary' type="button" onclick="javascript:menu_zoomin(event.shiftKey, event.ctrlKey);" title='Aumenta visualização. A roda do mouse também faz isso. Pressionando SHIFT+click aumenta apenas o tamanho das ligações.'>&nbsp;+&nbsp;</button>&nbsp;
-		<button class='btn btn-primary' type="button" onclick="javascript:menu_zoomout(event.shiftKey, event.ctrlKey);" title='Diminui visualização.  A roda do mouse também faz isso. Pressionando SHIFT+click diminui apenas o tamanho das ligações.'>&nbsp;-&nbsp;</button>
-		{% if parametros.bBaseReceita %}
-		<button class='btn btn-primary' id='btn_github' type="button" onclick="window.open('https://github.com/rictom/rede-cnpj/')"  title='Clique para abrir este projeto no Github. '>Rede</button>&nbsp;&nbsp;
-		<button class='btn btn-primary' id='btn_srf' type="button" onclick="window.open('https://www.gov.br/receitafederal/pt-br/assuntos/orientacao-tributaria/cadastros/consultas/dados-publicos-cnpj')" title='Página de dados públicos da SRF'>Dados</button>&nbsp;&nbsp;
-		{% endif %}
-	<div id='div_referencia' title="{{ parametros.referenciaBD }}">&nbsp;{{ parametros.referenciaBDCurto }}&nbsp;</div>
-	<div id="drop_area"  ondrop="drop_handler(event);" ondragover="dragover_handler(event);"  title="Arraste uma coluna de CNPJs ou um arquivo .json para esta área. Ver documentação para mais opções.">
-		<i class="fa fa-hand-holding-water"></i>&nbsp;DROP (json ou lista de PF/PJ)
-	</div>
-	</div>
-
-</div>
- <!-- 
-<div id="principal" style="width: 100%; height: 100%; position: absolute;  left: 0; top: 30;" charset="utf-8">
--->
-<div id="principal" style="width: 100%; height: 100%; position: absolute;" charset="utf-8" ondrop="drop_handler(event);" ondragover="dragover_handler(event);"  > 
-<!-- top=0 desativa botoes-->
-	<div id="principal_overlay" class="graph-overlay" style="cursor:crosshair;" ></div>
-</div>
-
-<menu id='menu_contexto' class="menu">
-	<li class="menu-item submenu">
-		<button type="button" class="menu-btn" title="Expande vinculos de sócios. Aperte a tecla 1-9 para ativar estas opções"> <i class="fa fa-layer-group"></i> <span class="menu-text">Incluir Camadas</span> </button>
-		<menu class="menu">
-			<li class="menu-item">
-				<button type="button" class="menu-btn" onclick="menuOnClick(); javascript:menu_incluirCamada('', 1);" title="Expande vinculos de sócios. Aperte a tecla 1 para ativar esta opção">
-				<i class="fa fa-layer-group"></i><span class="menu-text">1 (Tecla 1)</span> </button>
-			</li>
-			<li class="menu-item">
-			<button type="button" class="menu-btn" onclick="menuOnClick(); javascript:menu_incluirCamada('', 2);" title="Expande vinculos de sócios em 2 níveis. Aperte a tecla 2"><i class="fa fa-layer-group"></i><span class="menu-text">2 (Tecla 2)</span> </button>
-			</li>
-			<li class="menu-item">
-			<button type="button" class="menu-btn" onclick="menuOnClick(); javascript:menu_incluirCamada('', 3);" title="Expande vinculos de sócios em 3 níveis. Aperte a tecla 3"><i class="fa fa-layer-group"></i><span class="menu-text">3 (Tecla 3)</span> </button>
-			</li>
-			<li class="menu-item">
-			<button type="button" class="menu-btn" onclick="menuOnClick(); javascript:menu_incluirCamada('', 4);" title="Expande vinculos de sócios em 4 níveis. Aperte a tecla 4"><i class="fa fa-layer-group"></i><span class="menu-text">4 (Tecla 4)</span> </button>
-			</li>
-			<li class="menu-item">
-			<button type="button" class="menu-btn" onclick="menuOnClick(); javascript:menu_incluirCamada('', 5);" title="Expande vinculos de sócios em 5 níveis. Aperte a tecla 5"><i class="fa fa-layer-group"></i><span class="menu-text">5 (Tecla 5)</span> </button>
-			</li>
-			<li class="menu-item">
-			<button type="button" class="menu-btn" onclick="menuOnClick(); javascript:menu_incluirCamada('', 6);" title="Expande vinculos de sócios em 6 níveis. Aperte a tecla 6"><i class="fa fa-layer-group"></i><span class="menu-text">6 (Tecla 6)</span> </button>
-			</li>
-			<li class="menu-item">
-			<button type="button" class="menu-btn" onclick="menuOnClick(); javascript:menu_incluirCamada('', 7);" title="Expande vinculos de sócios em 7 níveis. Aperte a tecla 7"><i class="fa fa-layer-group"></i><span class="menu-text">7 (Tecla 7)</span> </button>
-			</li>
-			<li class="menu-item">
-			<button type="button" class="menu-btn" onclick="menuOnClick(); javascript:menu_incluirCamada('', 8);" title="Expande vinculos de sócios em 8 níveis. Aperte a tecla 8"><i class="fa fa-layer-group"></i><span class="menu-text">8 (Tecla 8)</span> </button>
-			</li>
-			<li class="menu-item">
-			<button type="button" class="menu-btn" onclick="menuOnClick(); javascript:menu_incluirCamada('', 9);" title="Expande vinculos de sócios em 9 níveis. Aperte a tecla 9"><i class="fa fa-layer-group"></i><span class="menu-text">9 (Tecla 9)</span> </button>
-			</li>
-			<li class="menu-item">
-			<button type="button" class="menu-btn" onclick="menuOnClick(); javascript:menu_incluirCamada('', 10);" title="Expande vinculos de sócios em 10 níveis. Aperte a tecla 0"><i class="fa fa-layer-group"></i><span class="menu-text">10 (Tecla 0)</span> </button>
-			</li>
-		</menu>
-	</li>
-	<li class="menu-item">
-	<button type="button" class="menu-btn" onclick="menuOnClick(); javascript:menu_incluirCamada('', 1,'links');"> <i class="fa fa-layer-group"></i>
-	<span class="menu-text" title="Inclui outros vínculos na tabela links (ver documentação no github)">Incluir outras Ligacões (SHIFT+1)</span> </button>
-	</li>
-	<li class="menu-item">
-	<button type="button" class="menu-btn" onclick="menuOnClick(); javascript:menu_inserir();" title="Inserir Item no gráfico com informações do Banco de Dados"> 
-	<i class="fa fa-user-plus"></i> <span class="menu-text">Inserir {% if parametros.bBaseReceita %}CNPJ ou CPF {% endif %}(I)...</span> 
-	</button>
-	</li>
-	<li class="menu-item">
-	<button type="button" class="menu-btn" onclick="menuOnClick(); javascript:menu_inserirDesfazer();" title="Desfaz última inserção de itens"> 
-	<i class="fa fa-undo"></i> <span class="menu-text">Desfazer Inserção (Ctrl+Z)</span> 
-	</button>
-	</li>
-	<li class="menu-item submenu">
-	<button type="button" class="menu-btn"><i class="fa fa-link"></i><span class="menu-text">Ligar</span></button>
-	<menu class="menu">
-		<li class="menu-item">
-		<button type="button" class="menu-btn" onclick="menuOnClick(); menu_ligar_novo();" title="Liga itens selecionados para um Item a ser criado."> 
-		<span class="menu-text">Para Novo Item (U)...</span> 
-		</button>
-		</li>      
-		<li class="menu-item">
-		<button type="button" class="menu-btn" onclick="menuOnClick(); menu_ligar_selecionados(true);" title="Liga o primeiro aos demais itens selecionados"> 
-		<span class="menu-text">Em Estrela (L)</span> 
-		</button>
-		</li>
-		<li class="menu-item">
-		<button type="button" class="menu-btn" onclick="menuOnClick(); menu_ligar_selecionados(false);" title="Liga os itens selecionados em fila indiana"> 
-		<span class="menu-text">Em Fila (K)</span> 
-		</button>
-		</li>
-		<li class="menu-item">
-		<button type="button" class="menu-btn" onclick="menuOnClick(); menu_desligar_selecionados(false);" title="Remove ligações entre os itens selecionados"> 
-		<span class="menu-text">Remover Entre (SHIFT+L)</span> 
-		</button>
-		</li>
-		<li class="menu-item">
-		<button type="button" class="menu-btn" onclick="menuOnClick(); menu_desligar_selecionados(true);" title="Remove todas as ligações dos itens selecionados"> 
-		<span class="menu-text">Remover Ligações</span> 
-		</button>
-		</li>
-	</menu>
-	</li>
-	<li class="menu-item submenu">
-	<button type="button" class="menu-btn"><i class="fa fa-eye"></i><span class="menu-text">Visualização</span></button>
-	<menu class="menu">
-		<li class="menu-item">
-		<button type="button" class="menu-btn" onclick="menuOnClick(); javascript:menu_abrirNovaAba(null, true)" title="Abre itens selecionados em nova aba"> 
-		<i class="fa fa-external-link-alt"></i> <span class="menu-text">Gráfico em nova aba (A)</span> </button>
-		</li>
-		<li class="menu-item">
-		<button type="button" class="menu-btn" onclick="menuOnClick(); javascript:menu_quebraGraficoEmPartes()" title="Divide o gráfico em partes menores exibindo em outras abas."> 
-		<i class="fa fa-external-link-alt"></i> <span class="menu-text">Quebrar o gráfico em abas (Q)</span> </button>
-		</li>
-		<li class="menu-item submenu">
-		<button type="button" class="menu-btn"><i class="fa fa-thumbtack"></i><span class="menu-text">Fixar</span></button>
-		<menu class="menu">		
-			<li class="menu-item">
-			<button type="button" class="menu-btn" onclick="menuOnClick(); javascript:menu_pinarNo(null);" title="Fixa/Desfixa nó na posição do mapa, não sendo afetado pelo arrastamento de outros nós"> 
-			<i class="fa fa-thumbtack"></i> <span class="menu-text">Nós Selecionados (P)</span> 
-			</button>
-			</li>
-			<li class="menu-item">
-			<button type="button" class="menu-btn" onclick="menuOnClick(); javascript:menu_pinarDesfazerTudo();" title="Deixa todos os nós desafixados"> 
-			<i class="fa fa-thumbtack"></i> <span class="menu-text">Desfixar Todos (SHIFT+P)</span> 
-			</button>
-			</li>
-			<li class="menu-item">
-			<button type="button" class="menu-btn" onclick="menuOnClick(); javascript:menu_pinarUmNoEmCadaGrupo();" title="Fixa pelo menos um nó em cada Grupo"> 
-			<i class="fa fa-thumbtack"></i> <span class="menu-text">Fixar nos Grupos (CTRL+P)</span> 
-			</button>
-			</li>	
-		</menu>
-		</li>			
-		<li class="menu-item submenu">
-		<button type="button" class="menu-btn"><i class="fa fa-tags"></i><span class="menu-text">Rótulos</span> </button>
-		<menu class="menu">
-			<li class="menu-item">
-			<button type="button" class="menu-btn" onclick="menuOnClick(); menu_editar_no();"> 
-			<i class="fa fa-sticky-note"></i><span class="menu-text">Editar Rótulos (E)</span> 
-			</button>
-			</li>
-			<li class="menu-item">
-			<button type="button" class="menu-btn" onclick="menuOnClick(); menu_editarNota(gparam.idnoSelecionado);"> 
-			<i class="fa fa-sticky-note"></i><span class="menu-text">Editar Nota</span> 
-			</button>
-			</li>
-			<li class="menu-item">
-			<button type="button" class="menu-btn" onclick="menuOnClick(); menu_rotulosCompletos(true);"> 
-			<i class="fa fa-tags"></i><span class="menu-text">Nome Completo</span> 
-			</button>
-			</li>
-			<li class="menu-item">
-			<button type="button" class="menu-btn" onclick="menuOnClick(); menu_rotulosCompletos(false);"> 
-			<i class="fa fa-tag"></i><span class="menu-text">Só Primeiro Nome</span> 
-			</button>
-			</li>
-			<li class="menu-item">
-			<button type="button" class="menu-btn" onclick="menuOnClick(); menu_rotulosPosicao(false);"> 
-			<i class="fa fa-tag"></i><span class="menu-text">Do lado do ícone</span> 
-			</button>
-			</li>
-			<li class="menu-item">
-			<button type="button" class="menu-btn" onclick="menuOnClick(); menu_rotulosPosicao(true);"> 
-			<i class="fa fa-tag"></i><span class="menu-text">Embaixo do ìcone</span> 
-			</button>
-			</li>
-			<li class="menu-item">
-			<button type="button" class="menu-btn" onclick="menuOnClick(); menu_ligacoesExibe(null);"> 
-			<i class="fa fa-tag"></i><span class="menu-text">Exibe/Oculta de Ligação (SHIFT+N)</span> 
-			</button>
-			</li>			
-		</menu>
-		</li>
-		<li class="menu-item">
-			<button type="button" class="menu-btn" onchange="javascript:menu_alterarIcone('icone');">
-			<i class="fa fa-tags"></i><span class="menu-text">Alterar Ícone &nbsp;&nbsp;</span>
-			<select id="menu_selecao_icone_options" class="dropdown" style='max-width:100px'>
-                <option value="0">Selecione</option>
-			</select>
-			</button>
-		</li>
-		<li class="menu-item">
-		<button type="button" class="menu-btn" onclick="menuOnClick(); javascript:menu_colorir();"> 
-		<i class="fa fa-fill-drip"></i><span class="menu-text">Colorir (C)</span>
-		</button>
-		</li>
-		<li class="menu-item">
-		<button type="button" class="menu-btn" onclick="menuOnClick();"> 
-		<i class="fa fa-palette"></i><span class="menu-text">Escolher Cor:</span> <input type="color" id="palheta" title="Selecione uma cor" value="#FF0000" />
-		</button>
-		</li>
-
-		<li class="menu-item">
-		<button id='botaoDadosBasicos' type="button" class="menu-btn" onclick="menuOnClick(); javascript:menu_dados(false)" title="Exibe dados em popup">
-		<i class="fa fa-newspaper"></i> <span class="menu-text">Dados (D)</span> </button>
-		</li>
-		<li class="menu-item">
-		<button type="button" class="menu-btn" onclick="menuOnClick(); javascript:menu_dados(true)" title="Exibe Dados em nova Janela do navegador">
-		<i class="fa fa-folder-open"></i><span class="menu-text">Dados em Janela (Shift+D)</span></button>
-		</li>
-		<li class="menu-item">
-		<button type="button" class="menu-btn" onclick="menuOnClick(); javascript:menu_dados(true)" title="Exibe Dados em nova Janela do navegador">
-		<i class="fa fa-folder-open"></i><span class="menu-text">Lista dados da seleção (Ctrl+D)</span></button>
-		</li>
-		<li class="menu-item">
-		<button type="button" class="menu-btn" onclick="menuOnClick(); javascript:menu_nomeAba()" title="Altera nome da Aba">
-		<i class="fa fa-tags"></i><span class="menu-text">Nome da Aba</span></button>
-		</li>
-		<li class="menu-item">
-		<button type="button" class="menu-btn" onclick="menuOnClick(); gparam.renderer.reset();" title="Reinicia escala"> 
-		<i class="fa fa-compress"></i> <span class="menu-text">Escala Inicial</span> 
-		</button>
-		</li>
-		<li class="menu-item">
-		<button type="button" class="menu-btn" onclick="menuOnClick(); javascript:menu_rendererAtivarParar(false, true);"> 
-		<i class="fa fa-stop"></i> <span class="menu-text">Leiaute: Parar (Espaço)</span> 
-		</button>
-		</li>
-		<li class="menu-item">
-		<button type="button" class="menu-btn" onclick="menuOnClick(); javascript:menu_rendererAtivarParar(true, true);"> 
-		<i class="fa fa-play"></i> <span class="menu-text">Leiaute: Continuar (Espaço)</span> 
-		</button>
-		</li>  
-	</menu>
-	</li>
-	<li class="menu-item submenu">
-	<button type="button" class="menu-btn" ><i class="fa fa-search"></i><span class="menu-text">Filtrar/Localizar</span></button>
-	<menu class="menu">
-		<li class="menu-item">
-		<button type="button" class="menu-btn" onclick="menuOnClick(); javascript:menu_localiza(false);" title="Procura por palavra nos itens exibidos do gráfico"> 
-		<i class="fa fa-search"></i><span class="menu-text">Localizar (F) ...</span> 
-		</button>
-		</li>
-		<li class="menu-item">
-		<button type="button" class="menu-btn" onclick="menuOnClick(); javascript:menu_localiza(true);" title="Procura por palavra nos itens selecionados do gráfico "> 
-		<i class="fa fa-search"></i><span class="menu-text">Filtra na Seleção (SHIFT+F) ...</span> 
-		</button>
-		</li>
-		<li class="menu-item">
-		<button type="button" class="menu-btn" onclick="menuOnClick(); javascript:menu_localizaPorCampo(false);" title="Procura por campo nos itens do gráfico"> 
-		<i class="fa fa-search"></i><span class="menu-text">Localizar Por Campo (CTRL+F) ...</span> 
-		</button>
-		</li>		
-		<li class="menu-item">
-		<button type="button" class="menu-btn" onclick="menuOnClick(); javascript:menu_localiza_adjacentes();" title="Adiciona itens com ligação aos selecionados."> 
-		<i class="fa fa-search"></i><span class="menu-text">Adjacentes (J)</span> 
-		</button>
-		</li>
-		<li class="menu-item">
-		<button type="button" class="menu-btn" onclick="menuOnClick(); javascript:menu_localiza_componente();" title="Adiciona itens conexos (árvore) aos selecionados."> 
-		<i class="fa fa-search"></i><span class="menu-text">Conexos (SHIFT+J)</span> 
-		</button>
-		</li>		
-		<li class="menu-item">
-		<button type="button" class="menu-btn" onclick="menuOnClick(); javascript:menu_localiza_itensComMaisLigacoes();" title="Seleciona itens com mais Ligações."> 
-		<i class="fa fa-search"></i><span class="menu-text">Itens com mais ligações (CTRL+J) ...</span> 
-		</button>
-		</li>	
-		<li class="menu-item">
-		<button type="button" class="menu-btn" onclick="menuOnClick(); javascript:menu_localiza_itensLigadosAColoridos();" title="Selecione itens ligados a outros itens marcados com cores."> 
-		<i class="fa fa-search"></i><span class="menu-text">Itens ligados a coloridos ...</span> 
-		</button>
-		</li>	
-		<li class="menu-item">
-		<button type="button" class="menu-btn" onclick="menuOnClick(); javascript:menu_selecionaGruposComDuasCores();" title="Seleciona os itens de grupos que tenham pelo menos duas cores"> 
-		<i class="fa fa-search"></i><span class="menu-text">Grupos com duas cores</span> 
-		</button>
-		</li>	
-		<li class="menu-item">
-		<button type="button" class="menu-btn" onclick="menuOnClick(); javascript:menu_selecionarTudo();" title="Seleciona tudo"> 
-		<i class="fa fa-search"></i><span class="menu-text">Seleciona Tudo (CTRL+A)</span> 
-		</button>
-		</li>
-		<li class="menu-item">
-		<button type="button" class="menu-btn" onclick="menuOnClick(); javascript:menu_selecionarInverte();" title="Inverte seleção"> 
-		<i class="fa fa-search"></i><span class="menu-text">Inverte Seleção (CTRL+SHIFT+A)</span> 
-		</button>
-		</li>
-		<li class="menu-item submenu">
-		<button type="button" class="menu-btn" title="Abre aba com busca em sites"> <i class="fa fa-users"></i> <span class="menu-text">Busca em sites</span> </button>
-		<menu class="menu">
-			<li class="menu-item">
-			<button type="button" class="menu-btn" onclick="menuOnClick(); javascript:menu_buscaEmSite('https://www.google.com/search?q=');"> 
-			<i class="fab fa-google"></i><span class="menu-text">Google (G)</span> 
-			</button>
-			</li>
-			<li class="menu-item">
-			<button type="button" class="menu-btn" onclick="menuOnClick(); javascript:menu_GoogleMaps();"> 
-			<i class="fab fa-google"></i><span class="menu-text">Google Maps (Shift+G)</span> 
-			</button>
-			</li>
-			<li class="menu-item">
-			<button type="button" class="menu-btn" onclick="menuOnClick(); javascript:menu_buscaEmSite('http://www.jusbrasil.com.br/diarios/busca?q=');"> 
-			<i class="fa fa-balance-scale"></i><span class="menu-text">JusBrasil</span> 
-			</button>
-			</li>
-			<li class="menu-item">
-			<button type="button" class="menu-btn" onclick="menuOnClick(); javascript:menu_buscaEmSite('http://portaldatransparencia.gov.br/busca?termo=');"> 
-			<i class="fa fa-search"></i><span class="menu-text">Portal Transparência</span> 
-			</button>
-			</li>
-		</menu>
-		</li>
-	</menu>
-	</li>
-	<li class="menu-item submenu">
-	<button type="button" class="menu-btn"> <i class="fa fa-file-export"></i> <span class="menu-text">Salvar/Abrir</span> </button>
-	<menu class="menu">
-		<!--
-		<li class="menu-item">
-		<button type="button" class="menu-btn" onclick="menuOnClick(); javascript:menu_exportaExcel(true)"> 
-		<i class="fa fa-file-excel"></i><span class="menu-text">Exportar p/ Excel-Selecão</span> 
-		</button>
-		</li> -->
-		<li class="menu-item">
-		<button type="button" class="menu-btn" onclick="menuOnClick(); javascript:menu_exportaExcel(false)" title="Salva dados dos itens da tela em planilha Excel" > 
-		<i class="fa fa-file-excel"></i><span class="menu-text">Salvar Excel...</span> 
-		</button>
-		</li>
-		<li class="menu-item">
-		<button type="button" class="menu-btn" onclick="menuOnClick(); javascript:menu_exportaSVG()" title="Salva imagem escalável em formato SVG" >
-		<i class="fa fa-save"></i><span class="menu-text" >Salvar Imagem SVG...</span>
-		</button>
-		</li>
-		<li class="menu-item">
-		<button type="button" class="menu-btn" onclick="menuOnClick(); javascript:menu_exportaJsonArquivo(false)" title="Salva arquivo JSON com os itens e ligações de todo o gráfico, que pode ser aberto pela opção Importar JSON">
-		<i class="fa fa-save"></i> <span class="menu-text">Salvar Arquivo Json...</span>
-		</button>
-		</li>
-		<li class="menu-item">
-		<button type="button" class="menu-btn" id="menu_botao_importaJsonArquivo" disabled title="Abre dados de um arquivo JSON salvo pela opção Salvar Arquivo JSON"> 
-		<i class="fa fa-folder-open"></i><span class="menu-text">Abrir Arquivo Json...</span>
-		<input value="Importar" type="file" id="fileImportJSON" title="Adiciona grafico no formato JSON" />
-		</button>
-		<script>
-			document.getElementById('fileImportJSON').addEventListener('change', menu_importarJsonArquivo, false);
-		</script>
-		</li>
-		<li class="menu-item">
-		<button type="button" class="menu-btn" onclick="menuOnClick(); javascript:menu_exportaJSONServidor(false, true)" title="Salva as informações da visualização no servidor, o link poderá ser compartilhado">
-		<i class="fa fa-upload"></i><span class="menu-text">Exportar JSON ao Servidor...</span>
-		</button>
-		</li>  
-		<li class="menu-item">
-		<button type="button" class="menu-btn" onclick="menuOnClick(); javascript:menu_importaJSONServidor()" title="Carrega um arquivo de visualização exportado ao servidor.">
-		<i class="fa fa-download"></i> <span class="menu-text">Importar JSON do Servidor...</span>
-		</button>
-		</li>  
-
-		<li class="menu-item submenu">
-		<button type="button" class="menu-btn" title="Salva seleção para JSON ou servidor"> <i class="fa fa-file-export"></i> <span class="menu-text">Seleção</span> </button>
-		<menu class="menu">
-			<li class="menu-item">
-			<button type="button" class="menu-btn" onclick="menuOnClick(); javascript:menu_exportaJsonArquivo(true)" title="Salva arquivo JSON com os itens e ligações somente dos itens selecionados, que pode ser aberto pela opção Importar JSON">
-			<i class="fa fa-save"></i> <span class="menu-text">Salvar Arquivo Json...</span>
-			</button>
-			</li>  
-			<li class="menu-item">
-			<button type="button" class="menu-btn" onclick="menuOnClick(); javascript:menu_exportaJSONServidor(true, true)" title="Salva as informações dos itens selecionados no servidor, o link poderá ser compartilhado e aberto em uma nova aba.">
-			<i class="fa fa-upload"></i><span class="menu-text">Exportar JSON ao Servidor...</span>
-			</button>
-			</li>  		
-		</menu>
-		{% if parametros.bBaseLocal %}
-		<li class="menu-item submenu">
-		<button type="button" class="menu-btn" title="Opções para exportar para Banco de Dados"> <i class="fa fa-file-export"></i> <span class="menu-text">Banco de Dados</span> </button>
-		<menu class="menu">
-			<li class="menu-item">
-			<button type="button" class="menu-btn" onclick="menuOnClick(); javascript:menu_exportaJSONServidorParaBaseLocal(false)" title="Salva as informações da visualização no Banco de Dados Local SQLITE no Servidor">
-			<i class="fa fa-upload"></i><span class="menu-text">Exportar ao Servidor...</span>
-			</button>
-			</li>  	
-			<li class="menu-item">
-			<button type="button" class="menu-btn" onclick="menuOnClick(); javascript:menu_exportaJSONServidorParaBaseLocal(true)" title="Salva as informações da visualização no Banco de Dados Local SQLITE no Servidor">
-			<i class="fa fa-upload"></i><span class="menu-text">Exportar Seleção...</span>
-			</button>
-			</li>  	
-		</menu>		
-		{% endif %}
-	</menu>
-	</li>
-
-	<li class="menu-separator"></li>
-	<li class="menu-item submenu">
-	<button type="button" class="menu-btn"> <i class="fa fa-trash"></i> <span class="menu-text">Excluir</span> </button>
-	<menu class="menu">
-		<li class="menu-item">
-		<button type="button" class="menu-btn" onclick="menuOnClick(); javascript:menu_excluirNosSelecionados()"> 
-		<i class="fa fa-trash"></i> <span class="menu-text">Excluir Nós selecionados... (Del)</span> 
-		</button>
-		</li>
-		<li class="menu-item">
-		<button type="button" class="menu-btn" onclick="menuOnClick(); javascript:menu_excluirTudo()"> 
-		<i class="fa fa-trash"></i> <span class="menu-text">Excluir Tudo... (SHIFT+Del)</span> 
-		</button>
-		</li>
-		<li class="menu-item">
-		<button type="button" class="menu-btn" onclick="menuOnClick(); javascript:removeIsolados(true);" title="Remove itens sem ligação."> 
-		<i class="fa fa-trash"></i><span class="menu-text">Excluir itens isolados (CTRL+Del)</span> 
-		</button>
-		</li>	
-		<li class="menu-item">
-		<button type="button" class="menu-btn" onclick="menuOnClick(); javascript:excluirNoMantendoLinks()"> 
-		<i class="fa fa-trash"></i> <span class="menu-text">Excluir Nó mantendo Link</span> 
-		</button>
-		</li>
-		<li class="menu-item">
-		<button type="button" class="menu-btn" onclick="menuOnClick(); javascript:removeGalhos(true);" title="Simplifica o gráfico, mantendo apenas itens com mais de uma ligação."> 
-		<i class="fa fa-trash"></i><span class="menu-text">Simplifica Gráfico...</span> 
-		</button>
-		</li>		
-
-	</menu>
-	</li>
-	<li class="menu-separator"></li>
-	<li class="menu-item submenu">
-	<button type="button" class="menu-btn"><i class="fa fa-sliders-h"></i><span class="menu-text">Configurar</span> </button>
-	<menu class="menu">
-		<li class="menu-item">
-		<button type="button" class="menu-btn" onclick="menuOnClick(); javascript:menu_configurar_springLength()"> 
-		<span class="menu-text">Comprimento da Ligação</span> 
-		</button>
-		</li>
-		<li class="menu-item">
-		<button type="button" class="menu-btn" onclick="menuOnClick(); javascript:menu_configurar_springCoeff()"> 
-		<span class="menu-text">Coeficiente da "Mola"</span> 
-		</button>
-		</li>
-		<li class="menu-item">
-		<button type="button" class="menu-btn" onclick="menuOnClick(); javascript:menu_configurar_dragCoeff()"> 
-		<span class="menu-text">Coeficiente de Arrasto</span> 
-		</button>
-		</li>
-		<li class="menu-item">
-		<button type="button" class="menu-btn" onclick="menuOnClick(); javascript:menu_configurar_gravity()"> 
-		<span class="menu-text">Gravidade</span> 
-		</button>
-		</li>
-		<li class="menu-item">
-		<button type="button" class="menu-btn" onclick="menuOnClick(); javascript:menu_configurar_theta()"> 
-		<span class="menu-text">Coeficiente Theta</span> 
-		</button>
-		</li>
-		<li class="menu-item">
-		<button type="button" class="menu-btn" onclick="menuOnClick(); javascript:menu_configurar_nodeSize()"> 
-		<span class="menu-text">Tamanho do Ícone</span> 
-		</button>
-		</li>
-	</menu>
-	</li>	
-	{% if parametros.bBaseReceita %}
-	<li class="menu-item">
-	<button type="button" class="menu-btn" onclick="menuOnClick(); window.open('https://github.com/rictom/rede-cnpj'); "> 
-	<i class="fa fa-info-circle"></i><span class="menu-text">Sobre...</span> 
-	</button>
-	</li>
-	{% endif %}
-</menu>
-
-<iframe id="iframeAuxiliarDownload" src="" onload="" style="display:none"></iframe>
-
-<div style="display:none;">
-	<div id="dlgLink">
-		<p><b>Digite parâmetros para inserir os dados da tabela Links.db</b></p>
-		<p>Número máximo de itens (Serão ordenados de forma decrescente)</p>
-		<input class="ajs-input" id="dlgLink_numeroItens" type="number" value="15" /> 
-		<p>Valor mínimo</p>
-		<input class="ajs-input" id="dlgLink_valorMinimo" type="text" value="100000"/> 
-		<p>Valor máximo</p>
-		<input class="ajs-input" id="dlgLink_valorMaximo" type="text" value=""/> 
-		<p>Número de camadas (Profundidade de níveis na consulta)</p>
-		<input class="ajs-input" id="dlgLink_camadas" type="number" value="1" /> 
-	</div>
-</div>
-
-<div style="display:none;">
-	<div id="dlgItem">
-		<p><b>Digite parâmetros para inserir novo item</b></p>
-		<p><b>ID (IDENTIFICADOR)</b></p>
-		<p>Digite nome ou identificador de novo item (deve ser único no gráfico)</p>
-		<input class="ajs-input" id="dlgItem_id" type="text" value="" /> 
-		<p>Descrição (texto aparece na segunda linha)</p>
-		<input class="ajs-input" id="dlgItem_descricao" type="text" value="" /> 
-		<p>Nota (texto na terceira linha - opcional)</p>
-		<input class="ajs-input" id="dlgItem_nota" type="text" value="" /> 
-		<p>Nome da Ligação com item(s) selecionado(s) (pode ficar vazio)</p>
-		<input class="ajs-input" id="dlgItem_ligacao" type="text" value=""/> 
-	</div>
-</div>
-
-<div style="display:none;">
-	<div id="dlgItemEditar">
-		<p><b>Altere os parâmetros do Item</b></p>
-		<p><b>ID (IDENTIFICADOR)</b></p>
-		<input class="ajs-input" id="dlgItemEditar_id" type="text" value="" title="alterar esse campo irá criar um novo item, deve ser único no gráfico"/> 
-		<p>Descrição (texto aparece na segunda linha)</p>
-		<input class="ajs-input" id="dlgItemEditar_descricao" type="text" value="" /> 
-		<p>Nota (texto na terceira linha - opcional)</p>
-		<input class="ajs-input" id="dlgItemEditar_nota" type="text" value="" /> 
-		<p>Nome da Ligação com item(s) selecionado(s) (pode ficar vazio)</p>
-		<input class="ajs-input" id="dlgItemEditar_ligacao" type="text" value=""/> 
-	</div>
-</div>
-
-
-<div id="img_home" style="display:none;"></div>
-
-</body>
-</html>
