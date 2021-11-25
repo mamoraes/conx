@@ -510,10 +510,13 @@ def exibir_rede(cpfcnpj='', camada=0, idArquivoServidor=''):
                          'referenciaBD': '' ,# config.referenciaBD,
                          'referenciaBDCurto': '' #config.referenciaBD.split(',')[0]
          }
-
-        return render_template('rede_template.html',
+        trilhas = Trilha.query.order_by(Trilha.nome.asc())
+        pesquisas = Pesquisa.query.order_by(Pesquisa.nome.asc())
+        return render_template('vis_rede.html',
                                emojis=current_app.config['EMOJIS'],
-                               parametros=paramsInicial)
+                               parametros=paramsInicial,
+                               trilhas=trilhas,
+                               pesquisas=pesquisas)
 
     """mensagemInicial = ''
     inserirDefault = ''
