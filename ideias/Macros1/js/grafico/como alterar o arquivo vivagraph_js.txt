@@ -1,0 +1,195 @@
+------------------------------------------------------------------
+aumento da velocidade do zoom quando se usa a roda do mouse
+
+       scale = function (out, scrollPoint) {
+
+            var scaleFactor = Math.pow(1 + 3.0, out ? -0.2 : 0.2); //var scaleFactor = Math.pow(1 + 0.4, out ? -0.2 : 0.2);
+  
+        },
+
+--------------		opção para usar no android,
+
+			if (navigator.userAgent.search('Android') == -1) {
+				var scaleFactor = Math.pow(4.0, out ? -0.2 : 0.2);
+			} else {
+				var scaleFactor = Math.pow(1.1, out ? -0.2 : 0.2); //problema aqui, expande mas não diminui
+			}
+
+-------------------------------------------------------------------
+para usar seleção retangular:
+após função scale ou translateRel em svggraphics:
+
+
+		transformClientToGraphCoordinates :  function (position) {
+            var p = svgRoot.createSVGPoint(),
+                t = svgContainer.getCTM(),
+                origin = svgRoot.createSVGPoint().matrixTransform(t.inverse());
+
+            p.x = 0;//dx;
+            p.y = 0; //dy;
+
+            p = p.matrixTransform(t.inverse());
+            p.x = (p.x - origin.x) * t.a;
+            p.y = (p.y - origin.y) * t.d;
+
+            t.e += p.x;
+            t.f += p.y;
+			//return {scale:t.d, ox:t.e,oy:t.f};
+			var pos={};
+			pos.x = (position.x - t.e) / t.d;
+			pos.y = (position.y - t.f) / t.d;
+
+			return pos;
+		},
+-------------------------------------------------------------------------
+(não parece mais necessário com o vivagraph 0.7)
+alteração para evitar que o layout fique em ação quando se está pausado e se arrasta um nó:
+
+Comentar as duas linhas com resetStable, conforme ilustrado abaixo:
+(..)
+Viva.Graph.View.renderer = function(graph, settings) {
+(..)
+ 	listenNodeEvents = function(node) {
+            var wasPinned = false;
+            
+            // TODO: This may not be memory efficient. Consider reusing handlers object.
+            inputManager.bindDragNDrop(node, {
+                    onStart : function(){
+                        wasPinned = node.isPinned;
+                        node.isPinned = true;
+                        userInteraction = true;
+                        //resetStable();                        //---- comentado Sistema Macros
+                    },
+                    onDrag : function(e, offset){
+                        node.position.x += offset.x / transform.scale;
+                        node.position.y += offset.y / transform.scale;
+                        userInteraction = true;
+                        
+                        renderGraph();
+                    },
+                    onStop : function(){
+                        node.isPinned = wasPinned;
+                        userInteraction = false;
+                    } 
+                }
+            );
+        },
+(..)
+	Viva.Graph.Utils.events(graph).on('changed', function(changes){
+                var i, change;
+                for(i = 0; i < changes.length; i += 1){
+                    change = changes[i];
+                    if (change.node) {
+                        processNodeChange(change);
+                    } else if (change.link) {
+                        processLinkChange(change);
+                    }
+                }
+                
+                //resetStable();                                  //---- comentado Sistema Macros
+            });
+       };
+       
+    return {
+
+
+-----------------------------------------------------------
+essa alteração de código não é mais aplicada:
+
+Em Viva.Graph.Utils.getDimension, adicionar o trecho indicado:  
+
+Viva.Graph.Utils.getDimension = function (container) {
+    if (!container) {
+        throw {
+            message : 'Cannot get dimensions of undefined container'
+        };
+    }
+
+    // TODO: Potential cross browser bug.
+    var width = container.clientWidth;
+    var height = container.clientHeight;
+	
+	//--------------------------Sistema Macros 
+	// Solução provisória para problema de centralização do gráfico
+	// Pensar em uma forma melhor de fazer isso.
+	if (height == 0 )
+	{
+		height = window.document.body.clientHeight;
+		if ((width - 160) > 0)
+		{
+			width = width - 150;
+		}
+	}
+	//------------------------------------------------------
+
+    return {
+        left : 0,
+        top : 0,
+        width : width,
+        height : height
+    };
+};
+
+------------------------------------------------------------------
+ajuste de scrool - foi removido, o cursor fica em wait mesmo depois de terminado o zoom.
+
+handleMouseWheel = function (e) {
+       
+...
+
+	$("*").css("cursor", "wait"); //Sistema Macros
+            
+	scroll(e, delta, relMousePos);
+	$("*").css("cursor", "default"); //Sistema Macros
+        },
+
+...
+-----------------------------------------------------------------------------
+
+
+(2014/05/14 - alteração de código, copia dado para o vivagraph 
+por JSON.parse(JSON.stringify(dados)) 
+O código abaixo não foi aplicado ao vivagraph 0.5.6
+talvez voltar a implementar 
+Em: 
+Viva.Graph.graph = function() {
+(..)
+    /** @scope Viva.Graph.graph */
+    var graphPart = {
+(..)
+        addLink : function(fromId, toId, data) {
+            enterModification();
+            
+            var fromNode = this.getNode(fromId) || this.addNode(fromId);
+            var toNode = this.getNode(toId) || this.addNode(toId);
+	    
+            // adicionado - Sistema Macros----------------------------------------------------		
+	    var dado = {
+				cor: data.cor,
+				label: data.label,
+				selecionado: data.selecionado,
+				sentidoUnico: data.sentidoUnico,
+				ref: data.ref,
+				linkId: data.linkId
+			}
+            var link = {
+                fromId : fromId,
+                toId : toId,
+                data : dado 
+            };
+            //----------------------------------------------------------------------------------
+
+            links.push(link);
+
+            // TODO: this is not cool. On large graphs potentially would consume more memory.
+            fromNode.links.push(link);
+            toNode.links.push(link);
+            
+            recordLinkChange(link, 'add');
+            
+            exitModification(this);
+
+            return link;
+        },
+(..)
+-------------------------------------------------------------------------------

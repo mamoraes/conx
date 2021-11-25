@@ -1,0 +1,243 @@
+
+<script type="text/javascript">
+	//-----------------------------------------------------PARÂMETROS DE CONFIGURAÇÃO ----------------------------
+	const TerceiraCamadaPadrao = true;			//--se true, exibe terceira camada por padrão
+	const MudaCorDeRelacionamentos = true;      //se true, sobreescreve cores dos relacionamentos
+	const passosIniciais = 50   			//número de passos iniciais antes de exibir a figura
+	const gravidade = -4.2;						//força de repulsão
+	const comprimento = 25; //30						//comprimento "ótimo" da ligação
+	var tamanhoNo = 15; 						//----------Tamanho do nó
+	var tamanhoSeta = 4; //7; 						//----------Tamanho da meia seta (altura: tamanhoSeta e compimento: tamanhoSeta*2)
+
+	//------------------------------------------------------Cores utilizadas
+	const corCamadaZero = "#FF6600";
+	const corPrimeiraCamada = "black"; //"#66CC33";
+	const corSegundaCamada = "DodgerBlue"; //"DimGray"; //"MidnightBlue";//"darkblue"; //"#333333";
+	const corTerceiraCamada = "green"; //"DodgerBlue"; //"blue"; //"#00CCCC";
+	const corCamadaAdicional = "#FFFF00"; //Yellow //"#8FBC8F";  //DarkSeaGreen
+	const corFonteCamadaAdicional = "SaddleBrown";// "Teal";
+	const corPadrao = "#000000";
+	
+	//-----------------------------------------------------FIM - PARÂMETROS DE CONFIGURAÇÃO-------------------------
+	//define lista para armazenar nós e ligações recebidas da Macro
+	//var listaNoInicial = [];
+	//var listaLigacaoInicial = [];
+	//define lista para armazenar nós e ligações recebidas com o xrhget
+	//listaNoAdicional = []; alterado para parametro da funcao var 
+	//var listaLigacaoAdicional = [];	alterado para parametro da funcao 
+	//-----------------------------------------------------------------
+	//                              Caminhos para as imagens
+	
+	function grafoOnline() {
+		if (document.URL.substring(0,6)=='https:') { 
+			return true; 	
+		} else if (document.URL.substring(0,5)=='http:') { 
+			return true; 	
+		} else {
+			return false;
+		}	
+	}
+	function baseURL() {
+		if (grafoOnline()) {
+			return '';
+		} else {
+			return 'https://app.cgu.gov.br';
+		}
+	}
+	var caminhoImagem = "/macros/static/images/"; //pasta, deve ser adicionado ao nome dos arquivos de imagem abaixo:
+
+	//caminhoImagem = "/macros/static/images/"; //pasta, deve ser adicionado ao nome dos arquivos de imagem abaixo:
+	const caminhoImagemPF = "icone-grafo-desconhecido.png";
+
+
+	//---------------------------------------------------------------------------------------------------------------
+	//                             Variáveis que armazenam o estado corrente
+	
+	
+	//---------------------------------------------------------------------------------------------------------------
+	/*
+	var relacionamentosExcluidos = 
+	{
+		"ex_socio":[],
+		"ex_empregado":[],
+		"empregado":[],
+		"dependente_siape":[],
+		"telefone":[],
+		"endereco":[],
+		"contador":[],
+		"filial":[],
+	};
+	
+	var nosExcluidos = 
+	{
+		"filial":[],
+	};
+	*/
+	//---------------------------------------------------------------------------------------------------------------
+	
+	var dadosNos = {
+			"tipo": "PF", 
+			"sexo": 0,
+			"label": "",
+			"tamanhoFonte": "4",
+			"corFonte": corPadrao,
+			"camada" : "9",
+			"avatar" : "",
+			//"avatarSelecionado" : "",
+			"situacao" : 1, // 1 = ativo, 2 = suspenso, 3 = baixado
+			"origem": false,
+			"m1" : 0,
+			"m2" : 0,
+			"m3" : 0,
+			"m4" : 0,
+			"m5" : 0,
+			"m6" : 0,
+			"m7" : 0,
+			"m8" : 0,
+			"m9" : 0,
+			"m10" : 0,
+			"m11" : 0,
+			"ref" : null
+	};
+	
+	/* Definição dos Dados para Links
+	*/	
+	var dadosLink = {
+		"tipo":"tipoRelacionamento",
+		"label": "label",
+		"cor": "gray",
+		"selecionado": false,
+		"sentidoUnico": true,
+		"ref" :  null,
+		"linkId": "101"
+	};
+	
+	var graph = Viva.Graph.graph();
+	//var layout = Viva.Graph.Layout.forceDirected(graph);
+	var layout = null, renderer = null;
+	var gtemp;
+	var gNomeNoProcurado="";          	// variável global utilizada na busca de nomes
+	var gIdNoProcurado="";          	// variável global utilizada na busca de ids
+	var gUltimoNoModificado=null;
+	var gUltimoNodeId=null;
+	var gSVGtemp;
+	var gRightClickNo=null;  //sempre que o botão direito é pressionado em cima do nó, o nó é armazenado nesta variável global
+	var gNoArmazenado=null;  //sempre que a opção armazenar nó é selecionada, o Nó corrente é armazenado nela.
+	var gNosSelecionados=[]; //Vetor que armazenará os Nós selecionados
+	/* parece que esse gOcultar3Camada e gOcultarCamada não estão sendo utilizados */
+	var gOcultar3Camada = true;
+	var gOcultarCamada = {
+		"ocultar" : true,
+		"camada" : "3"
+		}
+	var g3camada = false;
+	var situacaoCPF = {
+		0:"Regular",
+		1:"Cancelada por Encerramento de Espólio",
+		2:"Suspensa",
+		3:"Cancelada por Óbito sem Espolio",
+		4:"Pendente de Regularização",
+		5:"Cancelada por Multiplicidade",
+		8:"Nula",
+		9:"Cancelada de Ofício"
+	};		
+	var situacaoCNPJ = {
+		0:'Baixada',
+		1:'Nula',
+		2:'Ativa',
+		3:'Suspensa',
+		4:'Inapta',
+		8:'Baixada'
+	};
+	var gTemporizadorLayout = 0;
+	//var gContadorIncluido = false; --- definido em javascriptContador.html
+	var gHistoricoNosInseridos = []; //lista de nós inseridos, para posterior remoção. Cada grupo fica num subarray. ex = [ [no1,no2], [no3,no4,no5] ]
+
+	//var dadosNosTemp=dadosNos;
+	//var dadosLinkTemp=dadosLink;
+	var listaTipos =  { //atualizado em 2015-01-30
+          100:"filial"
+        , 101:"responsável"
+        , 102:"contador"
+        , 103:"sócio"
+        , 104:"representante"
+        , 105:"procurador"
+        , 106:"ex-sócio"
+        , 127:"empregado"
+        , 128:"ex-empregado"
+        , 150:"telefone"
+        , 151:"endereço"
+        , 155:"conta_corrente"
+        , 160:"dependente_SIAPE"
+        , 161:"possivel_pai_SIAPE"
+        , 162:"possivel_mae_CPF"
+        , 165:"dependente_BF"
+        , 166:"responsavel_legal"
+        , 200:"vinculo_macros"
+        , 300:"responsável técnico"
+        , 301:"ex-responsável técnico"
+        , 302:"fiscal terceirizado da CEF"
+        , 305:"mãe"
+        , 306:"irmao"
+        , 401:"SIAPE_AVOS"
+        , 402:"SIAPE_BISAVOS"
+        , 403:"SIAPE_BISNETO(A)"
+        , 404:"SIAPE_COMPANHEIRO(A)"
+        , 405:"SIAPE_CONJUGE"
+        , 406:"SIAPE_ENTEADO(A)"
+        , 407:"SIAPE_EX-ESPOSO"
+        , 408:"SIAPE_FILHO(A)"
+        , 409:"SIAPE_IRMA(O)"
+        , 410:"SIAPE_NETO(A)"
+        , 411:"SIAPE_PAIS"
+        , 412:"SIAPE_EST_EM_LEI"
+        , 421:"doadores"
+        , 999:"INDEFINIDO"
+        //vinculos sociais
+        , 1:"filho"
+        , 2:"pai"
+        , 3:"laranja"
+        , 4:"real proprietario"
+        , 5:"real proprietario da ONG Pra F"
+        , 6:"real proprietario ONG PRA FREN"
+        , 7:"representante legal"
+        , 8:"representada"
+        , 9:"representada por"
+        , 10:"preposto"
+        , 11:"amiga"
+        , 12:"amigo"
+        , 13:"empregadora"
+        , 14:"empregado"
+        , 15:"mãe"
+        , 16:"filha"
+        , 17:"marido"
+        , 18:"esposa"
+        , 19:"irmã"
+        , 20:"procuradora"
+        , 21:"sob a responsabilidade técnica"
+        , 22:"responsável técnico"
+        , 23:"procurador"
+        , 24:"irmão"
+        , 25:"mesmo endereço"
+        , 26:"mesmo telefone"
+        , 28:"Secretário Municipal"
+        , 29:"cliente (contador)"
+        , 30:"contador"
+        , 31:"indicado para assunção de carg"
+        , 32:"aliado político"
+        , 33:"tem como testemunha na constit"
+        , 34:"testemunha na constituição"
+        , 35:"empregado(a)"
+        , 36:"empregador(a)"
+        , 37:"irmãos"
+        , 38:"advogado"
+        , 39:"advogado(a)"
+        , 40:"cliente - advogado(a)"
+        , 41:"Assessores da DC"
+        , 42:"Diretor"
+        , 43:"Supervisor"
+    }
+
+
+		
+</script>

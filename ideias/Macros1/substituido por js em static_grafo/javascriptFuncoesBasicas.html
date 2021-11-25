@@ -1,0 +1,509 @@
+<script type="text/javascript">
+		//listaNoInicial, listaLigacaoInicial 	--> listas que armazenam os nós  e ligações que estão no gráfico
+		//									  	--> atualizá-los sempre que um nó/ligação for adicionado e/ou removido.
+	function existeNo(noId)	{
+		if (graph.getNode(noId)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	//------------------------------------------------------------------------------------------------------------------------------		
+	//Adiciona um nó
+	// Parâmetros: 
+	//		Nome do nós: nomeNo
+	// 		Dados: Json
+	//		inicio: true ou false  --> para não atrasar a geração do gráfico, no início, a checagem dos nós não é realizada
+	function adicionaNo(nomeNo, dados, inicio) {
+		if ( inicio == true) {
+			//graph.addNode(nomeNo, dados);
+			return graph.addNode(nomeNo, JSON.parse(JSON.stringify(dados))); //sem essa copia, esta replicando dados do primeiro item
+		} else {
+			//verificar se o nó já existe no vetor de nós
+			//se já existir, não faço nada
+			var encontrado = existeNo(nomeNo);
+			//caso contrário, insiro o nó
+			if (encontrado == false) {
+				//graph.addNode(nomeNo, dados);
+				return graph.addNode(nomeNo, JSON.parse(JSON.stringify(dados))); //sem essa copia, esta replicando dados do primeiro item
+				//inserir Nó na lista de Nós
+			}
+		}
+	}
+	
+	function contadorLink() { //inclui id único para cada link
+		//dados.id = noOrigem + '_' + noDestino; 
+		if (!contadorLink.contador) {
+			contadorLink.contador = 1;
+		} else {
+			contadorLink.contador++;
+		}
+		//dados.id = "idlink_" + Math.random().toString(16).slice(2) //esse id é usado para identificar um label, opção para não usar texto de endereço
+		return "idlink_" + contadorLink.contador; //esse id é usado para identificar um label, opção para não usar texto de endereço
+	}
+	
+	//Adiciona um link entre os Nós
+	//Parâmetros:
+	//	Nome do Nó de origem: noOrigem
+	//	Nome do Nó de destino: noDestino
+	//  Dados adicionais: dados
+	// Retorna o link que foi criado
+	function adicionaLink(noOrigem, noDestino, dados, inicio) {
+		//verificar se origem e destino são os mesmos
+		//caso sejam, não faz sentido incluir ligação
+		if (noOrigem == noDestino) { 
+			return;
+		}
+		dados.id = contadorLink(); //inclui contador no campo texto
+		inicio = false; //XXX
+		if (inicio == true)	{
+			if (MudaCorDeRelacionamentos == true) {
+				dados.cor = retornaCorDoRelacionamento(dados.linkId);
+			} else {
+				dados.cor = dados.cor;
+			}
+			return graph.addLink(noOrigem, noDestino, JSON.parse(JSON.stringify(dados)));
+		};
+		//verificar se o link já existe no vetor de ligações
+		//se já existir
+		var encontrado=false;
+		var cont=0;
+		var invertido=false;
+		var linkAux = graph.hasLink(noOrigem,noDestino);
+		if (!linkAux) {
+			linkAux = graph.hasLink(noDestino,noOrigem);
+			invertido = true;
+		}
+		if (linkAux) {
+			encontrado = true;
+			//verificar se possuem mesmo id e descricação
+			var listaIDInicial = linkAux.data.linkId.split("_");
+			var listaLabelInicial = linkAux.data.label.split(",");
+			var listaIDNovo = dados.linkId.split("_");
+			var listaLabelNovo = dados.label.split(",");
+			//var listaIDtemp = [];
+			//var listaLabeltemp = [];
+			var listaIDsAIncluir=[], listaLabelsAIncluir=[];
+			for (var k=0, tamaux=listaIDNovo.length; k<tamaux; k++) {
+				var indice = listaIDInicial.indexOf(listaIDNovo[k]);
+				if (indice==-1) { //não encontrado, tipo novo
+					listaIDsAIncluir.push(listaIDNovo[k]);
+					//listaLabelsAIncluir.push(listaLabelNovo[k]); //isso não funciona, porque o label e o id podem ter k diferente
+				}
+			}
+			for (var k=0, tamaux=listaLabelNovo.length; k<tamaux; k++) {
+				var indice = listaLabelInicial.indexOf(listaLabelNovo[k]);
+				if (indice==-1) { //não encontrado, tipo novo
+					//listaIDsAIncluir.push(listaIDNovo[k]);
+					listaLabelsAIncluir.push(listaLabelNovo[k]);
+				}
+			}
+			//if (listaIDsAIncluir.length==0) { //nada a fazer, todos os tipos já estavam na ligação
+			if (listaLabelsAIncluir.length==0) { //nada a fazer, todos os tipos já estavam na ligação
+				return;
+			}
+			var dadosLinkTemp = dadosLink;						
+			dadosLinkTemp.linkId = linkAux.data.linkId+"_"+listaIDsAIncluir.join("_");
+			dadosLinkTemp.label = linkAux.data.label+","+listaLabelsAIncluir.join(",");						
+			dadosLinkTemp.camada = linkAux.data.camada;
+			if (MudaCorDeRelacionamentos == true)	{
+				dadosLinkTemp.cor = retornaCorDoRelacionamento(linkAux.data.linkId); //listaLigacaoAdicional[cont].cor;
+			} else	{
+				dadosLinkTemp.cor = linkAux.data.cor;
+			}
+			dadosLinkTemp.sentidoUnico = linkAux.data.sentidoUnico;
+			dadosLinkTemp.id = dados.id;
+			dadosLinkTemp.camada = dados.camada;
+			if (!invertido) { //o link anterior vai ter prioridade na direção.
+				//removeLigacao(linkAux.toId,linkAux.fromId);		
+				removeLigacao(noOrigem,noDestino);		
+				return graph.addLink(noOrigem, noDestino, JSON.parse(JSON.stringify(dadosLinkTemp)));	
+			} else {
+				//removeLigacao(linkAux.fromId,linkAux.toId);
+				removeLigacao(noDestino,noOrigem);
+				return graph.addLink(noDestino, noOrigem, JSON.parse(JSON.stringify(dadosLinkTemp)));	
+			}
+			//return graph.addLink(noOrigem, noDestino, JSON.parse(JSON.stringify(dadosLinkTemp)));	
+		};
+
+		if(encontrado == false)	{
+			//caso contrário, adicionar ligação
+			//antes, verificar se o nó origem e destino existem
+			if( existeNo(noOrigem) && existeNo(noDestino))	{
+				var dadosLinkTemp = dadosLink;
+				dadosLinkTemp.camada = dados.camada;
+				dadosLinkTemp.label = dados.label;
+				dadosLinkTemp.linkId = dados.linkId;
+				if (MudaCorDeRelacionamentos == true) {
+					dadosLinkTemp.cor = retornaCorDoRelacionamento(dados.linkId);
+				} else	{
+					dadosLinkTemp.cor = dados.cor;
+				}
+				dadosLinkTemp.sentidoUnico = dados.sentidoUnico;
+				dadosLinkTemp.id = 	contadorLink();
+				//atualizar listaLigacaoInicial
+				return graph.addLink(noOrigem, noDestino, JSON.parse(JSON.stringify(dadosLinkTemp)));
+			} else	{
+				//console.log('tentou inserir ligacao em no previamente definido ' + noOrigem + '-' + noDestino); 			
+				return;
+			}
+		}
+	}
+			
+	function removeLigacao(noOrigem, noDestino)	{
+		//atualizar o vetor de Ligação Inicial
+		//remover ligacao
+		var link = graph.hasLink(noOrigem,noDestino);
+		if (link) {
+			try { //remove texto do link, se existir
+				var linkUIaux = graphics.getLinkUI(link.id);
+				var element=document.getElementById('texto_ligacao_'+linkUIaux.attr('id'));
+				element.parentNode.removeChild(element);
+			} catch (e){;}
+			graph.removeLink(link);
+			return;
+		}	
+	}
+	/*
+	function removeNo(no) {
+		//remover o nó da lista de nós
+
+		//remover ligações que partem do nó e que chegam ao nó
+		var cont = 0;
+		graph.forEachLinkedNode(no.id, function(nodeaux, link){
+			var linkUIaux=null;
+			try {
+				linkUIaux = graphics.getLinkUI(link.id);
+				element=document.getElementById('texto_ligacao_'+linkUIaux.attr('id'));
+				element.parentNode.removeChild(element);
+			} catch (e){; };
+		});
+
+		graph.removeNode(no.id)
+	}
+	*/
+
+	function removeNo(noId) { //diferente de removeNo, que remove o item com no.id
+		//remover o nó da lista de nós
+
+		//remover ligações que partem do nó e que chegam ao nó
+		graph.forEachLinkedNode(noId, function(nodeaux, link){
+			var linkUIaux=null;
+			try {
+				linkUIaux = graphics.getLinkUI(link.id);
+				element=document.getElementById('texto_ligacao_'+linkUIaux.attr('id'));
+				element.parentNode.removeChild(element);
+			} catch (e){; };
+		});
+
+		graph.removeNode(noId);
+	}
+	
+	function carregaListasIniciais(noLigacao) {
+		var listaDeNos = noLigacao['no'];
+		var listaLigacoes = noLigacao['ligacao'];
+		//var keysx = Object.keys(listaDeNos);
+		for ( var i = 0, tamanho = listaDeNos.length; i < tamanho ; i++ ) {
+			var dadosNosTemp=listaDeNos[i];
+			dadosNosTemp.avatar =  retornAvatar(dadosNosTemp.tipo, dadosNosTemp.id, dadosNosTemp.sexo, dadosNosTemp.situacao);
+			dadosNosTemp.corFonte = retornaCorFonteNaCamada(dadosNosTemp.camada);
+			dadosNosTemp.tamanhoFonte = dadosNos.tamanhoFonte;			
+			dadosNosTemp.tipo = dadosNosTemp.tipo.toUpperCase();
+			//if ({{camadaLimite}} >= dadosNosTemp.camada) {
+				if (dadosNosTemp.camada == 0) {
+					dadosNosTemp.origem = true;
+				}
+
+			adicionaNo(dadosNosTemp.id,dadosNosTemp, false); //adicionaNo(dadosNosTemp.id,dadosNosTemp, false);	
+
+			dadosNosTemp.origem = false;
+			
+		}
+		for (var i = 0, arrayLength = listaLigacoes.length; i < arrayLength; i++) {
+			var dadosLinkTemp = listaLigacoes[i];
+			if (dadosLinkTemp.camada == 1){
+				dadosLinkTemp.cor = "#0000FF";
+			} else {
+				dadosLinkTemp.cor = "gray";
+				//dadosLinkTemp.sentidoUnico = true;
+			}
+			dadosLinkTemp.sentidoUnico = ehSentidoUnico(dadosLinkTemp.label);
+	
+			//adicionaLink(dadosLinkTemp.origem,dadosLinkTemp.destino, dadosLinkTemp, true);		
+			adicionaLink(dadosLinkTemp.origem,dadosLinkTemp.destino, dadosLinkTemp, false);	//poderia ser true, mas existe casos raros em que a ligação em sentido contrário - firma que é contadora e filial	
+
+			//teste de links duplos
+			//adicionaLink("{{linha.id_dest}}","{{linha.id_orig}}", dadosLinkTemp);	
+		}	
+
+	}
+
+	
+	
+	//adiciona Novos Nós e Ligações, partindo do Nó de Referência
+	function adicionarNovosNosELigacoes(noReferencia, listaNoAdicional, listaLigacaoAdicional)	{
+		//se o nó de referência não foi passado 
+		//não faço nada
+		/*
+		if (noReferencia != null) { //acrescentando
+			if(!(noReferencia.length > 1)) //o id do nó não deve ter tamanho 1
+			{
+				return 0;
+			}
+		}
+		*/
+		var nosInseridos = []; //reinicia lista de nós inseridos nesta operação
+		var dadosNosTemp = dadosNos;
+		var cNosLigacoes = 0; //conta quantos links ou nos foram criados. Só resume layout se tiver sido adicionado algo
+		for(var cont=0, tam = listaNoAdicional.length; cont < tam; cont++)	{
+			dadosNosTemp.camada = listaNoAdicional[cont].camada;
+			dadosNosTemp.tipo = listaNoAdicional[cont].tipo;
+			dadosNosTemp.sexo = listaNoAdicional[cont].sexo;
+			dadosNosTemp.label = listaNoAdicional[cont].label;
+			dadosNosTemp.avatar = listaNoAdicional[cont].avatar;
+			//dadosNosTemp.avatarSelecionado = listaNoAdicional[cont].avatarSelecionado;
+			dadosNosTemp.tamanhoFonte = dadosNos.tamanhoFonte;
+			dadosNosTemp.corFonte = listaNoAdicional[cont].corFonte;
+			dadosNosTemp.situacao = listaNoAdicional[cont].situacao;
+			dadosNosTemp.origem = listaNoAdicional[cont].origem;	
+					
+			dadosNosTemp.m1 = listaNoAdicional[cont].m1;
+			dadosNosTemp.m2 = listaNoAdicional[cont].m2;
+			dadosNosTemp.m3 = listaNoAdicional[cont].m3;
+			dadosNosTemp.m4 = listaNoAdicional[cont].m4;
+			dadosNosTemp.m5 = listaNoAdicional[cont].m5;
+			dadosNosTemp.m6 = listaNoAdicional[cont].m6;
+			dadosNosTemp.m7 = listaNoAdicional[cont].m7;
+			dadosNosTemp.m8 = listaNoAdicional[cont].m8;
+			dadosNosTemp.m9 = listaNoAdicional[cont].m9;
+			dadosNosTemp.m10 = listaNoAdicional[cont].m10;
+			dadosNosTemp.m11 = listaNoAdicional[cont].m11;
+			//passar elementos da lista de Adicional para a lista inicial
+			if (adicionaNo(listaNoAdicional[cont].id,dadosNosTemp, false)) { //true);
+				cNosLigacoes++;
+				nosInseridos.push(listaNoAdicional[cont].id);
+			}
+			//listaNoInicial.push(listaNoAdicional[cont]); //isso já ´é feito em adicionaNo
+		}
+		
+		if (nosInseridos.length !=0) {
+			gHistoricoNosInseridos.push(nosInseridos);
+		}
+		var dadosLinkTemp=dadosLink;
+		//console.log('tamanho ' + listaLigacaoAdicional.length);
+		var noPinado = false;
+		if (noReferencia && (nosInseridos.indexOf(noReferencia) == -1)) { 
+			noPinado = layout.isNodePinned(graph.getNode(noReferencia));	
+			if (!noPinado) {
+				layout.pinNode(graph.getNode(noReferencia),1);		
+			}
+		}
+		for(var cont=0, tam = listaLigacaoAdicional.length; cont < tam; cont++)	{
+			dadosLinkTemp.camada = listaLigacaoAdicional[cont].camada;
+			dadosLinkTemp.label = listaLigacaoAdicional[cont].label;
+			dadosLinkTemp.linkId = listaLigacaoAdicional[cont].linkId;
+			dadosLinkTemp.cor = listaLigacaoAdicional[cont].cor;
+			dadosLinkTemp.sentidoUnico = ehSentidoUnico(dadosLinkTemp.label); //listaLigacaoAdicional[cont].sentidoUnico;
+			if (adicionaLink(listaLigacaoAdicional[cont].origem,listaLigacaoAdicional[cont].destino, dadosLinkTemp, false)) {
+				cNosLigacoes++;
+			}
+			//passar elementos da lista de Adicional para a lista inicial
+			//listaLigacaoInicial.push(listaLigacaoAdicional[cont]); //já é feito em adicionaLink
+		}
+		if (cNosLigacoes !=0) {
+			//setTimeout(function() { renderer.pause(); }, Math.sqrt(listaLigacaoAdicional.length)*3000);
+			renderizaPausaEmSegundos(Math.sqrt(listaLigacaoAdicional.length)*3);
+			if (noReferencia && !noPinado && (nosInseridos.indexOf(noReferencia) == -1)) {
+				setTimeout(
+					function() { 
+							layout.pinNode(graph.getNode(noReferencia),0); 
+					}, 
+					Math.sqrt(listaLigacaoAdicional.length)*3*1000
+				);
+			};
+
+		}
+	}
+	
+	function replaceAll(string, token, newtoken) {
+		if (!string) { return ''; } ;
+		while (string.indexOf(token) != -1) {
+			string = string.replace(token, newtoken);
+		}
+		return string;
+	}
+	
+	function retornaCorDoRelacionamento(listaID) {
+		retorno = "Silver";
+		if (( listaID.search("100") > -1) || 
+			( listaID.search("101") > -1) ||
+			( listaID.search("104") > -1) ||
+			( listaID.search("105") > -1))	{
+			retorno = "DarkOrange";
+		}else {
+			if (( listaID.search("103") > -1) )	{
+				retorno = "Blue";
+			}else {
+				if (( listaID.search("106") > -1) )	{
+					retorno = "Black";
+				}else	{
+					if (( listaID.search("401") > -1) ||
+						( listaID.search("402") > -1) ||
+						( listaID.search("403") > -1) ||
+						( listaID.search("404") > -1) ||
+						( listaID.search("405") > -1) ||
+						( listaID.search("406") > -1) ||
+						( listaID.search("407") > -1) ||
+						( listaID.search("408") > -1) ||
+						( listaID.search("409") > -1) ||
+						( listaID.search("410") > -1) ||
+						( listaID.search("411") > -1) ||
+						( listaID.search("412") > -1) ||
+						( listaID.search("127") > -1) 
+					){
+						retorno = "Green";
+					}else	{
+						if ( listaID.search("102") > -1)	{
+							retorno = "Cyan";
+						} else{
+							if ( listaID.search("128") > -1){
+								retorno = "Khaki";
+							} else	{
+								if (( listaID.search("160") > -1) ||
+									( listaID.search("162") > -1) ||
+									( listaID.search("161") > -1))	{
+									retorno = "mediumpurple";
+								}
+							}
+						}
+
+					}
+				}
+			}
+		}
+		//alert(listaID+"_"+retorno);	
+		return retorno;
+	}
+	//------------grafoRelacionamento.html
+	function retornaStrTipo(tipo) {
+		var r = "PJ";
+		if ( tipo >  limiteTipoPJ )	{
+			r = "PF";
+		}
+		return r;
+	}
+	
+	function retornAvatar(tipo, id, sexo, situacao) {	
+		if (tipo=="PF")	{
+			if (situacao==0) { //situacao==0 ativa
+				if (sexo==1) {
+					avatar = 'icone-grafo-masculino.png';
+				} else if (sexo==2) {
+					avatar = 'icone-grafo-feminino.png';
+				} else {
+					avatar ='icone-grafo-desconhecido.png';
+				}
+			} else {
+				if (sexo==1) {
+					avatar = 'icone-grafo-masculino-inativo.png';
+				} else if (sexo==2) {
+					avatar = 'icone-grafo-feminino-inativo.png';
+				} else {
+					avatar ='icone-grafo-desconhecido.png';
+				}			
+			}
+		} else if (tipo=="PJ")	{
+			if (id.slice(8,12) =="0001") { //matriz
+				avatar = (situacao==2)?'icone-grafo-empresa.png':'icone-grafo-empresa-inativo.png';
+			} else { //filial
+				avatar = (situacao==2)?'icone-grafo-empresafilial.png':'icone-grafo-empresafilial-inativo.png';											
+			}
+		} else if (tipo=="TEL")	{
+			avatar = 'icone-grafo-telefone.png';		
+		} else if (tipo=="END")	{
+			avatar = 'icone-grafo-endereco.png';		
+		} else if (tipo=="CC")	{
+			avatar = 'icone-grafo-conta.png';		
+		} else { //pessoa estrangeira
+			avatar = 'icone-grafo-empresa-estrangeira.png';
+		}
+		return avatar;
+	}
+	
+	function ehSentidoUnico(descricao) {
+		var retorno = true;
+		var descricoesComSentidoUnico = ["irmão","endereco","telefone","endereço"];
+		if (descricao.length > 0) {
+			var tam = descricoesComSentidoUnico.length;
+			var cont;
+			descricao = descricao.replace(",","");
+			for (cont = 0; cont < tam; cont++)	{
+				descricao = descricao.replace(descricoesComSentidoUnico[cont],"");
+			}
+			descricao = descricao.replace(" ","");
+			if (descricao.length == 0)	{
+				retorno = false;
+			}
+		}
+		return retorno;
+	}
+	
+	function retornaSituacao(codigo, tipo) {
+		var retorno = 0;
+		if (tipo=="PF")	{
+			if(codigo == '0')	{
+				retorno = 2;
+			} else	{
+				if ((codigo == '2') || (codigo == '4')) {
+					retorno = 1;
+				} else	{
+					retorno = 0;
+				}
+			}
+			//dadosNosTemp.situacao = "{{dado|safe}}";
+		} else {
+		    if (tipo=="PJ")	{
+				if(codigo == '2')	{
+					retorno = 2;
+				} else	{
+					if ((codigo == '3' ) || (codigo == '4')) {
+						retorno = 1;
+					} else {
+						retorno = 0;
+					}
+				}
+			} else {
+				retorno = 3;
+			}
+		}
+		return retorno;
+	}
+	
+	function retornaCorFonteNaCamada(camada)	{ 
+		/*
+		const corCamadaZero = "#FF6600";
+		const corPrimeiraCamada = "black"; //"#66CC33";
+		const corSegundaCamada = "DodgerBlue"; //"DimGray"; //"MidnightBlue";//"darkblue"; //"#333333";
+		const corTerceiraCamada = "green"; //"DodgerBlue"; //"blue"; //"#00CCCC";
+		const corCamadaAdicional = "#FFFF00"; //Yellow //"#8FBC8F";  //DarkSeaGreen
+		const corFonteCamadaAdicional = "SaddleBrown";// "Teal"; */
+		var corFonte = corPadrao;
+		if (camada == 0) {
+			corFonte="Red";
+		} else if (camada == 1) {
+			corFonte="Black";
+		} else if (camada ==2) {
+			corFonte="DodgerBlue";
+		} else if (camada == 3) {
+			g3camada = true;
+			corFonte="Green";
+		} else if (camada == 4) {
+			corFonte="GoldenRod";
+		} else {
+			corFonte="SaddleBrown"; //corPadrao;
+		}
+		return corFonte;
+	}
+	
+</script>

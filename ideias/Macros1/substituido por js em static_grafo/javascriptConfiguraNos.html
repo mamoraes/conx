@@ -1,0 +1,514 @@
+<script type="text/javascript">
+	//Configura os Nós
+	function configuraNos(){
+		graphics.node(function(node) {
+			var LF = String.fromCharCode(10);
+			var linhaTexto1='', linhaTexto2=''; 
+			if (node.data.tipo == 'END') {
+				linhaTexto1 = node.id.split('__')[0];
+				linhaTexto2 = node.id.split('__')[1];
+			} else if (node.data.tipo == 'TEL') {
+					linhaTexto1 = node.id; //node.id.slice(4);	
+			} else if (node.data.tipo == 'CC') {
+					linhaTexto1 = node.id.split('-')[0] + '-' + node.id.split('-')[1];
+					linhaTexto2	= node.id.split('-')[2]; //node.id.slice(4);	
+			//} else if (node.data.label.startsWith("Inexistente")) {
+			} else if (node.data.label.startsWith("Inexistente")) {
+					linhaTexto1 = node.id;
+					linhaTexto2 = 'Inexistente';
+			} else { //PF, PJ e ES
+					linhaTexto1 = formataCPFCNPJ(node.id);
+					linhaTexto2 = node.data.label;
+			} 			
+			//textoTooltip = textoTooltip.trim();
+			//mudar a cor de borda conforme a situação da PF/PJ
+			var corStroke;
+			switch(retornaSituacao(node.data.situacao, node.data.tipo))	{
+			case 2:
+				corStroke = 'greenyellow';
+				break;
+			case 1:
+				corStroke = 'yellow';
+				break;
+			case 3:
+				corStroke = 'goldenrod';
+				break;
+			default:
+				corStroke = 'darkgrey';
+				//$(rect).attr('stroke', 'darkgrey');
+			}
+			var ui = Viva.Graph.svg('g'),
+				rect = Viva.Graph.svg('rect')
+					//.attr('id','no_' + node.id)
+					//.attr('stroke-width', 1)	
+					//.attr('render-order',1)					
+					.attr('stroke',corStroke)
+					.attr('stroke-width', 1)					
+					.attr('fill', (node.data.camada==0)?'Orange':'White') 
+					.attr('y', -nodeSize*0+'px')
+					.attr('x', -nodeSize*0+'px')
+					.attr('width', nodeSize*1)
+					.attr('height', nodeSize*1)
+					.attr('tipo','fundo'), //inclui tipo para distinguir de outros rects
+				lineTop = Viva.Graph.svg('path')
+					.attr('d', 'M 0 0 L 7.5 0 L 15 0')
+					.attr('stroke-width', 0.1)
+					.attr('stroke', corStroke),
+				lineBottom = Viva.Graph.svg('path')
+					.attr('d', 'M 0 15 L 7.5 15 L 15 15')
+					.attr('stroke-width', 0.1)
+					.attr('stroke', corStroke),
+				lineLeft = Viva.Graph.svg('path')
+					.attr('d', 'M 0 0 L 0 7.5 L 0 15')
+					.attr('stroke-width', 0.1)
+					.attr('stroke', corStroke),
+				lineRight = Viva.Graph.svg('path')
+					.attr('d', 'M 15 0 L 15 7.5 L 15 15')
+					.attr('stroke-width', 0.1)
+					.attr('stroke', corStroke);
+			var svgText1 = Viva.Graph.svg('text')
+				.attr('y', String(parseInt(node.data.tamanhoFonte) + nodeSize + 3) + 'px') //era -4px, 22px=15+4(fonte)+3
+				.attr('x', '7px')  //era 0, x,y trocado para centralizar embaixo do quadrado
+				.attr('font-size',node.data.tamanhoFonte)
+				.attr('fill',node.data.corFonte)
+				.attr('text-anchor','middle')
+				//.attr('focusable', false)
+				//.attr('visibility', 'visible')
+				.attr('id', 'texto_no_linha1_' + node.id)
+				//.attr('render-order',10)
+				.text(linhaTexto1);	
+			var svgText2 = null;
+			if (linhaTexto2 != '') {
+				svgText2 = Viva.Graph.svg('text')
+					.attr('y', String(2*parseInt(node.data.tamanhoFonte) + nodeSize + 3) + 'px') //era -4px, 22px=15+4(fonte)+3
+					.attr('x', '7px')  //era 0, x,y trocado para centralizar embaixo do quadrado
+					.attr('font-size',node.data.tamanhoFonte)
+					.attr('fill',node.data.corFonte)
+					.attr('text-anchor','middle')
+					//.attr('focusable', false)
+					//.attr('visibility', 'visible')
+					.attr('id', 'texto_no_linha2_' + node.id)
+					//.attr('render-order',10)
+					.text(linhaTexto2);
+			}
+
+			//----------------------------------------------------------------------
+			//criar atributo 'relevante'=cpf ou cnpjs que tem informação relevante cadastrada
+			//node.data.m10 = 0;
+			if (node.data.m10 == 1)	{
+				var rectRelevante = Viva.Graph.svg('rect')
+					.attr('stroke-width',2)
+					.attr('stroke', 'red')
+					.attr('fill', 'none')
+					.attr('y', -1-nodeSize*0+'px')
+					.attr('x', -1-nodeSize*0+'px')
+					.attr('width', nodeSize*1+2)
+					.attr('height', nodeSize*1+2);
+				ui.append(rectRelevante);
+			}	
+			//adicionar os marcadores conforme atributos do Nó------------------
+			if (node.data.m1 == 1) { //circulo verde, servidor público estadual ou municipal
+				$(lineTop).attr('marker-start', 'url(#Verde)');
+			}
+			if (node.data.m1 == 2) { //quadrado verde, pessoa física possui cadastro no siape
+				$(lineTop).attr('marker-start', 'url(#VerdeQua)');
+			}
+			if (node.data.m2 == 1) { //pessoa física tem salário base menor que 2 salários mínimos
+				$(lineTop).attr('marker-mid', 'url(#Cinza)');
+			}
+			if (node.data.m2 == 2) { //??
+				$(lineTop).attr('marker-mid', 'url(#CinzaQua)');
+			}
+			if (node.data.m3 == 1) { //indica que a pf/pj recebeu ordem bancária do siafi
+				$(lineTop).attr('marker-end', 'url(#Vermelho)');
+			}
+			if (node.data.m3 == 2) { //?
+				$(lineTop).attr('marker-end', 'url(#VermelhoQua)');
+			}
+			if (node.data.m4 == 1) { //pessoa física investigada em sindicância ou processo
+				$(lineLeft).attr('marker-mid', 'url(#Azul)');
+			}
+			if (node.data.m4 == 2) { //?
+				$(lineLeft).attr('marker-mid', 'url(#AzulQua)');
+			}
+			if (node.data.m5 == 1) { //circulo preto: pf=pessoa foi candidata, pj=pessoa jurídica possui de 1 a 3 funcionários(rais)						   	
+				$(lineRight).attr('marker-mid', 'url(#Preto)');
+			}
+			if (node.data.m5 == 2) { //quadrado preto: pf=pessoa eleita, pj=pessoa jurídica não possui funcionários (rais)
+				$(lineRight).attr('marker-mid', 'url(#PretoQua)');
+			}
+			if (node.data.m6 == 1) { //pf=cadastro no ceis/cepim/punidos, pj = ceis/cepim
+				$(lineBottom).attr('marker-start', 'url(#Dourado)');
+			}
+			if (node.data.m6 == 2) { //??
+				$(lineBottom).attr('marker-start', 'url(#DouradoQua)');
+			}
+			if (node.data.m7 == 1) { //pf ou pj doadora de campanha
+				$(lineBottom).attr('marker-mid', 'url(#Roxo)');
+			}
+			if (node.data.m7 == 2) { //?
+				$(lineBottom).attr('marker-mid', 'url(#RoxoQua)');
+			}
+			if (node.data.m8 == 1) { //pf consta do bolsa família, cad unico ou defeso pescador
+				$(lineBottom).attr('marker-end', 'url(#AzulEscuro)');
+			}
+			if (node.data.m8 == 2) { //?
+				$(lineBottom).attr('marker-end', 'url(#AzulEscuroQua)');
+			}
+
+			var img = Viva.Graph.svg('image')
+					//.attr('title', textoTooltip) //texto exibido no tooltip
+					.attr('width', nodeSize)
+					.attr('height', nodeSize)
+					//.attr('render-order', '10')
+					//.attr('filter','url(#FiltroPB)')
+					.link(caminhoImagem + node.data.avatar);
+					
+			//------------------------------------------------------------------
+			ui.append(lineTop);
+			ui.append(lineBottom);
+			ui.append(lineLeft);
+			ui.append(lineRight);
+			ui.append(rect);
+			ui.append(img);
+			ui.append(svgText1);
+			if (svgText2 != null) {
+				ui.append(svgText2);
+			}			
+			//----------------------------------------------------------------------
+			//criar atributo 'falecido'
+			//node.data.m9 = 0;
+			if (node.data.m9 == 1)
+			{
+				var metade = nodeSize/2;
+				var umQuarto = nodeSize/4;
+				var faixa = Viva.Graph.svg('rect')
+					.attr('fill', 'black')
+					.attr('y', (-nodeSize*0+metade-umQuarto/2)+'px')
+					.attr('x', (-nodeSize*0+nodeSize*0.05)+'px')
+					.attr('width', nodeSize*0.9)
+					.attr('height', umQuarto);
+				var textoFalecido = Viva.Graph.svg('text')
+					.attr('y', (-nodeSize*0+metade*1.33-umQuarto/2)+'px')
+					.attr('x', (-nodeSize*0+nodeSize*0.1)+'px')
+					.attr('font-size',nodeSize*0.16)
+					.attr('fill','white')
+					.text('Falecido(a)')
+				ui.append(faixa);
+				ui.append(textoFalecido);
+			}
+		
+			
+			//---------------------------------------------------------------------
+
+			node.data.ref = $(ui);
+			
+			$(ui).hover(function() { // mouse over
+					highlightRelatedNodes(node.id, true);
+					//gSVGtemp=Viva.Graph.svg('text').attr('y', '-8px').attr('font-size','15').attr('fill','red').text(node.data.label);
+					//ui.appendChild(gSVGtemp);
+					//mostraTextoDeLigacao(1); fica muito lento
+					//coloca tooltip dinamicamente
+					var nodeUI=graphics.getNodeUI(node.id);
+					for (var c=0;c<nodeUI.children.length;c++) { 
+						if (nodeUI.children[c].tagName=='image') { 
+							nodeUI.children[c].setAttribute('title',textoTooltip(node)); //adiciona tooltip à imagem do ícone
+							break;
+						} 
+					}
+				}, function() { // mouse out
+					if ((gUltimoNodeId == null) || (gUltimoNodeId != node.id)){
+						highlightRelatedNodes(node.id, false);
+						//botaoExibirOcultarTextoDeLigacao();
+					}
+					var nodeUI=graphics.getNodeUI(node.id);
+					for (var c=0;c<nodeUI.children.length;c++) { 
+						if (nodeUI.children[c].tagName=='image') { 
+							nodeUI.children[c].setAttribute('title',''); //remove texto do tooltip
+							break;
+						} 
+					}
+					//ui.removeChild(gSVGtemp);						//$(ui).removeChild(Viva.Graph.svg('text').attr('y', '-4px').text(node.id));
+				});					
+			/* comentei, não entendi a necessidade dessa parte.
+			$(ui).toggle(function () {
+					selecionaNos("", false);			
+					selecionaNos(node, true);
+				},function () {
+					carregaMenuLateral("",false);  //reseta o menu lateral
+					selecionaNos(node, false);		
+				});
+			*/
+			$(ui).mouseup(function(event) {
+				//console.log(Date() + ' mouseup');
+				retorno = true;
+				if (event.which == 1) {
+					//alert("testePanel");
+					//$("#testePanel").modal();
+					//showPreview(node);
+					carregaMenuLateral(node, true);
+					selecionaNos("", false);	
+					selecionaNos(node,true);					
+					//dijit.showTooltip('alerta', document.getElementById('no_' + node.id),["above"]);
+				} else if (event.which == 3) {
+					//node.data.ref = $(this);
+					gRightClickNo=node;
+					renderer.pause();
+					//event.preventDefault(); //?precisa
+					//Menu Antigo --------------------------------------------------------------------------
+					$('#tituloMenu').text((node.data.label!='')? node.data.label.substring(0,30) : node.id.substring(0,30));	
+					//console.log('posicao x,y = ' + event.pageX +','+ event.pageX);
+					$(document).ready( function() {
+						$(this).contextMenu({
+						//$('#principal').contextMenu({
+							menu: "menuNo"
+							//, x: event.pageX + 100, y: event.pageY + 100
+							//offset:{left:100, right:100}
+							// offset: function() {				return {'top':0, 'left':0}; }//teste para corrigir erro de offset no dojo... não funciona
+							
+						},
+						function(action, el, pos) { 
+							//essa função parece que não é chamada
+						});
+
+					});				
+					/* esse item não existe no htmlMenu
+					if (g3camada == true) {
+						$("#ocultar3camada").css("display","table");
+						$("#excluir3camada").css("display","table");
+					}
+					*/
+
+					if ((node.data.tipo == "PJ") || (node.data.tipo == "ES"))	{
+						$('#incluir_MenuAbrir').css('display','table');
+						$('#incluir_PF').css('display','none');
+						//$('#incluir_PJ').css('display','table');
+						$('#incluir_PFPJ').css('display','table');
+						$('#abreGoogle').css('display','table');
+					} else if (node.data.tipo == "PF") {
+						$('#incluir_MenuAbrir').css('display','table');
+						$('#incluir_PF').css('display','table');
+						//$('#incluir_PJ').css('display','none');
+						$('#incluir_PFPJ').css('display','table');
+						$('#abreGoogle').css('display','table');
+					} else { //(node.data.tipo == TEL ou END
+						$('#incluir_MenuAbrir').css('display','none');
+						$('#incluir_PF').css('display','none');
+						//$('#incluir_PJ').css('display','none');						
+						$('#incluir_PFPJ').css('display','none');
+						$('#abreGoogle').css('display','none');
+					}
+					if (gHistoricoNosInseridos.length==0) {
+						$('#incluir_removeUltimaInsercao').css('display','none');
+					} else {
+						$('#incluir_removeUltimaInsercao').css('display','table');
+					}					
+					//--------------------------------------------------------------------------------------
+					//versão 3 do Menu --- teste
+					/*$(document).ready( function() {
+						//$(this).contextMenu(menu1,{theme:'vista'});
+						var menuPrincipal = [
+							{'Option 1':function(menuItem,menu) 
+								{ 
+									alert("You clicked Option 1!"); 
+								} 
+							},
+							{'Option 2':function(menuItem,menu) 
+								{ 
+									alert("You clicked Option 2!"); 
+									
+								} 
+							},
+							{'Option 2':function(menuItem,menu) 
+								{ 
+									alert("You clicked Option 2!"); 
+									
+								} 
+							}
+						];
+						$(ui).contextMenu(menuPrincipal,{theme:'osx'});
+						//alert("Teste Menu");
+					});*/
+					//-----------------------------------------------------------------------------------------
+					//Versão 2 do Menu
+					/*$(document).ready( function() {
+						$(ui).contextMenu({
+							selector: 'ui', 
+							callback: function(key, options) {
+								var m = "clicked: " + key;
+								window.console && console.log(m) || alert(m); 
+							},
+							items: {
+								"edit": {name: "Edit", icon: "edit"},
+								"cut": {name: "Cut", icon: "cut"},
+								"copy": {name: "Copy", icon: "copy"},
+								"paste": {name: "Paste", icon: "paste"},
+								"delete": {name: "Delete", icon: "delete"},
+								"sep1": "---------",
+								"quit": {name: "Quit", icon: "quit"}
+							}
+						});
+						alert("Teste Menu");
+					});*/
+					//versão 4 do Menu --- teste
+					/*$(document).ready( function() {
+						//$(this).contextMenu(menu1,{theme:'vista'});
+						var menuPrincipal = 
+						{
+							title: "Teste Menu", width: 250, items: 
+								[
+									{ text: node.data.label.substring(0,33) },
+									{ type: "splitLine" }, 
+									{ icon: ".b-m-arrow", text: "1" },
+									{ text: "2" },
+									{ type: "splitLine" }, 
+									{ text: "3" }
+								]
+						};
+						$(ui).contextmenu(menuPrincipal);
+						//alert("Teste Menu");
+					});*/
+				}
+			});
+			$(ui).dblclick(function(event) {
+				//console.log(Date() + ' dbclick');
+				//selecionaNos(node, false);
+				if (!grafoOnline()) {
+					return ;
+				}
+				if (event.which == 1) {
+					//console.log('double');
+					if (node.data.tipo == 'PF' ||node.data.tipo == 'PJ') {
+						incluiLigacao('macro_grafo1','Não foram encontradas ligações.',node.id);
+					} else { //busca cpf/cnpj relacionado ao telefone/endereco
+						var idligado='';
+						graph.forEachLinkedNode(node.id, function(nodeaux, link){
+								idligado=nodeaux.id;
+								return ;
+						});
+						if (node.data.tipo=='TEL') {
+							incluiLigacao('macro_telefone','Não foram encontradas ligações.',idligado);
+						} else if (node.data.tipo=='END') {
+							incluiLigacao('macro_endnormalizado','Não foram encontradas ligações.',idligado);
+						} else if (node.data.tipo=='CC') {
+							incluiLigacao('macro_contacorrente','Não foram encontradas ligações.',idligado);
+						}
+					}
+				};
+				return;
+			});
+			/*
+			$(ui).mousedown(function(event) {
+				console.log(Date() + ' mousedown');
+				return;
+			});	
+			*/
+			return ui;
+			}).placeNode(function(nodeUI, pos) {
+				// 'g' element doesn't have convenient (x,y) attributes, instead
+				// we have to deal with transforms: http://www.w3.org/TR/SVG/coords.html#SVGGlobalTransformAttribute 
+				nodeUI.attr('transform', 'translate(' + (pos.x - nodeSize/2) + ',' + (pos.y - nodeSize/2) + ')');
+			}); 
+	}
+	
+	
+	function situacaoCadastral(tipo,situacao) { 
+		var textoSituacao='';
+		if (tipo=="PF") {
+			textoSituacao = situacaoCPF[situacao];
+		} else if ((tipo=='PJ') ||(tipo=='ES')) {
+			textoSituacao = situacaoCNPJ[situacao];
+		}
+		return textoSituacao;
+	}
+	
+	function textoTooltip(node){
+		var LF = String.fromCharCode(10);
+		var linhaTexto1='', linhaTexto2=''; texto='';
+		if (node.data.tipo == 'END') {
+			linhaTexto1 = node.id.split('__')[0];
+			linhaTexto2 = node.id.split('__')[1];
+			texto = 'Endereço' + LF + linhaTexto2 + LF + linhaTexto1;
+		} else if (node.data.tipo == 'TEL') {
+				linhaTexto1 = node.id; //node.id.slice(4);	
+				texto = 'Telefone' + LF + node.id; //node.id.slice(4);
+		} else if (node.data.tipo == 'CC') {
+				linhaTexto1 = node.id.split('-')[0] + '-' + node.id.split('-')[1];
+				linhaTexto2	= node.id.split('-')[2]; //node.id.slice(4);	
+				texto = 'Conta-Corrente' + LF + 'Banco: ' + node.id.split('-')[0] + LF + 'Agência: ' + node.id.split('-')[1] + LF + 'Conta: ' +  node.id.split('-')[2]; //node.id.slice(4);
+		//} else if (node.data.label.startsWith("Inexistente")) {
+		} else if (node.data.label.startsWith("Inexistente")) {
+				texto='O cpf/cnpj ' + node.id + ' não foi localizado. Talvez o cpf/cnpj seja recente na base da SRF e não tenha sido indexado na rotina de relacionamentos, ou o cpf/cnpj foi informado incorretamente em alguma base de dados';
+				linhaTexto1 = node.id;
+				linhaTexto2 = 'Inexistente';
+		} else { //PF, PJ e ES
+				linhaTexto1 = formataCPFCNPJ(node.id);
+				linhaTexto2 = node.data.label;
+				texto = linhaTexto1 + ' (' + situacaoCadastral(node.data.tipo, node.data.situacao) + ')' + LF + linhaTexto2;
+		} 			
+		if (node.data.m10 == 1) {
+			texto += LF + '-informação relevante';
+		}	
+		if (node.data.m1 == 1) { //circulo verde, servidor público estadual ou municipal
+			texto += LF + '-servidor estadual/municipal';
+		}
+		if (node.data.m1 == 2) { //quadrado verde, pessoa física possui cadastro no siape
+			texto += LF + '-registro no SIAPE';
+		}
+		if (node.data.m2 == 1) { //pessoa física tem salário base menor que 2 salários mínimos
+			texto += LF + '-salário < 2 mínimos';
+		}
+		if (node.data.m2 == 2) { //??
+			texto += LF + '';
+		}
+		if (node.data.m3 == 1) { //indica que a pf/pj recebeu ordem bancária do siafi
+			texto += LF + '-recebeu OB/SIAFI';
+		}
+		if (node.data.m3 == 2) { //?
+			texto += LF + '';
+		}
+		if (node.data.m4 == 1) { //pessoa física investigada em sindicância ou processo
+			texto += LF + '-sindicância/processo';
+		}
+		if (node.data.m4 == 2) { //?
+			texto += LF + '';
+		}
+		if (node.data.m5 == 1) { //circulo preto: pf=pessoa foi candidata, pj=pessoa jurídica possui de 1 a 3 funcionários(rais)						   	
+			if (node.data.tipo=='PF') {
+				texto += LF + '-foi candidata(o)';
+			} else {
+				texto += LF + '-funcionários(RAIS)<=3';
+			}
+		}
+		if (node.data.m5 == 2) { //quadrado preto: pf=pessoa eleita, pj=pessoa jurídica não possui funcionários (rais)
+			if (node.data.tipo=='PF') {
+				texto += LF + '-eleita';
+			} else {
+				texto += LF + '-sem funcionários(RAIS)';
+			}
+		}
+		if (node.data.m6 == 1) { //pf=cadastro no ceis/cepim/punidos, pj = ceis/cepim
+			if (node.data.tipo=='PF') {
+				texto += LF + '-CEIS/CEPIM/Punidos';
+			} else {
+				texto += LF + '-CEIS/CEPIM';
+			}
+		}
+		if (node.data.m6 == 2) { //??
+			//texto += LF + '';
+		}
+		if (node.data.m7 == 1) { //pf ou pj doadora de campanha
+			texto += LF + '-doador(a) de campanha';
+		}
+		if (node.data.m7 == 2) { //?
+			//texto += LF + '';
+		}
+		if (node.data.m8 == 1) { //pf consta do bolsa família, cad unico ou defeso pescador
+			texto += LF + '-cadastrado no bolsa família/cad unico/defeso';
+		}
+		if (node.data.m8 == 2) { //?
+			//texto += LF + '';
+		}
+		return texto;
+	}
+</script>

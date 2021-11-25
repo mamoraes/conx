@@ -1,0 +1,240 @@
+<script type="text/javascript">
+//------------------------------------Marcadores - quadrado e circulo-------------------------------------------------------------------------
+	function criaMarcador(){
+		var createMarker = function(id, x, y) {
+				return Viva.Graph.svg('marker')
+						   .attr('id', id)
+						   .attr('viewBox', "0 0 10 10")
+						   .attr('refX', x)
+						   .attr('refY', y)
+						   .attr('markerUnits', "strokeWidth")
+						   .attr('markerWidth', tamanhoSeta*2)
+						   .attr('markerHeight', tamanhoSeta)
+						   .attr('orient', "auto");
+			};
+		var marker = createMarker('Triangulo', "10", "5");			
+		var markerInv = createMarker('TriangleInv',"0","5");
+		marker.append('path').attr('d', 'M 0 0 L 10 5 L 0 10 z').attr('fill','gray');;
+		markerInv.append('path').attr('d', 'M 10 0 L 0 5 L 10 10 z');
+		var MeiaSeta = Viva.Graph.svg('marker')
+						   .attr('id', "MeiaSeta")
+						   .attr('viewBox', "0 0 20 10")
+						   .attr('refX', "20")
+						   .attr('refY', "10")
+						   .attr('markerUnits', "strokeWidth")
+						   .attr('markerWidth', tamanhoSeta)
+						   .attr('markerHeight', tamanhoSeta*2)
+						   //.attr('render-order',-1)
+						   .attr('orient', "auto");
+		MeiaSeta.append('path').attr('d', 'M 0 0 L 20 10 L 0 10 z').attr('fill','black');
+		var Vermelho = Viva.Graph.svg('marker')
+						   .attr('id', "Vermelho")
+						   .attr('viewBox', "0 0 60 60")
+						   .attr('refX', "30")
+						   .attr('refY', "30")
+						   .attr('markerUnits', "strokeWidth")
+						   .attr('markerWidth', "60")
+						   .attr('markerHeight', "60")
+						   //.attr('render-order',-1)
+						   .attr('orient', "auto");
+		Vermelho.append('circle').attr('cx','30').attr('cy','30').attr('r','30').attr('fill','red');
+		var VermelhoQua = Viva.Graph.svg('marker')
+						   .attr('id', "VermelhoQua")
+						   .attr('viewBox', "0 0 60 60")
+						   .attr('refX', "30")
+						   .attr('refY', "30")
+						   .attr('markerUnits', "strokeWidth")
+						   .attr('markerWidth', "60")
+						   .attr('markerHeight', "60")
+						   //.attr('render-order',-1)
+						   .attr('orient', "auto");
+		VermelhoQua.append('path').attr('d', 'M 0 0 L 0 60 L 60 60 L 60 0 z').attr('fill','red');
+		var Verde = Viva.Graph.svg('marker')
+						   .attr('id', "Verde")
+						   .attr('viewBox', "0 0 60 60")
+						   .attr('refX', "30")
+						   .attr('refY', "30")
+						   .attr('markerUnits', "strokeWidth")
+						   .attr('markerWidth', "60")
+						   .attr('markerHeight', "60")
+						   //.attr('render-order',-1)
+						   .attr('orient', "auto");
+		Verde.append('circle').attr('cx','30').attr('cy','30').attr('r','30').attr('fill','green');
+		var VerdeQua = Viva.Graph.svg('marker')
+						   .attr('id', "VerdeQua")
+						   .attr('viewBox', "0 0 60 60")
+						   .attr('refX', "30")
+						   .attr('refY', "30")
+						   .attr('markerUnits', "strokeWidth")
+						   .attr('markerWidth', "60")
+						   .attr('markerHeight', "60")
+						   //.attr('render-order',-1)
+						   .attr('orient', "auto");
+		VerdeQua.append('path').attr('d', 'M 0 0 L 0 60 L 60 60 L 60 0 z').attr('fill','green');
+		var Dourado = Viva.Graph.svg('marker')
+						   .attr('id', "Dourado")
+						   .attr('viewBox', "0 0 60 60")
+						   .attr('refX', "30")
+						   .attr('refY', "30")
+						   .attr('markerUnits', "strokeWidth")
+						   .attr('markerWidth', "60")
+						   .attr('markerHeight', "60")
+						   //.attr('render-order',-1)
+						   .attr('orient', "auto");
+		Dourado.append('circle').attr('cx','30').attr('cy','30').attr('r','30').attr('fill','gold');
+		var DouradoQua = Viva.Graph.svg('marker')
+						   .attr('id', "DouradoQua")
+						   .attr('viewBox', "0 0 60 60")
+						   .attr('refX', "30")
+						   .attr('refY', "30")
+						   .attr('markerUnits', "strokeWidth")
+						   .attr('markerWidth', "60")
+						   .attr('markerHeight', "60")
+						   //.attr('render-order',-1)
+						   .attr('orient', "auto");
+		DouradoQua.append('path').attr('d', 'M 0 0 L 0 60 L 60 60 L 60 0 z').attr('fill','gold');
+		var Azul = Viva.Graph.svg('marker')
+						   .attr('id', "Azul")
+						   .attr('viewBox', "0 0 60 60")
+						   .attr('refX', "30")
+						   .attr('refY', "30")
+						   .attr('markerUnits', "strokeWidth")
+						   .attr('markerWidth', "60")
+						   .attr('markerHeight', "60")
+						   //.attr('render-order',-1)
+						   .attr('orient', "auto");
+		Azul.append('circle').attr('cx','30').attr('cy','30').attr('r','30').attr('fill','blue');
+		var AzulQua = Viva.Graph.svg('marker')
+						   .attr('id', "AzulQua")
+						   .attr('viewBox', "0 0 60 60")
+						   .attr('refX', "30")
+						   .attr('refY', "30")
+						   .attr('markerUnits', "strokeWidth")
+						   .attr('markerWidth', "60")
+						   .attr('markerHeight', "60")
+						   //.attr('render-order',-1)
+						   .attr('orient', "auto");
+		AzulQua.append('path').attr('d', 'M 0 0 L 0 60 L 60 60 L 60 0 z').attr('fill','blue');
+		var AzulEscuro = Viva.Graph.svg('marker')
+						   .attr('id', "AzulEscuro")
+						   .attr('viewBox', "0 0 60 60")
+						   .attr('refX', "30")
+						   .attr('refY', "30")
+						   .attr('markerUnits', "strokeWidth")
+						   .attr('markerWidth', "60")
+						   .attr('markerHeight', "60")
+						   //.attr('render-order',-1)
+						   .attr('orient', "auto");
+		AzulEscuro.append('circle').attr('cx','30').attr('cy','30').attr('r','30').attr('fill','darkslateblue');
+		var AzulEscuroQua = Viva.Graph.svg('marker')
+						   .attr('id', "AzulEscuroQua")
+						   .attr('viewBox', "0 0 60 60")
+						   .attr('refX', "30")
+						   .attr('refY', "30")
+						   .attr('markerUnits', "strokeWidth")
+						   .attr('markerWidth', "60")
+						   .attr('markerHeight', "60")
+						   //.attr('render-order',-1)
+						   .attr('orient', "auto");
+		AzulEscuroQua.append('path').attr('d', 'M 0 0 L 0 60 L 60 60 L 60 0 z').attr('fill','darkslateblue');
+		var Roxo = Viva.Graph.svg('marker')
+						   .attr('id', "Roxo")
+						   .attr('viewBox', "0 0 60 60")
+						   .attr('refX', "30")
+						   .attr('refY', "30")
+						   .attr('markerUnits', "strokeWidth")
+						   .attr('markerWidth', "60")
+						   .attr('markerHeight', "60")
+						   //.attr('render-order',-1)
+						   .attr('orient', "auto");
+		Roxo.append('circle').attr('cx','30').attr('cy','30').attr('r','30').attr('fill','purple');
+		var RoxoQua = Viva.Graph.svg('marker')
+						   .attr('id', "RoxoQua")
+						   .attr('viewBox', "0 0 60 60")
+						   .attr('refX', "30")
+						   .attr('refY', "30")
+						   .attr('markerUnits', "strokeWidth")
+						   .attr('markerWidth', "60")
+						   .attr('markerHeight', "60")
+						   //.attr('render-order',-1)
+						   .attr('orient', "auto");
+		RoxoQua.append('path').attr('d', 'M 0 0 L 0 60 L 60 60 L 60 0 z').attr('fill','purple');
+		var Cinza = Viva.Graph.svg('marker')
+						   .attr('id', "Cinza")
+						   .attr('viewBox', "0 0 60 60")
+						   .attr('refX', "30")
+						   .attr('refY', "30")
+						   .attr('markerUnits', "strokeWidth")
+						   .attr('markerWidth', "60")
+						   .attr('markerHeight', "60")
+						   //.attr('render-order',-1)
+						   .attr('orient', "auto");
+		Cinza.append('circle').attr('cx','30').attr('cy','30').attr('r','30').attr('fill','silver');
+		var CinzaQua = Viva.Graph.svg('marker')
+						   .attr('id', "CinzaQua")
+						   .attr('viewBox', "0 0 60 60")
+						   .attr('refX', "30")
+						   .attr('refY', "30")
+						   .attr('markerUnits', "strokeWidth")
+						   .attr('markerWidth', "60")
+						   .attr('markerHeight', "60")
+						   //.attr('render-order',-1)
+						   .attr('orient', "auto");
+		CinzaQua.append('path').attr('d', 'M 0 0 L 0 60 L 60 60 L 60 0 z').attr('fill','silver');
+		var Preto = Viva.Graph.svg('marker')
+						   .attr('id', "Preto")
+						   .attr('viewBox', "0 0 60 60")
+						   .attr('refX', "30")
+						   .attr('refY', "30")
+						   .attr('markerUnits', "strokeWidth")
+						   .attr('markerWidth', "60")
+						   .attr('markerHeight', "60")
+						   //.attr('render-order',-1)
+						   .attr('orient', "auto");
+		Preto.append('circle').attr('cx','30').attr('cy','30').attr('r','30').attr('fill','black');
+		var PretoQua = Viva.Graph.svg('marker')
+						   .attr('id', "PretoQua")
+						   .attr('viewBox', "0 0 60 60")
+						   .attr('refX', "30")
+						   .attr('refY', "30")
+						   .attr('markerUnits', "strokeWidth")
+						   .attr('markerWidth', "60")
+						   .attr('markerHeight', "60")
+						   //.attr('render-order',-1)
+						   .attr('orient', "auto");
+		PretoQua.append('path').attr('d', 'M 0 0 L 0 60 L 60 60 L 60 0 z').attr('fill','black');
+		/*
+		var FiltroSaturate = Viva.Graph.svg("feColorMatrix" ).attr('type','saturate');
+		var FiltroPB = Viva.Graph.svg('filter').attr('id', "FiltroPB");
+		FiltroPB.appendChild(FiltroSaturate);
+		*/
+		
+		// Marker should be defined only once in <defs> child element of root <svg> element:
+		//var defs = graphics.getSvgRoot().append('defs');
+		if (!defs) {
+			defs = graphics.getSvgRoot().append('defs');
+		}
+		defs.append(marker);
+		defs.append(markerInv);
+		defs.append(MeiaSeta);
+		defs.append(Vermelho);
+		defs.append(VermelhoQua);
+		defs.append(Verde);
+		defs.append(Dourado);
+		defs.append(Azul);
+		defs.append(AzulEscuro);
+		defs.append(Roxo);
+		defs.append(Cinza);
+		defs.append(Preto);
+		defs.append(VerdeQua);
+		defs.append(DouradoQua);
+		defs.append(AzulQua);
+		defs.append(AzulEscuroQua);
+		defs.append(RoxoQua);
+		defs.append(CinzaQua);
+		defs.append(PretoQua);
+		//defs.append(markerTexto);		
+		//defs.append(FiltroPB);
+	}
+	
+</script>

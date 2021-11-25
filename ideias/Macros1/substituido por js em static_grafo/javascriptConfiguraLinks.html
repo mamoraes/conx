@@ -1,0 +1,219 @@
+<script type="text/javascript">
+//------------------------------------Links com setas-------------------------------------------------------------------------
+	function corTextoLink(tipo) {
+		s = {
+        '100':'green',
+        '101':'red',
+        '102':'cyan',
+        '103':'blue',
+        '104':'red',
+        '105':'red',
+        '106':'black',
+        '127':'brown',
+        '305':'orange',
+        '306':'orange',
+        '150':'orange',
+        '151':'orange',
+        '155':'orange',
+        '160':'mediumpurple',
+        '161':'mediumpurple',
+        '162':'mediumpurple' 
+       };
+		primeiroItem = tipo.split('_')[0];
+		if (s[primeiroItem]){
+			return s[primeiroItem];
+		} else {
+			return 'purple';
+		}
+	}
+	
+	function configuraLinks(){
+		var geom = Viva.Graph.geom(); 
+		
+		graphics.link(function(link){
+			var grupo = Viva.Graph.svg('g');
+			/*linha=Viva.Graph.svg('path')
+						.attr('y','-10px')
+						.attr('stroke', 'red')
+						.attr('fill','none');
+					   //.attr('marker-mid', 'url(#Teste)')
+					   //.attr('marker-end', 'url(#Triangle)');
+			*/		   
+			//ui=Viva.Graph.svg('path')
+			var uipath=Viva.Graph.svg('path')
+					   .attr('stroke', link.data.cor)
+					   .attr('fill','none')
+					   //.attr('render-order',5)
+					   .attr('id', link.data.id); //!gUsaMarcadorLink
+					   //.attr('marker-mid', 'url(#Teste)')
+					   //.attr('marker-end', 'url(#Triangle)');
+					   
+			
+			//var SVGtemp=Viva.Graph.svg('text').attr('y', '-18px').attr('font-size','15').attr('fill','red').text(link.data.label);
+			
+			//{ if tiposDeLigacao }
+				//alert(" associa link "+link.data.linkId+"  "+link.data.label);
+				
+
+			//$(uipath).attr('marker-mid','url(#'+ 'link_label_' + link.data.linkId+')');
+			if ((link.data.label != 'endereço') && (link.data.label != 'telefone') && (link.data.label != 'conta_corrente')) {
+				var textoLabel = link.data.label;
+				//if ((textoLabel=='empregado,ex-empregado') || (textoLabel=='ex-empregado,empregado')) {
+				//	textoLabel='empregado,ex-emp';
+				//}
+				var labeltemp = Viva.Graph.svg('text')
+					.attr('font-size', dadosNos.tamanhoFonte)
+					.attr('text-anchor','middle')
+					//.attr('render-order',6)
+					//.attr('render-order', '-1')
+					.attr('fill',corTextoLink(link.data.linkId))						
+					.attr('id','texto_ligacao_' + link.data.id).text(textoLabel);
+;	
+				//graphics.getLinkUI(node.id).appendChild(tempSVG);
+				graphics.getSvgRoot().childNodes[0].append(labeltemp); 
+
+			}				
+			if (link.data.sentidoUnico == true) {
+				$(uipath).attr('marker-end','url(#Triangulo)');
+				//$(ui).attr('marker-end', 'url(#MeiaSeta)');
+			}
+			
+			//grupo.append(SVGtemp);
+			//ui.appendChild(linha);
+			
+			//grupo.append(uipath);
+			
+			link.data.ref = $(uipath);
+			return uipath;
+		}).placeLink(function(linkUI, fromPos, toPos) {
+			// Here we should take care about 
+			//  "Links should start/stop at node's bounding box, not at the node center."
+			
+			// For rectangular nodes Viva.Graph.geom() provides efficient way to find
+			// an intersection point between segment and rectangle
+			var toNodeSize = nodeSize,
+				fromNodeSize = nodeSize;
+				
+			var from = geom.intersectRect(
+					// rectangle:
+							fromPos.x - fromNodeSize / 2, // left
+							fromPos.y - fromNodeSize / 2, // top
+							fromPos.x + fromNodeSize / 2, // right
+							fromPos.y + fromNodeSize / 2, // bottom
+					// segment:
+							fromPos.x, fromPos.y, toPos.x, toPos.y) 
+					   || fromPos; // if no intersection found - return center of the node
+			
+			var to = geom.intersectRect(
+					// rectangle:
+							toPos.x - toNodeSize / 2, // left
+							toPos.y - toNodeSize / 2, // top
+							toPos.x + toNodeSize / 2, // right
+							toPos.y + toNodeSize / 2, // bottom
+					// segment:
+							toPos.x, toPos.y, fromPos.x, fromPos.y) 
+						|| toPos; // if no intersection found - return center of the node
+			
+			// verificar se existe outro link entre os dois nós
+			//se não existe nenhum link entre os nós, criar
+			// se existir, alterar as coordenadas de origem e destino para que o segundo link não coincida com o
+			// primeiro
+			//alert(graph.hasLink(gtemp.toId, gtemp.fromId));
+			//if (graph.hasLink(ui.tlink.toId, ui.tlink.fromId) != null)
+			//{
+				//alert("segundo Link");					
+				
+				//segundo link
+			/*	var tempFromY, tempToY;
+				tempFromY = from.y + fromNodeSize /3;
+				tempToY = to.y + toNodeSize / 3;
+			
+				var intermed = {
+					x : (from.x + to.x)/2,
+					y : (from.y + to.y)/2 + toNodeSize/3
+				};
+			
+				var data = 	'M' + from.x + ',' + tempFromY +
+							'L' + intermed.x + ',' + intermed.y  +
+							'L' + to.x + ',' + tempToY;
+				linkUI.attr("d", data);
+				*/
+				/*var intermed = {
+					x : (from.x + to.x)/2,
+					y : (from.y + to.y)/2 + toNodeSize
+				};
+			
+				var data = 'M' + fromPos.x + ',' + fromPos.y + 
+					   //' A 1,1,-10,0,1,' + intermed.x + ',' + intermed.y +
+					   ' A 1,1,-10,0,1,' + toPos.x + ',' + toPos.y;
+					   
+				linkUI.attr("d", data);*/
+				
+			/*	
+			}
+			else 
+			{*/
+				//alert("Primeiro Link");
+				//este ponto intermediario sera utilizado para colocar um marcador no centro do link
+				//var intermed = {
+				//	x : (from.x+to.x)/2,
+				//	y : (from.y+to.y)/2
+				//};
+				
+				var data = 	'M' + from.x + ',' + from.y + 
+							//'L' + intermed.x + ',' + intermed.y +
+							'L' + to.x + ',' + to.y;
+			
+				linkUI.attr("d", data);
+			//}
+							
+			//gtemp = $(ui);
+			//teste de link em forma de arco
+			/*var intermed = {
+				x : (from.x + to.x)/2,
+				y : (from.y + to.y)/2 + toNodeSize*2
+				};
+			
+			var data = 'M' + fromPos.x + ',' + fromPos.y + 
+					   ' A 1,1,-10,0,1,' + intermed.x + ',' + intermed.y +
+					   ' A 1,1,-10,0,1,' + toPos.x + ',' + toPos.y;
+					   
+			linkUI.attr("d", data);*/
+			/* ajuste da posição do texto (sem marcador) */
+			var angulo = 180.0/Math.PI* Math.atan2(toPos.y-fromPos.y,toPos.x - fromPos.x);
+			var baseline = '-1';
+			//console.log(JSON.stringify(linkUI));
+			//if (!graph.hasLink(linkUI.toId, linkUI.fromId)) { //isto não funciona
+			if (1) {
+				if (angulo>90) {
+					angulo = -(180.0 - angulo);
+					baseline = '-1';
+				} else if (angulo<-90) {
+					angulo = 180.0 + angulo;
+					baseline = '-2';
+				}
+			}
+			var elemento = document.getElementById('texto_ligacao_'+linkUI.attr('id'));
+			if (elemento) {
+					elemento.attr("transform","rotate(" + parseFloat(angulo) + " " + parseInt((from.x + to.x) / 2) + "," 
+						+ parseInt((from.y + to.y) / 2) + ") translate(0," + baseline + ")")
+					.attr("x", (from.x + to.x) / 2)
+					.attr("y", (from.y + to.y) / 2);
+			}
+		});
+	}
+	
+	function configuraLinksAnterior(){
+		graphics.link(function(link){
+			//alert(link.fromId+"   "+link.toId+" "+link.data.cor+" "+link.data.label);
+			return Viva.Graph.svg('path')
+				.attr('stroke', link.data.cor);
+		}).placeLink(function(linkUI, fromPos, toPos) {
+			var data = 'M' + fromPos.x + ',' + fromPos.y + 
+					   'L' + toPos.x + ',' + toPos.y;
+
+			linkUI.attr("d", data);
+		});
+	}
+
+</script>

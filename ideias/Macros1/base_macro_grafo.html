@@ -1,0 +1,316 @@
+{% if not ajax %}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+  <meta charset="utf-8">
+	<meta http-equiv='cache-control' content='no-cache'>
+	<meta http-equiv='pragma' content='no-cache'>	
+	<!-- <meta http-equiv='expires' content='0'> -->
+    <title>{% block title %}{{titulo}}{% endblock %}</title>
+	<script type="text/javascript" src="/macros/static/js/grafico/vivagraph.js?n=0.7"></script>
+    <link rel="stylesheet" href="/macros/static/dojoroot/dijit/themes/claro/claro.css">
+	<link rel="stylesheet" type="text/css" href="/macros/static/dojoroot/dojox/grid/resources/Grid.css" />
+	<link rel="stylesheet" type="text/css" href="/macros/static/dojoroot/dojox/grid/resources/claroGrid.css" />
+	<link rel="stylesheet" type="text/css" href="/macros/static/dojoroot/dojo/resources/dojo.css" />
+	<link rel="stylesheet" type="text/css" href="/macros/static/dojoroot/dojox/image/resources/image.css" />
+	<link rel="stylesheet" type="text/css" href="/macros/static/dojoroot/dojox/layout/resources/ExpandoPane.css" />
+	<link rel="stylesheet" type="text/css" href="/macros/static/css/dossie.css" />
+    <script type="text/javascript" src="/macros/static/js/util.js?n={{versao_macros}}" charset="utf-8" ></script>     
+	<!-- <script type="text/javascript" src="/macros/static/js/util.js"  charset="ISO-8859-1"></script> -->
+
+    <script type="text/javascript" src="/macros/static/dojoroot/dojo/dojo.js?n={{versao_macros}}" 	djConfig="isDebug:{{debug}}" 	data-dojo-config="parseOnLoad:true, gfxRenderer: 'svg,silverlight,vml'">
+    </script>
+{% endif %}
+	<!-- biblioteca para exibir alerta 	http://labs.abeautifulsite.net/archived/jquery-alerts/demo/ -->
+	<script src="/macros/static/jquery/jquery.min.js" type="text/javascript"></script>
+	<script src="/macros/static/jquery/jquery.ui.draggable.js" type="text/javascript"></script>
+	<script src="/macros/static/jquery/jquery.alerts.js" type="text/javascript"></script>
+	<link href="/macros/static/jquery/jquery.alerts.css" rel="stylesheet" type="text/css" media="screen" />
+		
+	<!-- <script type="text/javascript" src="/macros/static/js/grafico/jquery.min.js"></script> -->
+	<script type="text/javascript" src="/macros/static/jquery/jquery.contextMenu.js"></script> 
+
+	<link href="/macros/static/css/jquery.contextMenu.css" rel="stylesheet" type="text/css" />
+	
+	<style type="text/css">
+		html, body, svg  {
+			width: 100%;
+			height: 100%;
+			margin: 0;
+			overflow:hidden;
+			position:absolute;
+			
+		}
+		#borderContainer {
+			width: 100%;
+			height: 100%;
+		}
+		.centralizado {
+			margin: 0 auto;
+			text-align: left;
+		}
+
+		.graph-overlay {
+		  position: absolute;
+		  left: 0;
+		  top: 0;
+		  width: 100%;
+		  height: 100%;
+		  display: none;
+		}
+		.graph-selection-indicator {
+		  position: absolute;
+		  		  left: 0;
+		  top: 0;
+		  background: transparent;
+		  border: 1px solid orange;
+		}
+	</style>
+	<!------------------------ Define variáveis iniciais do gráfico -------------->
+	<script type="text/javascript" src="/macros/static/js/grafico/grafoVariaveis.js?n={{versao_macros}}" charset="utf-8"></script> 
+	<!------------------------ Define funções que criam marcadores, links e nós ----------------------------------------------------------------->
+	<script type="text/javascript" src="/macros/static/js/grafico/grafoConfiguraElementos.js?n={{versao_macros}}" charset="utf-8"></script> 
+	<!------------------------ Define funções do Gráfico --->
+	<script type="text/javascript" src="/macros/static/js/grafico/grafoFuncoes.js?n={{versao_macros}}" charset="utf-8"></script> 
+
+	{% block script %}{% endblock %}
+{% if not ajax %}
+</head>
+
+<body class="claro" onload="mainGrafo()">
+{% endif %}
+{% if noLigacao %}
+	<div data-dojo-type="dijit.layout.BorderContainer" data-dojo-props="design:'sidebar', gutters:true, liveSplitters:true" id="borderContainer" style="height: 100%">
+		<!--<div data-dojo-type="dijit.layout.ContentPane" data-dojo-props="splitter:true, region:'leading'" style="width: 150px">
+		-->
+		<div data-dojo-type="dojox.layout.ExpandoPane" data-dojo-props="splitter:true, region:'leading'" style="width: 150px">
+		    <div><center><b>{{tituloBarraLateral}}</b></center></div>
+		    <div><center><b><span id='informacaoGrupos'></span></b></center></div>
+		    <div><center><b><span id='informacaoItens'></span></b></center></div>
+			<!--<div class="divisor"></div>-->
+			<div class="centralizado" style="width:100%;"><hr /></div>
+			<div> <!-- <div style="height: 5%">-->
+				<div align="center" id="menu_leiaute_titulo" title="Ativa/desativa o algoritmo de posicionamento"><b>Leiaute</b>					<input onclick="javascript:rendererContinuarPausar(!bEstaRenderizando());" id="botao_leiaute_continuar_pausar" type="submit" value="Pausar" alt="Leiaute Automático">
+</div>
+				<div align="center">
+<!--
+					<input onclick="javascript:renderer.resume();" id="botao_leiaute_continuar" type="submit" value="Continuar" alt="Leiaute Automático">
+					<input onclick="javascript:renderer.pause();" id="botao_leiaute_parar" type="submit" value=" Pausar " alt="Suspende Leiaute Automático">
+-->
+					</div>
+			</div>
+
+			<div class="centralizado" style="width:100%;"><hr /></div>
+			<div> <!-- <div style="height: 14%">-->
+			<!--
+				<div align="center" id="menu_pesquisa_titulo" title="Marca em vermelho os elementos encontrados."><b>Pesquisa no Gráfico:</b>
+					<img src="/macros/static/images/icone-help.jpg" style="height:1em"/>
+				</div>
+			-->
+				<div>
+					<span  title="Busca por nome ou por cpf/cpnj no gráfico."><b>Busca Nome/CPF/CNPJ</b>: </span><br/>
+					<input id="nome_a_pesquisar" type="text" name="nome" title="digite mais de um nome ou cpf/cnpj separando-os por espaço ou ponto-e-virgula"><br/>
+					<!-- <span  title="Marca em vermelho os elementos encontrados.">   Por CPF/CNPJ: </span><br/>
+					<input id="id_a_pesquisar" type="text" name="cpfcnpj" title="digite mais de um cpf/cnpj separando-os por espaço ou ponto-e-virgula"><br/> -->
+					<div align="center">
+						<input onclick="javascript:{$('#nome_a_pesquisar').attr('value','');$('#id_a_pesquisar').attr('value','');}" id="botao_limpar" type="submit" value="Limpar" title="Apaga os valores digitados.">
+						<input onclick="javascript:pesquisar();" id="botao_pesquisar" type="submit" value="Buscar" title="Procura e marca em vermelho os elementos encontrados.">
+					</div>
+				</div>
+			</div>
+
+			<div class="centralizado" style="width:100%;"><hr /></div> 
+			<div title="Insere CPF/CNPJ."> <!-- <div style="height: 5%">-->
+				<!--
+				<div align="center" id="menu_inserir_CPF_CNPJ"><b>Inserir:</b>
+					<img src="/macros/static/images/icone-help.jpg" style="height:1em"/>
+				</div>
+				-->
+				<div align="center">
+					<input onclick="javascript:inserirNo();" id="inserir_CPF_CNPJ" type="submit" value="Inserir CPF/CNPJ" title="Digite cpf/cnpj para incluir no gráfico. Se desejar colocar mais de 1 cpf/cnpj, separe-os por ponto e vírgula (;)">
+				</div>
+			</div>
+			
+			<div class="centralizado" style="width:100%;"><hr /></div>
+			<div> <!-- <div style="height: 5%">-->
+				<div align="center" id="menu_exibir_ocultar_titulo" title='Opções para Exibir ou Ocultar a "Primeira Camada", Rótulo (cpf/cnpj e o nome) e o Texto das Ligações(desativando esse texto fica mais fácil movimentar o gráfico).'><b>Exibir/Ocultar:</b>
+					<img src="/macros/static/images/icone-help.jpg" style="height:1em"/>
+				</div>
+				<select id="selExibirOcultar" onChange="javascript:selecaoExibirOcultar(this);">
+				  <option value=""  title="Selecione um tipo de relacionamento ou de elementos para excluir" >Selecione...</option>          
+				  <option id="opRotulo">Ocultar Rótulo</option> 
+				  <option id="opTextoLigacao">Ocultar Texto Ligação</option> 
+				  <option id="op1Camada">Ocultar 1a Camada</option> 
+				  <option id="op2Camada">Ocultar 2a Camada</option> 
+				  <option id="op3Camada">Ocultar 3a Camada</option> 
+				  <option id="opOutrasCamadas">Ocultar Outras Camadas</option> 
+				  <option id="opEscala" title="Retorna para a escala inicial">Escala Original</option> 
+				</select>					
+			</div>
+
+			<div class="centralizado" style="width:100%;"><hr /></div> 			
+			<div align="center" id="menu_excluir_incluir_relacionamentos" title="Elimina relacionamentos(ligações) que contém apenas o tipo selecionado, ou elementos sem ou com 1 ligação."><b>Excluir:</b>
+				<img src="/macros/static/images/icone-help.jpg" style="height:1em"/>
+			</div>
+			<!-- select id="selFiltro"  maxHeight="200" data-dojo-type="dijit.form.Select" onChange="javascript:eliminaRelacionamento();"> dijit não funciona offline-->
+			<div>
+				<select id="selFiltro"  onChange="javascript:eliminaRelacionamento(this);">
+				  <option value=""  title="Selecione um tipo de relacionamento ou de elementos para excluir" >Elemento/Ligação...</option>       
+				  <option value="ESC" title="Exclui PF(s)/PJ(s) que não estejam relacionadas com outras PF(s)/PJ(s).">Elementos sem ligação</option> 
+				  <option value="E1C" title="Exclui PF(s)/PJ(s) que tenham apenas um relacionamento com outras PF(s)/PJ(s),que não seja origem da consulta (camada 0) ou que não tenham informação relevante, destacados em vermelho.">Elementos com 1 ligação</option> 			  
+				  <option value="EPoda" title="Utiliza a rotina 'Excluir Elementos com 1 ligação' repetidamente até que reste apenas os items que tenham mais de uma ligação, que sejam origem da consulta (camada 0), que tenham marcador ou informação relevante.">Podar Árvore</option> 			  
+				  <option value="102">Ligação contador</option> 
+				  <option value="160">Ligação depend. SIAPE</option> 
+				  <option value="127">Ligação empregado</option>          
+				  <option value="106">Ligação ex-socio</option>          
+				  <option value="128">Ligação ex-empregado</option>          
+				  <option value="100">Ligação filial</option> 	
+				  <option value="162">Ligação possível mãe (CPF)</option> 
+				  <option value="305">Ligação possível mãe (Renach)</option> 
+				  <option value="304">Ligação possível pai (Renach)</option> 
+				  <option value="350" title="Exclui ligação sucessor_veículo (automóveis e aeronaves)">Ligação sucessor_veiculo</option> 
+				  <option value="ExcluiValor">Ligação com valor...</option> 		  
+				  <option value="ExcluiSemMarcadores" title="Exclui ícones sem marcadores">Itens sem marcadores</option> 			  
+				  <option value="ExcluiContaCorrente" title="Exclui ícones de conta-correntes.">Conta-Corrente</option> 			  
+				  <option value="ExcluiEndereco" title="Exclui ícones de endereços.">Endereco</option> 			  
+				  <option value="ExcluiTelefone" title="Exclui ícones de telefones">Telefone</option>			  
+				  <option value="ExcluiPFInativo" title="Exclui ícones de pessoas físicas em situação não ativa.">PF Inativo</option> 			  
+				  <option value="ExcluiPJInativo" title="Exclui ícones de pessoas jurídicas em situação não ativa.">PJ Inativo</option> 
+				  <option value="ExcluiPJFilial" title="Exclui ícones de filiais.">PJ Filial</option> 			  
+				  <option value="ExcluiTudo" title="Exclui todos os Nós.">Excluir Tudo</option> 			  
+				</select>
+				<span title="Selecione se a Exclusão deve ser aplicada apenas nos itens inseridos na última inclusão"><input type="checkbox" id="cbFiltraApenasUltimaInclusao">Só na Última Inclusão</span>
+			</div>
+			
+			<div class="centralizado" style="width:100%;"><hr /></div> 
+			<div title="Opções para baixar arquivo XLS/JSON com os elementos do gráfico atual."> 
+				<center><b>Download da Rede:</b></center>
+				<select id="selFormatoDownload"  onChange="javascript:selecaoDownloadGrafo(this);" >
+				  <!--<option value=''>-- Download da Rede --</option>  -->        
+				  <option value=''>Selecione Formato </option>       
+				  <option value='xls' title="Arquivo XLS">Formato Excel (XLS)</option>          
+				  <option value='xlsx' title="Arquivo formato do Excel 2010">Formato Excel (XLSX)</option>  
+				  <option value='svg' title='Arquivo SVG é um gráfico vetorial, em que pode ser aplicado zoom sem perda de qualidade. Pode ser aberto no Internet Explorer'>Formato Imagem (SVG)</option> 			 
+				  <option value='json' title='Arquivo de texto com a descrição das ligações. Pode ser carregado posteriormente com a opção "Importar JSON"'>Formato JSON (JSON)</option>
+				  <option value='anx' title="Arquivo com visualização no i2 IBM Analyst's Notebook">Formato i2 (ANX)</option>
+				</select>	
+			</div>
+			
+			<div class="centralizado" style="width:100%;"><hr /></div> 
+			<div title="Adiciona arquivo no formato JSON salvo anteriormente pela opção 'Download de Rede'. JSON é um arquivo de texto com a descrição das ligações do gráfico de relacionamentos.">
+				<center><b>Importar JSON / CSV:</b></center>
+				<!--<input type="file" id="fileImportJSON" name="files[]" /> -->
+				<input value="Importar" type="file" id="fileImportJSON" title="Adiciona grafico no formato JSON salvo anteriormente pela opção 'Download de Rede', ou um arquivo CSV. JSON é um arquivo de texto com a descrição das ligações do gráfico de relacionamentos. O arquivo CSV deve ter três campos: cpf/cnpj de origem da ligação, cpf/cnpj destino da ligação e texto com descrição da ligação, separados por tabulação ou ponto e vírgula (;)"/>
+				<script>
+				  document.getElementById('fileImportJSON').addEventListener('change', importarJSONHandleFileSelect, false);
+				</script>			
+			</div>
+			
+			<div class="centralizado" style="width:100%;"><hr /></div> 
+			<div align="center" id="menu_destaca" title='Destaca os nós selecionados com a cor ao lado.'>
+			<button onclick="javascript:colorirNo()" title='Aplique a cor nos Nós selecionados.Vc pode selecionar vários Nós pressionando SHIFT + clique, com CTRL + Arrastar região ou colocando vários cpfs/cnpj na caixa "Pesquisa no Gráfico"'><b>Colorir</b></button>
+				<input type="color" id='palheta' title='Selecione uma cor'>
+			</div>
+
+			<div class="centralizado" style="width:100%;"><hr /></div>			
+			<div> <!-- style="height: 30%"> -->
+				<div id = "menu_foto" class="centralizado">
+					<img src="/macros/static/images/icone-grafo-desconhecido.png" style="width: 150px;">
+				</div>
+				<div id="menu_nome_cpfcnpj" onclick="javascript:copiaElemento('menu_nome_cpfcnpj');" title='Clicando você copia o nome e o identificador para a área de transferência'>
+					<div id = "menu_nome"></div>
+					<div id = "menu_cpfcnpj">
+				</div>
+				</div>
+			</div>
+			<div class="centralizado" style="width:100%;"><hr /></div>
+			<div title="Abre uma aba com página de ajuda, com o significado de cada marcador e instruções sobre a Rede de Relacionamentos.">
+				<div align="center" id="menu_Legenda" onclick="javascript:abrirJanela('/macros/static/ajudaHtml.html?k={{versao_macros}}');"><b>Ajuda:</b>
+					<img src="/macros/static/images/icone-help.jpg" style="height:1em"/>
+				</div>
+				<div ALIGN=CENTER><!-- <div style="height: 5%">-->
+					<a href="javascript:abrirJanela('/macros/static/ajudaHtml.html?k={{versao_macros}}');">
+						<IMG SRC="/macros/static/images/marcadores_PF.png" ALT="Legenda" NAME="Legenda" WIDTH=50 HEIGHT=50 BORDER=0></SPAN>
+					</a>
+				</div>
+			</div>
+			<div align="center" id="ajuda">	
+				<b>Cores das Legendas:</b>
+				<table align="center">
+				<tbody>
+					<tr><td bgcolor="red" width=50></td><td>Camada 0</td></tr>
+					<tr><td bgcolor="gold" width=50></td><td>Camada 1</td></tr>
+					<tr><td bgcolor="green" width=50></td><td>Camada 2</td></tr>
+					<tr><td bgcolor="blue" width=50></td><td>Camada 3</td></tr>
+					<tr><td bgcolor="brown" width=50></td><td>Camada 4</td></tr>
+					<tr><td bgcolor="gray" width=50></td><td>Outras</td></tr>
+				</tbody>
+				</table>
+			</div>			
+			<div style="display:none" id='frameImagens'>
+				<!-- solução para o firefox precarregar as imagens dos ícones. quando se fizer "salvar como", essas imagens vão para a pasta local -->
+				<img id='icone-grafo-conta.png' src="/macros/static/images/icone-grafo-conta.png">
+				<img id='icone-grafo-desconhecido.png' src="/macros/static/images/icone-grafo-desconhecido.png">
+				<img id='icone-grafo-empresa.png' src="/macros/static/images/icone-grafo-empresa.png">
+				<img id='icone-grafo-empresafilial-inativo.png' src="/macros/static/images/icone-grafo-empresafilial-inativo.png">
+				<img id='icone-grafo-empresafilial.png' src="/macros/static/images/icone-grafo-empresafilial.png">
+				<img id='icone-grafo-empresa-inativo.png' src="/macros/static/images/icone-grafo-empresa-inativo.png">
+				<img id='icone-grafo-empresa-1.png' src="/macros/static/images/icone-grafo-empresa-1.png">
+				<img id='icone-grafo-empresa-2.png' src="/macros/static/images/icone-grafo-empresa-2.png">
+				<img id='icone-grafo-empresa-3.png' src="/macros/static/images/icone-grafo-empresa-3.png">
+				<img id='icone-grafo-empresa-4.png' src="/macros/static/images/icone-grafo-empresa-4.png">
+				<img id='icone-grafo-empresa-5.png' src="/macros/static/images/icone-grafo-empresa-5.png">
+				<img id='icone-grafo-empresa-1-inativo.png' src="/macros/static/images/icone-grafo-empresa-1-inativo.png">
+				<img id='icone-grafo-empresa-2-inativo.png' src="/macros/static/images/icone-grafo-empresa-2-inativo.png">
+				<img id='icone-grafo-empresa-3-inativo.png' src="/macros/static/images/icone-grafo-empresa-3-inativo.png">
+				<img id='icone-grafo-empresa-4-inativo.png' src="/macros/static/images/icone-grafo-empresa-4-inativo.png">
+				<img id='icone-grafo-empresa-5-inativo.png' src="/macros/static/images/icone-grafo-empresa-5-inativo.png">
+				<img id='icone-grafo-endereco.png' src="/macros/static/images/icone-grafo-endereco.png">
+				<img id='icone-grafo-feminino.png' src="/macros/static/images/icone-grafo-feminino.png">
+				<img id='icone-grafo-feminino-inativo.png' src="/macros/static/images/icone-grafo-feminino-inativo.png">
+				<img id='icone-grafo-masculino.png' src="/macros/static/images/icone-grafo-masculino.png">
+				<img id='icone-grafo-masculino-inativo.png' src="/macros/static/images/icone-grafo-masculino-inativo.png">
+				<img id='icone-grafo-telefone.png' src="/macros/static/images/icone-grafo-telefone.png">				
+				<img id='icone-grafo-empresa-estrangeira.png' src="/macros/static/images/icone-grafo-empresa-estrangeira.png">		
+				<img id='icone-grafo-informacaoRelevante.png' src="/macros/static/images/icone-grafo-informacaoRelevante.png">		
+			</div>
+			
+			{% block content %}{% endblock %}
+		</div>
+		<div  data-dojo-type="dijit.layout.ContentPane" data-dojo-props="splitter:true, region:'center'" contextmenu="menuContextualGrafo"> 
+			<div id="principal" style="width: 100%; height: 100%; position: absolute;  left: 0; top: 0;" charset="utf-8"></div>
+			<div class="graph-overlay" style="cursor:crosshair;"></div>
+			<!-- <script type="text/javascript"> 
+				mainGrafo();
+			</script> -->
+
+      <div id="zoom" style="position:absolute;right:5px;bottom:5px;">
+          <button class="zoom in"> + </button>
+          <button class="zoom out"> - </button>
+      </div>
+
+		</div>
+	</div>
+
+<script type="text/javascript">
+$('.zoom').click(function (e) {
+  e.preventDefault();
+  if ($(this).hasClass('in')) {
+     renderer.zoomIn();
+  } else {
+    renderer.zoomOut();
+  }
+});
+</script>
+
+	<!------------------------ Define a estrutura do Menu Chamado quando o botão direito do mouse é pressionado -------------------->
+	{% include "dossie/grafico/includes/htmlMenu.html" %}
+	<!------------------------------------------------------------------------------------------------------------------------------>	
+	<iframe id="iframeDownload" src="" onload="" style="display:none"></iframe>
+	
+{%endif%}
+
+{% if not ajax %}
+</body>
+</html>
+{% endif %}
