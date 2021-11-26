@@ -2,75 +2,144 @@
 <html>
 <head>
 <style>
-ul {
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
-  overflow: hidden;
-  background-color: #333;
+
+
+body {
+  margin: 40px;
 }
 
-li {
-  float: left;
+.sidebar {
+    grid-area: sidebar;
+  }
+
+  .content {
+    grid-area: content;
+  }
+
+  .header {
+    grid-area: header;
+  }
+
+  .footer {
+    grid-area: footer;
+  }
+
+
+  .wrapper {
+    display: grid;
+    height: 90vh;
+
+    grid-gap: 10px;
+    grid-template-columns: auto minmax(0, 70vw) auto;
+    grid-template-rows: 45px minmax(0, 80vh) 1fr;
+    grid-template-areas:
+    "....... header header"
+    "sidebar content content"
+    "footer  footer  footer";
+    background-color: #fff;
+    color: #444;
+  }
+
+
+.box {
+  background-color: blue ;
+  color: #fff;
+  border-radius: 5px;
+  padding: 10px;
+  font-size: 150%;
 }
 
-li a, .dropbtn {
-  display: inline-block;
-  color: white;
-  text-align: center;
-  padding: 14px 16px;
-  text-decoration: none;
+.header,
+.footer {
+  background-color: #999;
 }
+.sidebar {
+    background-color: tomato;
+  }
 
-li a:hover, .dropdown:hover .dropbtn {
-  background-color: red;
-}
 
-li.dropdown {
-  display: inline-block;
-}
 
-.dropdown-content {
-  display: none;
-  position: absolute;
-  background-color: #f9f9f9;
-  min-width: 160px;
-  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-  z-index: 1;
-}
-
-.dropdown-content a {
-  color: black;
-  padding: 12px 16px;
-  text-decoration: none;
-  display: block;
-  text-align: left;
-}
-
-.dropdown-content a:hover {background-color: #f1f1f1;}
-
-.dropdown:hover .dropdown-content {
-  display: block;
-}
 </style>
+<script>
+//resposta a evento drop no div do menu, para abrir opção de inserção. Por exemplo, arrastar do word ou excel uma lista de cnpjs.
+function dragover_handler(ev) {
+	ev.preventDefault();
+	// Define o dropEffect para ser do tipo move
+	ev.dataTransfer.dropEffect = "copy"
+}//.function dragover_handler
+
+function drop_handler(ev) {
+	ev.preventDefault();
+	// Pega o id do alvo e adiciona o elemento que foi movido para o DOM do alvo
+	var tipos = ev.dataTransfer.types;
+	//window.focus(); //não funciona, o focus with no aplicativo de origem da dragagem
+	if (tipos.includes("text/x-moz-url")) { //funciona no firefox, mas no chrome não aparece esse flavor
+		//var data = ev.dataTransfer.getData("text");
+		var lista = ev.dataTransfer.getData("text/x-moz-url").split('\n'); //url separado do titulo por linha
+		menu_ligar_novo('LI_' + lista[0], lista[1]);
+	} else if (tipos.includes( "text/uri-list")) { //no chrome
+		var item = ev.dataTransfer.getData("text/uri-list"); //aqui só tem url, não tem título da página como no firefox
+		menu_ligar_novo('LI_' + item, '');
+	} else if (tipos.includes("text/plain")) {
+		var data = ev.dataTransfer.getData("text");
+		inserir_lista(data);
+	} else if (tipos.includes("Files")) {
+		menu_importarJsonArquivo(ev, 'drop');
+	} else {
+		alertify.error('Drop. Tipo não reconhecido');
+		console.log(tipos);
+	}
+
+}//.function drop_handler
+
+function ajustaRegiaoDrop() {
+	//var dropzoneId = "drop_area"; //"div_botoes"; //só esta região vai aceitar drop
+	var dropzones = ['drop_area', 'principal_svg'];
+	window.addEventListener("dragenter", function(e) {
+		//console.log(e.target.id);
+		//if (e.target.id != dropzoneId) {
+		if (!dropzones.includes(e.target.id)) {
+			e.preventDefault();
+			e.dataTransfer.effectAllowed = "none";
+			e.dataTransfer.dropEffect = "none";
+		}
+	}, false);
+
+	window.addEventListener("dragover", function(e) {
+		//if (e.target.id != dropzoneId) {
+		if (!dropzones.includes(e.target.id)) {
+			e.preventDefault();
+			e.dataTransfer.effectAllowed = "none";
+			e.dataTransfer.dropEffect = "none";
+		}
+	});
+
+	window.addEventListener("drop", function(e) {
+		//if (e.target.id != dropzoneId) {
+		if (!dropzones.includes(e.target.id)) {
+			e.preventDefault();
+			e.dataTransfer.effectAllowed = "none";
+			e.dataTransfer.dropEffect = "none";
+		}
+	});
+}//.function ajustaRegiaoDrop
+
+</script>
 </head>
 <body>
 
-<ul>
-  <li><a href="#home">Home</a></li>
-  <li><a href="#news">News</a></li>
-  <li class="dropdown">
-    <a href="javascript:void(0)" class="dropbtn">Dropdown</a>
-    <div class="dropdown-content">
-      <a href="#">Link 1</a>
-      <a href="#">Link 2</a>
-      <a href="#">Link 3</a>
-    </div>
-  </li>
-</ul>
 
-<h3>Dropdown Menu inside a Navigation Bar</h3>
-<p>Hover over the "Dropdown" link to see the dropdown menu.</p>
+<div class="wrapper">
+  <div class="box header">Header</div>
+  <div class="box sidebar">Sidebar</div>
+  <div class="box content" ondrop="drop_handler(event);" ondragover="dragover_handler(event);">Content
+    <br /> More content than we had before so this column is now quite tall.</div>
+  <div class="box footer">Footer</div>
+</div>
+
+
+
+
 
 </body>
 </html>
