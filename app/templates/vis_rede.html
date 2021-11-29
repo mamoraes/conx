@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-
-<!-- 
+<!--
 projeto disponível em https://github.com/rictom/rede-cnpj
 
 utilizando os seguintes códigos e recursos:
@@ -11,11 +10,8 @@ https://fontawesome.com/v4.7.0/
 https://github.com/encharm/Font-Awesome-SVG-PNG
 https://www.freepik.com/
 -->
-<html class="wrapper">
-
-
+<html>
 <head>
-
 <meta http-equiv="content-type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
 <title>Rede</title>
@@ -1637,6 +1633,36 @@ function exibe_mensagem(textoMensagem, mensagem) {
 		alertify.success(mensagem.lateral);
 	}
 }//.exibe_mensagem
+
+function menu_executarpesquisa(pesquisa){
+    var url = "";
+    url = base + 'pesquisa/' + pesquisa + '/';
+	fazFetch(url, pesquisa);
+	return;
+	function fazFetch(url, pesquisa) {
+		document.body.style.cursor = 'wait';
+		//fetch(url, {method: 'get'}) // mode: 'cors',
+		fetch(url, {method: 'post' })
+        .then(
+			function(response) {
+			  if (response.status !== 200) {
+				document.body.style.cursor = 'default';
+				console.log('Looks like there was a problem. Status Code: ' +  response.status);
+				alertify.error('Aconteceu um erro 13 (' +  response.status + ') '+ url);
+				return;
+			  }
+			}
+		  )
+		  .catch(function(err) {
+			document.body.style.cursor = 'default';
+			console.log('Fetch Error :-S', err);
+			alertify.error('Aconteceu um erro 14 (Fetch error ' + err + ')');
+		  });
+
+document.body.style.cursor = 'default';
+}
+
+} //.menu_executarpesquisa
 
 function menu_incluirCamada(idin, camada, tipo, bNaoConfirma) {
 	//if idin='', manda dados dos nós selecionados
@@ -4046,119 +4072,11 @@ function main() {
 }
 
 </style>
-<style>
-ul {
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
-  overflow: hidden;
-  background-color: #333;
-}
-
-li {
-  float: left;
-}
-li a, .dropbtn {
-  display: inline-block;
-  color: white;
-  text-align: center;
-  padding: 8px 8px;
-  text-decoration: none;
-}
-
-li a:hover, .dropdown:hover .dropbtn {
-  background-color: red;
-}
-
-li.dropdown {
-  display: inline-block;
-}
-
-.dropdown-content {
-  display: none;
-  position: absolute;
-  background-color: #f9f9f9;
-  min-width: 160px;
-  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-  z-index: 1;
-}
-
-.dropdown-content a {
-  color: black;
-  padding: 8px 8px;
-  text-decoration: none;
-  display: block;
-  text-align: center;
-}
-
-.dropdown-content a:hover {background-color: #f1f1f1;}
-
-.dropdown:hover .dropdown-content {
-  display: block;
-}
-</style>
-<style>
-body {
-  margin: 40px;
-}
-
-.sidebar {
-    grid-area: sidebar;
-  }
-
-  .content {
-    grid-area: content;
-  }
-
-  .header {
-    grid-area: header;
-  }
-
-  .footer {
-    grid-area: footer;
-  }
-
-
-  .wrapper {
-    display: grid;
-    height: 90vh;
-
-    grid-gap: 10px;
-    grid-template-columns: auto minmax(0, 70vw) auto;
-    grid-template-rows: 45px minmax(0, 80vh) 1fr;
-    grid-template-areas:
-    "....... header header"
-    "sidebar content content"
-    "footer  footer  footer";
-    background-color: #fff;
-    color: #444;
-  }
-
-
-.box {
-  background-color: blue ;
-  color: #fff;
-  border-radius: 5px;
-  padding: 10px;
-  font-size: 150%;
-}
-
-.header,
-.footer {
-  background-color: #999;
-}
-.sidebar {
-    background-color: tomato;
-  }
-</style>
 </head>
-<body class="wrapper" id='corpo' onload='main()' style='overflow:hidden;' >
-
+<body id='corpo' onload='main()' style='overflow:hidden;'>
 <!-- overflow:hidden para não aparecer barra de rolagem -->
-<div id="block_container"  class="wrapper">
-	{% include 'basenavbar.html' %}
-<!--
-	<div id='div_botoes' class="btn-group">  -->
+<div id="block_container">
+	<div id='div_botoes' class="btn-group">
 		<button class='btn btn-primary' type="button" onclick="javascript:menu_botao(event);" title='Abre opções'>Menu</button>&nbsp;&nbsp;
 		<button class='btn btn-primary' type="button" onclick="javascript:menu_inserir(null, event.shiftKey, event.ctrlKey);" title='Inserir{% if parametros.bBaseReceita %} CNPJ ou CPF do Banco de Dados {% endif %}(Tecla I)'><i class="fa fa-user-plus"></i></button>&nbsp;
 		<button class='btn btn-primary' type="button" onclick="javascript:menu_incluirCamada('', 1);" title='Expande Vínculos Societários em Camada 1 (Tecla 1)'><i class="fa fa-layer-group"></i></button>&nbsp;
@@ -4175,6 +4093,14 @@ body {
 		<button class='btn btn-primary' id='btn_srf' type="button" onclick="window.open('https://www.gov.br/receitafederal/pt-br/assuntos/orientacao-tributaria/cadastros/consultas/dados-publicos-cnpj')" title='Página de dados públicos da SRF'>Dados</button>&nbsp;&nbsp;
 		-->
 		{% endif %}
+		<label for="lista_pesquisas">Pesquisa:</label>
+        <select id="lista_pesquisas" name="lista_pesquisas">
+	  {% for pesq in pesquisas %}
+			<option value={{ pesq.id }}> {{ pesq.nome }} </option>
+	  {% endfor %}
+         </select>
+
+		<button class='btn btn-primary' type="button" onclick="javascript:menu_executarpesquisa(1);" title='Executa a pesquisa selecionada'><i class="fa fa-bezier-curve"></i></button>&nbsp;
 
     	<div id='div_referencia' style="background-color:dark;" title="{{ parametros.referenciaBD }}">&nbsp;{{ parametros.referenciaBDCurto }}&nbsp;
 			<button class="ws-btn w3-block" onclick="changeVisibility()">Hide</button>
@@ -4184,17 +4110,16 @@ body {
 	    	<i class="fa fa-hand-holding-water"></i>&nbsp;DROP (json ou lista de PF/PJ)
     	</div>
     	 -->
-<!--	</div>   --> <!-- div botoes -->
+	</div>    <!-- div botoes -->
+</div>
 
 
 
-
-
-<div  class="class="box-content" id="principal" style="width: 100%; height: 100%; position: absolute;" charset="utf-8" ondrop="drop_handler(event);" ondragover="dragover_handler(event);"  >
+<div id="principal" style="width: 100%; height: 100%; position: absolute;" charset="utf-8" ondrop="drop_handler(event);" ondragover="dragover_handler(event);"  >
 <!-- top=0 desativa botoes-->
 	<div id="principal_overlay" class="graph-overlay" style="cursor:crosshair;" ></div>
 </div>
-<div id="segundo" style="width: 100%; height: 100%; position: absolute;  left: 0; top: 30; background-color:gray; charset=utf-8;" > </div>
+<div id="segundo" style="width:50%; height: 500%; position: absolute;  left: 0; top: 30; background-color:gray; charset=utf-8;" > </div>
 
 <menu id='menu_contexto' class="menu">
 	<li class="menu-item submenu">

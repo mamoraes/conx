@@ -466,6 +466,10 @@ def imagensNaPastaF(bRetornaLista=False):
 
 #http://sed-die-hpc02-p:9101/rede/grafico_no_servidor/relacionamento.9204624e.rda.json
 
+@bp.route("/rede/pesquisa/<int:id_pesquisa>/" , methods=['GET', 'POST'])
+def executar_pesquisa(id_pesquisa):
+    flash(_('Pesquisatrilha %(id) encontrada.', id=id_pesquisa))
+    return exibir_rede()
 @bp.route("/rederel/")
 @bp.route("/rede/")
 @bp.route("/rede/grafico/<int:camada>/<cpfcnpj>")

@@ -3,14 +3,14 @@
 
 </script>
 {% block title %}
-        {% if title %}{{ title }} - Quem Com Quem{% else %}{{ _('Benvindo ao QCQ') }}{% endif %}
+        {% if title %}{{ title }} - Q C Q {% else %}{{ _('Benvindo ao QCQ') }}{% endif %}
 {% endblock %}
 
 {% block navbar %}
 
-
-{% endblock %}
 {% include 'basenavbar.html' %}
+{% endblock %}
+
 {% block content %}
     <div class="container" style="width: 1570px;">
         {% with messages = get_flashed_messages() %}

@@ -33,9 +33,9 @@ body {
     grid-template-columns: auto minmax(0, 70vw) auto;
     grid-template-rows: 45px minmax(0, 80vh) 1fr;
     grid-template-areas:
-    "....... header header"
+    "esqsup header header"
     "sidebar content content"
-    "footer  footer  footer";
+    "footer  footer  dirinf";
     background-color: #fff;
     color: #444;
   }
@@ -56,7 +56,12 @@ body {
 .sidebar {
     background-color: tomato;
   }
-
+.esqsup {
+    background-color: #123;
+}
+.dirinf {
+    background-color: white;
+}
 
 
 </style>
@@ -135,6 +140,8 @@ function ajustaRegiaoDrop() {
   <div class="box content" ondrop="drop_handler(event);" ondragover="dragover_handler(event);">Content
     <br /> More content than we had before so this column is now quite tall.</div>
   <div class="box footer">Footer</div>
+   <div class="box esqsup"><b></div>
+   <div class="box dirinf"><b></div>
 </div>
 
 
