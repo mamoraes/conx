@@ -7,7 +7,7 @@ import json
 import time
 
 from sqlalchemy import MetaData
-
+from sqlalchemy import inspect
 from sqlalchemy.ext.declarative import declarative_base
 import datetime
 
@@ -15,7 +15,7 @@ DEBUG = False
 DF = True
 PANDAS = False  # True
 
-DB_CONEXOES = "sqlite:///conxs.db"
+DB_CONEXOES = "sqlite:///conx.db"
 TB_TEMPORARIA_ENTES = "TEMP_ENTES"  # tabela para joins nos bancos de dados
 
 COLUNAS_ID_BD = {'id': {'default': '', 'sqlite': 'TEXT', 'sqlalchemy': sqlalchemy.types.NVARCHAR, 'pandas': 'str'}}
@@ -173,10 +173,11 @@ def jsonificar(atrib: str = '') -> dict:
 class ComandoSql:
     def __init__(self, comandos, conexao_usuario):
         self.id = comandos.id
-        self.conx = comandos.conx
+        self.conx_id = comandos.conx_id
+        self.conx_nome = comandos.conx_nome
         self.cmd_sql = comandos.cmd_sql
         self.fonte = comandos.fonte
-        self.fonte_extenso = self.fonte + ' @' + self.conx + '-' + str(self.id)
+        self.fonte_extenso = self.fonte + ' @' + str(self.conx_id) + '-' +self.conx_nome+ '-' + str(self.id)
         self.conexao = conexao_usuario
 
 
@@ -415,12 +416,13 @@ def obter_conexoes_ativas(cnx=DB_CONEXOES) -> list:
     conexoes = []
     # buscar as definicoes de buscas do usuario
     con = sqlalchemy.create_engine(cnx, execution_options=gEngineExecutionOptions)
-    sql = """select nome, string from conx where conx.string <> '{}' and conx.em_producao = 'S' group by conx.string order by string """.format(
+    sql = """select id, nome, string from conexao conx where conx.string <> '{}' and conx.habilitada = 'S' group by conx.string order by string """.format(
         DB_CONEXOES)
     conx = con.execute(sql).fetchall()
     for item in conx:
         c = {}
         con_str = item['string']
+        c['id'] = item['id']
         c['string'] = con_str
         c['nome'] = item['nome']
         c['engine'] = con
@@ -488,7 +490,7 @@ def visitar(lista_entes_entrada=[], qtd_camadas: int = 2, conexoes_ativas=[]):
 
     # tabelas auxiliares para progressao das camadas
     cnx_temp = sqlalchemy.create_engine('sqlite://')  # :memory:
-    # cnx_temp = sqlalchemy.create_engine(DB_CONEXOES)    # :memory:
+    # cnx_temp = sqlalchemy.create_engine(DB_CONEXOES)
 
     VISITADOS = 'temp_entes_visitados'  # acumula as novas camadas originadas de cada consulta
     A_VISITAR = 'temp_entes_a_visitar'  # entes a visitar em cada camada
@@ -502,11 +504,11 @@ def visitar(lista_entes_entrada=[], qtd_camadas: int = 2, conexoes_ativas=[]):
     vinculos_aux = Vinculos(cnx_temp, VINCULOS)
 
     conx = sqlalchemy.create_engine(DB_CONEXOES, execution_options=gEngineExecutionOptions)
-    df_query_entes = pd.read_sql("select * from consulta_entes where em_producao = 'S'", conx)
-    df_query_vinculos = pd.read_sql("select * from consulta_vinculos where em_producao = 'S'", conx)
+    df_query_entes =    pd.read_sql("select consulta.*, conexao.nome conx_nome from consulta  inner join conexao on conexao.id = consulta.conx_id where consulta.habilitada = 'S' and tipo ='E'", conx)
+    df_query_vinculos = pd.read_sql("select consulta.*, conexao.nome conx_nome from consulta  inner join conexao on conexao.id = consulta.conx_id where consulta.habilitada = 'S' and tipo ='V'", conx)
 
     camada = 0
-    if cnx_temp.has_table(RESULTADO):
+    if inspect(cnx_temp).has_table(RESULTADO):
         entes_resultado.incluir_entes_df(lista_entes_entrada)
 
     while True:
@@ -546,7 +548,7 @@ def visitar(lista_entes_entrada=[], qtd_camadas: int = 2, conexoes_ativas=[]):
                     continue
 
                     # seleciona as consultas para o BD da vez
-            filtro_entes_conx = df_query_entes['conx'] == conexao['nome']
+            filtro_entes_conx = df_query_entes['conx_id'] == conexao['id']
             df_qe = df_query_entes[filtro_entes_conx]
 
             #  buscar dados dos entes que estão sendo visitados
@@ -558,7 +560,7 @@ def visitar(lista_entes_entrada=[], qtd_camadas: int = 2, conexoes_ativas=[]):
                     entes_a_visitar.incluir_entes_df(entes_visitando)
 
             if not ultima_camada:  # somente busca novos vínculos até a última camada
-                filtro_vinculos_conx = df_query_vinculos['conx'] == conexao['nome']
+                filtro_vinculos_conx = df_query_vinculos['conx_id'] == conexao['id']
                 df_qv = df_query_vinculos[filtro_vinculos_conx]
 
                 # executa cada uma das queries cadastradas pelo usuario
@@ -782,6 +784,6 @@ if __name__ == "__main__":
 
             teste1(conexoes_ativas)
 
-            print('Teste2')
-            teste2(conexoes_ativas)
+            #print('Teste2')
+            #teste2(conexoes_ativas)
     # executar(lista_entes_entrada = df_entes_entrada, qtd_camadas = 1, conexoes_ativas = conexoes_ativas)
