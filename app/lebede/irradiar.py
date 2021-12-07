@@ -4,7 +4,7 @@ from sqlalchemy import MetaData, inspect
 
 import pandas as pd
 import dask.dataframe as dd
-import metadados
+import metadados as metadados
 
 
 
@@ -12,7 +12,7 @@ import metadados
 class ComandoSql:
     def __init__(self, comandos, conexao_usuario):
         self.id = comandos.id
-        self.conx = comandos.conx
+        self.conx = comandos.conx_nome
         self.cmd_sql = comandos.cmd_sql
         self.fonte = comandos.fonte
         self.fonte_extenso = self.fonte + ' @' + self.conx + '-' + str(self.id)
@@ -117,7 +117,7 @@ class Vinculos(EntesVinculos):
     def criar_df(self):
         self.df = pd.read_sql_table(self.nome_tabela, self.cnx)  # .set_index(['id_origem','id_destino'])
         # self.df.index.name = 'id_od'
-        self.ddf = dd.from_pandas(df, npartitions=10)
+        self.ddf = dd.from_pandas(self.df, npartitions=10)
         return
 
     def excluir_tb(self):

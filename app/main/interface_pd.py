@@ -1,19 +1,18 @@
 # -*- coding: utf-8 -*-
 # import pyodbc
 import pandas as pd
-import dask.dataframe as dd
 
-import sqlalchemy
 import json
 
 import time
 
 
 import datetime
-import metadados
+import app.main.metadados as metadados
 
-import irradiar
+import app.main.irradiar as irradiar
 
+pasta_base = 'app/lebede/'
 # decorator para medir tempo de execução de função
 def timeit(method):
     def timed(*args, **kw):
@@ -31,9 +30,9 @@ def timeit(method):
     return timed
 
 
-df_qualif_socio = pd.read_csv(r"tabelas/tabela-de-qualificacao-do-socio-representante.csv", sep=';', dtype="str",
+df_qualif_socio = pd.read_csv(pasta_base+r"tabelas/tabela-de-qualificacao-do-socio-representante.csv", sep=';', dtype="str",
                               index_col='codigo')
-df_subtipo_pj = pd.read_csv(r"tabelas/natureza_juridica_subtipo.csv", sep=';', )
+df_subtipo_pj = pd.read_csv(pasta_base+r"tabelas/natureza_juridica_subtipo.csv", sep=';', )
 dicSituacaoCadastral = {'01': 'Nula', '02': 'Ativa', '03': 'Suspensa', '04': 'Inapta', '08': 'Baixada'}
 
 
@@ -53,7 +52,7 @@ situacao_cadastral_pj = Situacao_Cadastral_PJ()
 
 class Qualificacao_Socio:
     def __init__(self):
-        self.df = pd.read_csv(r"tabelas/tabela-de-qualificacao-do-socio-representante.csv", sep=';',
+        self.df = pd.read_csv(pasta_base+r"tabelas/tabela-de-qualificacao-do-socio-representante.csv", sep=';',
                               index_col=['codigo'])
         # self.dic = self.df.to_dict(orient='index')
 
@@ -71,7 +70,7 @@ qualificacao_socio = Qualificacao_Socio()
 
 class Subtipo_pj:
     def __init__(self):
-        self.df = pd.read_csv(r"tabelas/natureza_juridica_subtipo.csv", sep=';', index_col=['codigo'])
+        self.df = pd.read_csv(pasta_base+r"tabelas/natureza_juridica_subtipo.csv", sep=';', index_col=['codigo'])
         # self.dic = self.df.to_dict(orient='index')
 
     def lkp(self, cod) -> str:
@@ -117,6 +116,7 @@ def exportar_para_template(df_entes, df_vinculos) -> dict:
     df_entes['cod_nat_juridica'] = ''
     colunas_entes_exportar = ['id', 'descricao', 'camada', 'situacao_ativa', 'logradouro', 'municipio', 'uf', 'imagem',
                               'cor', 'sexo', 'nota']
+    df_entes['atributos'] = df_entes['atributos'].fillna('')
     nj = lambda a: jsonificar(a) if (a != None and 'natureza_juridica' in a) else {'natureza_juridica': ''}
     df_entes.loc[filtro_pj, 'cod_nat_juridica'] = df_entes['atributos'].apply(lambda a: nj(a)['natureza_juridica'])
 
@@ -149,31 +149,9 @@ def exportar_para_template(df_entes, df_vinculos) -> dict:
 
 df_entes_entrada = pd.DataFrame(columns=metadados.COLUNAS_ENTES)
 
-novo_ente = {'tipo': 'PF', 'subtipo': '***', 'ident': '***554210**', 'nome': 'DIONATAN DORNELLES ANDRADE'}
-df_entes_entrada = df_entes_entrada.append(novo_ente, ignore_index=True)
-"""
-novo_ente = {'tipo':'PJ', 'subtipo':'','ident':'17653717000135', 'nome':''}
-df_entes_entrada=df_entes_entrada.append(novo_ente, ignore_index=True)
-novo_ente = {'tipo':'PJ', 'subtipo':'','ident':'19391842000140', 'nome':''}
-df_entes_entrada=df_entes_entrada.append(novo_ente, ignore_index=True)
-
-novo_ente = {'tipo':'PJ', 'subtipo':'','ident':'05359440000153', 'nome':''}
-df_entes_entrada=df_entes_entrada.append(novo_ente, ignore_index=True)
-
-novo_ente = {'tipo':'PJ', 'subtipo':'','ident':'00000000000191', 'nome':''}
-df_entes_entrada=df_entes_entrada.append(novo_ente, ignore_index=True)
-
-novo_ente = {'tipo':'PJ', 'subtipo':'','ident':'11555207000149', 'nome':''}
-df_entes_entrada=df_entes_entrada.append(novo_ente, ignore_index=True)
-
-novo_ente = {'tipo':'PF', 'subtipo':'***', 'ident':'***849457**', 'nome': 'SANDRA APARECIDA CANEDO OLIVEIRA'}
-df_entes_entrada=df_entes_entrada.append(novo_ente, ignore_index=True)
-"""
 df_entes_entrada['camada'] = 0
 # entes.append(PF(subtipo='nome',ident='***554210**', nome='DIONATAN DORNELLES ANDRADE'))
 # entes.append(PJ(subtipo='',ident='17653717000135'))
-if metadados.DEBUG:
-    print('ENTRADA: ', df_entes_entrada)
 
 conexoes_ativas = metadados.obter_conexoes_ativas()
 
@@ -242,8 +220,8 @@ def teste1(conexoes_ativas=conexoes_ativas):
 @timeit
 def teste2(conexoes_ativas=conexoes_ativas):
     ok = True
-    df_entes_entrada = pd.DataFrame(columns=COLUNAS_ENTES)
-    df_teste = pd.read_excel('rede_de_relacionamentos_teste.xlsx', 'cpfcnpj', dtype='str')
+    df_entes_entrada = pd.DataFrame(columns=metadados.COLUNAS_ENTES)
+    df_teste = pd.read_excel(pasta_base+'rede_de_relacionamentos_teste.xlsx', 'cpfcnpj', dtype='str')
 
     novo_ente = {'tipo': 'PJ', 'subtipo': '', 'ident': '11381605000196', 'nome': ''}
     df_entes_entrada = df_entes_entrada.append(novo_ente, ignore_index=True)
@@ -290,10 +268,11 @@ def teste2(conexoes_ativas=conexoes_ativas):
     return (ok)
 
 
-def executar(lista_entes_entrada=df_entes_entrada, qtd_camadas: int = 2, conexoes_ativas=conexoes_ativas):
+
+def lerbd(lista_entes_entrada=df_entes_entrada, qtd_camadas: int = 2, conexoes_ativas=conexoes_ativas):
+
     nos, ligacoes = irradiar.visitar(lista_entes_entrada=df_entes_entrada, qtd_camadas=5, conexoes_ativas=conexoes_ativas)
     return (exportar_para_template(nos, ligacoes))
-
 
 if __name__ == "__main__":
     print('Teste0')
@@ -302,6 +281,45 @@ if __name__ == "__main__":
 
     teste1(conexoes_ativas)
 
-    #print('Teste2')
-    #teste2(conexoes_ativas)
-    # executar(lista_entes_entrada = df_entes_entrada, qtd_camadas = 1, conexoes_ativas = conexoes_ativas)
+    print('Teste2')
+    teste2(conexoes_ativas)
+    lerbd(lista_entes_entrada = df_entes_entrada, qtd_camadas = 1, conexoes_ativas = conexoes_ativas)
+
+class LeitorBDemCamadas:
+    def __init__(self, qtdcamadas=0, conexoes_ativas=None, consultas_entes=None, consultas_vinculos=None, lista_entes_entrada=None):
+        self.camadas = qtdcamadas
+        self.nos = None
+        self.ligacoes = None
+        self.redejson = None
+        self.conexoes_ativas = conexoes_ativas
+        self.consultas_entes = consultas_entes
+        self.consultas_vinculos = consultas_vinculos
+        self.lista_entes_entrada = lista_entes_entrada
+        self.df_entes_entrada = pd.DataFrame(columns=metadados.COLUNAS_ENTES)
+        self.entrada(self.lista_entes_entrada)
+
+    def entrada(self, lista_entes_entrada:list):
+        if lista_entes_entrada == None:
+            return
+        for i in lista_entes_entrada:
+            item = str(i)
+            item = item.replace('.','').replace('-','').replace('/','')
+            subtipo = ''
+            tipo = 'PJ' if len(item) == 14 else 'PF'
+            if tipo == 'PF' and item.find('*'):
+                subtipo = '***'
+
+            novo_ente = {'tipo': f'{tipo}', 'subtipo': f'{subtipo}', 'ident': f'{item}'}
+            self.df_entes_entrada = self.df_entes_entrada.append(novo_ente, ignore_index=True)
+        self.df_entes_entrada = metadados.gerar_id_df(self.df_entes_entrada)
+        self.df_entes_entrada['fonte'] = 'usuario'
+        self.df_entes_entrada['camada'] = 0
+    def lerbd(self):
+        self.nos, self.ligacoes = irradiar.visitar(lista_entes_entrada=self.df_entes_entrada, qtd_camadas=self.camadas,
+                                         conexoes_ativas=self.conexoes_ativas, dfentes=self.consultas_entes, dfvinc=self.consultas_vinculos)
+        self.redejson = exportar_para_template(self.nos, self.ligacoes)
+        return (self.redejson)
+
+
+
+

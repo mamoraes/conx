@@ -473,7 +473,7 @@ class Consulta(db.Model):
 
     id = db.Column(db.Integer, primary_key=True, autoincrement='auto')
     conx_id = db.Column(db.BigInteger, db.ForeignKey('conexao.id'), index=True, nullable=False)
-    tipo = db.Column(db.String(1), nullable=False, default='V', doc='Define se a consulta é do tipo Enteou Vínculo')
+    tipo = db.Column(db.String(1), nullable=False, default='V', doc='Define se a consulta é do tipo Ente ou Vínculo')
     nome = db.Column(db.String(50), nullable=False, doc='Nome da consulta')
     descricao = db.Column(db.String(500), nullable=False, doc='Descriçao da finalidade da consulta')
     fonte = db.Column(db.String(15), nullable=False, doc='Nome da fonte de dados para rastrear o resultado')

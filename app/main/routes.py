@@ -1,5 +1,6 @@
 from datetime import datetime
 
+import pandas as pd
 from flask import render_template, flash, redirect, url_for, request, g, \
     jsonify, current_app
 from flask_login import current_user, login_required
@@ -12,6 +13,7 @@ from app.models import *
 from app.translate import translate
 from app.main import bp
 from sqlalchemy.exc import SQLAlchemyError
+from app.main import interface_pd as ipd
 
 import logging
 log = logging.getLogger(__name__)
@@ -462,23 +464,51 @@ def imagensNaPastaF(bRetornaLista=False):
         return sorted(list(dic.keys()))
     else:
         return dic
+@bp.route("/rede/lerbd/")
+def ler_bd(cpfcnpj='', camada=0, idArquivoServidor='', conexoes=None, consultas_entes= None, consultas_vinculos = None):
+    l = ipd.LeitorBDemCamadas(qtdcamadas=camada, lista_entes_entrada=cpfcnpj, conexoes_ativas=conexoes, consultas_entes=consultas_entes, consultas_vinculos=consultas_vinculos)
+    json_resultado = ''
+    json_resultado = l.lerbd()
+    exibir_rede(redejson=json_resultado)
+    return json_resultado
 
 
 #http://sed-die-hpc02-p:9101/rede/grafico_no_servidor/relacionamento.9204624e.rda.json
 
 @bp.route("/rede/pesquisa/<int:id_pesquisa>/" , methods=['GET', 'POST'])
 def executar_pesquisa(id_pesquisa):
-    flash(_('Pesquisatrilha %(id) encontrada.', id=id_pesquisa))
-    return exibir_rede()
+    pesquisa = Pesquisa.query.filter_by(id=id_pesquisa).first_or_404()
+    if not pesquisa:
+        return
+    entrada = pesquisa.itens_lista if pesquisa else ''
+    for tr in pesquisa.trilhas:
+        trilha = Trilha.query.filter_by(id=tr.trilha_id).first_or_404()
+        print(trilha.nome)
+        consultas = []
+        for c in trilha.consultas:
+            cons={'str': c.consulta.conexao.string, 'cmd_sql': c.consulta.cmd_sql, 'fonte': c.consulta.fonte, 'tipo': c.consulta.tipo, 'string': c.consulta.conexao.string, 'conexao': c.consulta.conexao.nome}
+            print(cons)
+            consultas.append(cons)
+        df_cons = pd.DataFrame(consultas)
+        cons_entes = df_cons[df_cons['tipo'] == 'E'].to_dict('records')
+        cons_vinc = df_cons[df_cons['tipo'] != 'E'].to_dict('records')
+        cons_conx = df_cons['conexao'].unique()
+    if pesquisa:
+        ler_bd(cpfcnpj=entrada,camada=1,conexoes=cons_conx, consultas_entes=cons_entes, consultas_vinculos=cons_vinc)
+
+    return
+
 @bp.route("/rederel/")
 @bp.route("/rede/")
 @bp.route("/rede/grafico/<int:camada>/<cpfcnpj>")
 @bp.route("/rede/grafico_no_servidor/<idArquivoServidor>")
-def exibir_rede(cpfcnpj='', camada=0, idArquivoServidor=''):
+def exibir_rede(cpfcnpj='', camada=0, idArquivoServidor='', redejson=''):
     if True:
         idArquivoServidor = secure_filename(idArquivoServidor) if idArquivoServidor else ''
         extensao = os.path.splitext(idArquivoServidor)[1].lower()
         listaJson = json.loads(open(idArquivoServidor).read()) if extensao == '.json' else ''
+        if redejson:
+            listaJson = redejson
         camada = camada if camada else 0
         listaImagens = imagensNaPastaF(True)
         paramsInicial = {
@@ -504,8 +534,8 @@ def exibir_rede(cpfcnpj='', camada=0, idArquivoServidor=''):
                          'bMenuInserirInicial': True, #config.par.bMenuInserirInicial,
                          'inserirDefault': True, # inserirDefault,
                          'idArquivoServidor': idArquivoServidor,
-                         'lista': [], #listaEntrada,
-                         'json': [], #listaJson,
+                         'lista': '', #listaEntrada,
+                         'json': redejson, #listaJson,
                          'listaImagens': listaImagens,
                          'bBaseReceita': 1 ,#if config.config['BASE'].get('base_receita', '') else 0,
                          'bBaseFullTextSearch': 1 ,#if config.config['BASE'].get('base_receita_fulltext', '') else 0,
