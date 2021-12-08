@@ -4,14 +4,14 @@ from sqlalchemy import MetaData, inspect
 
 import pandas as pd
 import dask.dataframe as dd
-import app.main.metadados
+import app.main.metadados as metadados
 
 
 
 
 class ComandoSql:
     def __init__(self, comandos, conexao_usuario):
-        self.id = comandos.id
+        self.id = comandos.cons_id
         self.conx = comandos.conx_nome
         self.cmd_sql = comandos.cmd_sql
         self.fonte = comandos.fonte
@@ -315,7 +315,7 @@ def visitar(lista_entes_entrada=[], qtd_camadas: int = 2, conexoes_ativas=[], df
                     continue
 
                     # seleciona as consultas para o BD da vez
-            filtro_entes_conx = df_query_entes['conx_nome'] == conexao['nome']
+            filtro_entes_conx = df_query_entes['conx_nome'] == conexao['conx_nome']
             df_qe = df_query_entes[filtro_entes_conx]
 
             #  buscar dados dos entes que estão sendo visitados
@@ -327,7 +327,7 @@ def visitar(lista_entes_entrada=[], qtd_camadas: int = 2, conexoes_ativas=[], df
                     entes_a_visitar.incluir_entes_df(entes_visitando)
 
             if not ultima_camada:  # somente busca novos vínculos até a última camada
-                filtro_vinculos_conx = df_query_vinculos['conx_nome'] == conexao['nome']
+                filtro_vinculos_conx = df_query_vinculos['conx_nome'] == conexao['conx_nome']
                 df_qv = df_query_vinculos[filtro_vinculos_conx]
 
                 # executa cada uma das queries cadastradas pelo usuario

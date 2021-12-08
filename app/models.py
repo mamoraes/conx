@@ -66,7 +66,7 @@ def load_user(id):
 
 ###########################
 
-def testartemp(conexao):
+def testartemp(conexao)->bool:
     ok = True
     try:
         sql = f'select * from {temp_entes.__tablename__}'
@@ -87,8 +87,17 @@ def testartemp(conexao):
     except:
         ok = False
         print(f'Não gravou modelo de tabela temporária no bd {conexao.string}')
-        return ok
+    return ok
 
+
+def testarconx(conexao_string)->bool:
+    ok = True
+    try:
+        sql = f'select 1 '
+        df = pd.read_sql(sql=sql, con=conexao_string)
+    except:
+        ok = False
+    return ok
 
 
 def valoresunicos(df,campo:str):

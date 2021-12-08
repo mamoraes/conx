@@ -480,19 +480,23 @@ def executar_pesquisa(id_pesquisa):
     pesquisa = Pesquisa.query.filter_by(id=id_pesquisa).first_or_404()
     if not pesquisa:
         return
-    entrada = pesquisa.itens_lista if pesquisa else ''
+    entrada = pesquisa.itens_lista.split(';') if pesquisa else ''
     for tr in pesquisa.trilhas:
         trilha = Trilha.query.filter_by(id=tr.trilha_id).first_or_404()
         print(trilha.nome)
         consultas = []
         for c in trilha.consultas:
-            cons={'str': c.consulta.conexao.string, 'cmd_sql': c.consulta.cmd_sql, 'fonte': c.consulta.fonte, 'tipo': c.consulta.tipo, 'string': c.consulta.conexao.string, 'conexao': c.consulta.conexao.nome}
+            cons={'cmd_sql': c.consulta.cmd_sql, 'fonte': c.consulta.fonte, 'tipo': c.consulta.tipo, 'string': c.consulta.conexao.string, 'conx_nome': c.consulta.conexao.nome, 'cons_id':c.consulta.id}
             print(cons)
             consultas.append(cons)
-        df_cons = pd.DataFrame(consultas)
+        df_cons = pd.DataFrame(consultas).drop_duplicates()
         cons_entes = df_cons[df_cons['tipo'] == 'E'].to_dict('records')
         cons_vinc = df_cons[df_cons['tipo'] != 'E'].to_dict('records')
-        cons_conx = df_cons['conexao'].unique()
+        cons_conx0 = df_cons[['conx_nome','string']].drop_duplicates().to_dict('records')
+        cons_conx = []
+        for c in cons_conx0:
+            if testarconx(c['string']):
+                cons_conx.append(c)
     if pesquisa:
         ler_bd(cpfcnpj=entrada,camada=1,conexoes=cons_conx, consultas_entes=cons_entes, consultas_vinculos=cons_vinc)
 
