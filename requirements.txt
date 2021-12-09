@@ -25,3 +25,4 @@ plac
 PyJWT
 python-dotenv
 email_validator
+dask

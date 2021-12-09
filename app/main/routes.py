@@ -498,9 +498,9 @@ def executar_pesquisa(id_pesquisa):
             if testarconx(c['string']):
                 cons_conx.append(c)
     if pesquisa:
-        ler_bd(cpfcnpj=entrada,camada=1,conexoes=cons_conx, consultas_entes=cons_entes, consultas_vinculos=cons_vinc)
-
-    return
+        return ler_bd(cpfcnpj=entrada,camada=1,conexoes=cons_conx, consultas_entes=cons_entes, consultas_vinculos=cons_vinc)
+    else:
+        return {}
 
 @bp.route("/rederel/")
 @bp.route("/rede/")

@@ -150,9 +150,9 @@ class Vinculos(EntesVinculos):
 
 
 def gerar_ids(df: pd.DataFrame) -> pd.DataFrame:
-    gerar_id_df(df, campo_tipo='tipo_origem', campo_subtipo='subtipo_origem', campo_ident='ident_origem',
+    metadados.gerar_id_df(df, campo_tipo='tipo_origem', campo_subtipo='subtipo_origem', campo_ident='ident_origem',
                 campo_id='id_origem', campo_nome='nome_origem')
-    gerar_id_df(df, campo_tipo='tipo_destino', campo_subtipo='subtipo_destino', campo_ident='ident_destino',
+    metadados.gerar_id_df(df, campo_tipo='tipo_destino', campo_subtipo='subtipo_destino', campo_ident='ident_destino',
                 campo_id='id_destino', campo_nome='nome_destino')
 
     cond = df['id_origem'] > df['id_destino']  # para inverter, se origem > destino
@@ -173,10 +173,10 @@ def executar_query_entes(q: ComandoSql, camada=0, final=False) -> pd.DataFrame:
 
     consulta_entes['camada'] = camada
     consulta_entes['fonte'] = q.fonte_extenso
-    for c in COLUNAS_ENTES:  # inicializar os demais campos
+    for c in metadados.COLUNAS_ENTES:  # inicializar os demais campos
         if not (c in consulta_entes.columns):
             consulta_entes[c] = ''
-    gerar_id_df(consulta_entes)
+    metadados.gerar_id_df(consulta_entes)
 
     return (consulta_entes)
 
@@ -196,17 +196,17 @@ def executar_query_vinculos(q: ComandoSql, camada=0) -> (pd.DataFrame, pd.DataFr
         df['nome'] = df['nome_destino']
         df['subtipo'] = ''
 
-        gerar_id_df(df)
+        metadados.gerar_id_df(df)
         df['fonte'] = q.fonte_extenso
         df['camada'] = camada
         gerar_ids(df)
-        df_destino = df[COLUNAS_DESTINO]
+        df_destino = df[metadados.COLUNAS_DESTINO]
         df_destino = df_destino.drop_duplicates()
         df_destino['camada'] = camada + 1  # vai ser visitado na proxima camada
         df_destino['fonte'] = q.fonte_extenso
-        for c in COLUNAS_ENTES_ATRIBUTOS:
+        for c in metadados.COLUNAS_ENTES_ATRIBUTOS:
             df_destino[c] = ''
-        df = df.drop(columns=COLUNAS_DESTINO)
+        df = df.drop(columns=metadados.COLUNAS_DESTINO)
     return (df_destino, df)
 
 

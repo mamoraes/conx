@@ -12,7 +12,7 @@ import app.main.metadados as metadados
 
 import app.main.irradiar as irradiar
 
-pasta_base = 'app/lebede/'
+pasta_base = ''
 # decorator para medir tempo de execução de função
 def timeit(method):
     def timed(*args, **kw):
@@ -124,14 +124,14 @@ def exportar_para_template(df_entes, df_vinculos) -> dict:
     df_entes['cor'] = 'red'
     df_entes['nota'] = ''
     df_entes['sexo'] = 0
-    filtro_nulo = df_entes.loc[pd.notnull(df_entes.ident)]
+    filtro_nulo = pd.notnull(df_entes.ident)
     df_entes = df_entes[filtro_nulo]
     nos = df_entes[ colunas_entes_exportar].to_dict(orient='records')
 
     colunas_vinculos_exportar = ['origem', 'destino', 'cor', 'camada', 'tipoDescricao', 'label']
     df_vinculos['origem'] = df_vinculos['tipo_origem'] + '_' + df_vinculos['ident_origem']
     df_vinculos['destino'] = df_vinculos['tipo_destino'] + '_' + df_vinculos['ident_destino']
-    filtro_nulo = df_vinculos.loc[pd.notnull(df_vinculos.origem)]
+    filtro_nulo = pd.notnull(df_vinculos.origem)
     filtro_pf = df_vinculos['tipo_origem'] == 'PF'
     df_vinculos.loc[filtro_pf & filtro_nulo, 'origem'] += '-' + df_vinculos['nome_origem']
     filtro_pf = df_vinculos['tipo_destino'] == 'PF'
