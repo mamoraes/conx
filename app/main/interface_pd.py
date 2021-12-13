@@ -70,13 +70,15 @@ qualificacao_socio = Qualificacao_Socio()
 
 class Subtipo_pj:
     def __init__(self):
-        self.df = pd.read_csv(pasta_base+r"tabelas/natureza_juridica_subtipo.csv", sep=';', index_col=['codigo'])
-        # self.dic = self.df.to_dict(orient='index')
-
+        self.df = pd.read_csv(pasta_base+r"tabelas/natureza_juridica_subtipo.csv", sep=';',dtype=str,index_col='codigo')
+        self.dic = self.df.to_json(orient='index')
     def lkp(self, cod) -> str:
         # self.dic[cod]['subtipo'] if cod in self.dic else ''
+        subtipo = 'EMP'
         try:
-            subtipo = self.df.loc[cod]['subtipo']
+            if cod in self.dic:
+                temp = self.dic.get(cod)
+                subtipo = temp.get('subtipo')
         except:
             subtipo = 'EMP'
         return (subtipo)
