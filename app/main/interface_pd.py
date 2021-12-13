@@ -100,15 +100,46 @@ def jsonificar(atrib: str = '') -> dict:
     return (d)
 
 
+def definir_icone(s='')->str:
+    imagem = 'icone-grafo-empresa.png'
+    if s == 'EMP':
+        imagem = 'icone-grafo-empresa.png'
+    elif s== 'EXT':
+        imagem = 'icone-grafo-empresa-estrangeira.png'
+    elif s == 'IND':
+        imagem = 'icone-grafo-empresa-individual.png'
+    elif s == 'POL':
+        imagem = 'icone-grafo-empresa-individual.png'
+    elif s == 'PUB':
+        imagem = 'icone-grafo-empresa-publica.png'
+    elif d == 'SFL':
+        imagem = 'icone-grafo-empresa-fundacao.png'
+    return imagem
+
 def exportar_para_template(df_entes, df_vinculos) -> dict:
     resultado = {}
+    df_entes['imagem'] = 'folder-o.png'
     filtro_pf = df_entes['tipo'] == 'PF'
     filtro_pj = df_entes['tipo'] == 'PJ'
+    filtro_em = df_entes['tipo'] == 'EM'
+    filtro_en = df_entes['tipo'] == 'EN'
+    filtro_te = df_entes['tipo'] == 'TE'
+    filtro_id = df_entes['tipo'] == 'ID'
+    df_entes.loc[filtro_em, 'imagem'] = 'icone-grafo-email.png'
+    df_entes.loc[filtro_en, 'imagem'] = 'icone-grafo-endereco.png'
+    df_entes.loc[filtro_te, 'imagem'] = 'icone-grafo-telefone.png'
+    df_entes.loc[filtro_id, 'imagem'] = 'folder-o.png'
+
     filtro_pfnome = df_entes['subtipo'] == '***'
+    df_entes.fillna('',inplace=True)
+    df_vinculos.fillna('', inplace=True)
     df_entes['id'] = ''
+
+    df_entes.loc[filtro_pf, 'imagem'] = 'icone-grafo-desconhecido.png'
     df_entes.loc[filtro_pj, 'id'] = 'PJ_' + df_entes['ident']
     df_entes.loc[filtro_pfnome, 'id'] = 'PF_' + df_entes['ident'] + '-' + df_entes['nome']
-    df_entes = df_entes.rename(columns={'nome': 'descricao'})
+    #df_entes = df_entes.rename(columns={'nome': 'descricao'})
+    df_entes['descricao']= df_entes['nome']
     df_entes['situacao_ativa'] = True
     df_entes['logradouro'] = ''
     df_entes['municipio'] = ''
@@ -119,8 +150,10 @@ def exportar_para_template(df_entes, df_vinculos) -> dict:
     df_entes['atributos'] = df_entes['atributos'].fillna('')
     nj = lambda a: jsonificar(a) if (a != None and 'natureza_juridica' in a) else {'natureza_juridica': ''}
     df_entes.loc[filtro_pj, 'cod_nat_juridica'] = df_entes['atributos'].apply(lambda a: nj(a)['natureza_juridica'])
+    st = lambda s: subtipo_pj.lkp(s)
+    df_entes.loc[filtro_pj, 'subtipo'] = df_entes.loc[filtro_pj, 'cod_nat_juridica'].apply(lambda s: subtipo_pj.lkp(s))
+    df_entes.loc[filtro_pj, 'imagem'] = df_entes.loc[filtro_pj,'subtipo'].apply(lambda s: definir_icone(s))
 
-    df_entes['imagem'] = 'icone-grafo-masculino.png'
     df_entes['cor'] = 'red'
     df_entes['nota'] = ''
     df_entes['sexo'] = 0

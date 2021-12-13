@@ -476,10 +476,10 @@ def ler_bd(cpfcnpj='', camada=0, idArquivoServidor='', conexoes=None, consultas_
 #http://sed-die-hpc02-p:9101/rede/grafico_no_servidor/relacionamento.9204624e.rda.json
 
 @bp.route("/rede/pesquisa/<int:id_pesquisa>/" , methods=['GET', 'POST'])
-def executar_pesquisa(id_pesquisa):
+def executar_pesquisa(id_pesquisa)->{}:
     pesquisa = Pesquisa.query.filter_by(id=id_pesquisa).first_or_404()
     if not pesquisa:
-        return
+        return {}
     entrada = pesquisa.itens_lista.split(';') if pesquisa else ''
     for tr in pesquisa.trilhas:
         trilha = Trilha.query.filter_by(id=tr.trilha_id).first_or_404()
@@ -498,7 +498,11 @@ def executar_pesquisa(id_pesquisa):
             if testarconx(c['string']):
                 cons_conx.append(c)
     if pesquisa:
-        return ler_bd(cpfcnpj=entrada,camada=1,conexoes=cons_conx, consultas_entes=cons_entes, consultas_vinculos=cons_vinc)
+        redejson = ler_bd(cpfcnpj=entrada,camada=1,conexoes=cons_conx, consultas_entes=cons_entes, consultas_vinculos=cons_vinc)
+        with open('arquivos_json/rede.json', 'w') as outfile:
+            json.dump(redejson, outfile)
+        exibir_rede(redejson='', idArquivoServidor='rede.json')
+        return redejson
     else:
         return {}
 
@@ -506,6 +510,7 @@ def executar_pesquisa(id_pesquisa):
 @bp.route("/rede/")
 @bp.route("/rede/grafico/<int:camada>/<cpfcnpj>")
 @bp.route("/rede/grafico_no_servidor/<idArquivoServidor>")
+@bp.route("/rede/arquivos_json/<idArquivoServidor>")
 def exibir_rede(cpfcnpj='', camada=0, idArquivoServidor='', redejson=''):
     if True:
         idArquivoServidor = secure_filename(idArquivoServidor) if idArquivoServidor else ''
