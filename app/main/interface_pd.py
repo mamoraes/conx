@@ -36,7 +36,7 @@ df_subtipo_pj = pd.read_csv(pasta_base+r"tabelas/natureza_juridica_subtipo.csv",
 dicSituacaoCadastral = {'01': 'Nula', '02': 'Ativa', '03': 'Suspensa', '04': 'Inapta', '08': 'Baixada'}
 
 
-class Situacao_Cadastral_PJ:
+class SituacaoCadastralPJ:
     def __init__(self):
         self.dic = dicSituacaoCadastral
 
@@ -47,10 +47,10 @@ class Situacao_Cadastral_PJ:
         return ('S' if cod == '02' else 'N')
 
 
-situacao_cadastral_pj = Situacao_Cadastral_PJ()
+situacao_cadastral_pj = SituacaoCadastralPJ()
 
 
-class Qualificacao_Socio:
+class QualificacaoSocio:
     def __init__(self):
         self.df = pd.read_csv(pasta_base+r"tabelas/tabela-de-qualificacao-do-socio-representante.csv", sep=';',
                               index_col=['codigo'])
@@ -65,26 +65,24 @@ class Qualificacao_Socio:
         return (qualif)
 
 
-qualificacao_socio = Qualificacao_Socio()
+qualificacao_socio = QualificacaoSocio()
 
 
-class Subtipo_pj:
+class SubtipoPJ:
     def __init__(self):
-        self.df = pd.read_csv(pasta_base+r"tabelas/natureza_juridica_subtipo.csv", sep=';',dtype=str,index_col='codigo')
-        self.dic = self.df.to_json(orient='index')
+        self.df = pd.read_csv(pasta_base+r"tabelas/natureza_juridica_subtipo.csv", sep=';', dtype=str, index_col='codigo')
     def lkp(self, cod) -> str:
         # self.dic[cod]['subtipo'] if cod in self.dic else ''
         subtipo = 'EMP'
         try:
-            if cod in self.dic:
-                temp = self.dic.get(cod)
-                subtipo = temp.get('subtipo')
+            cd = int(cod)
+            subtipo = self.df.loc(cod,'subtipo')
         except:
             subtipo = 'EMP'
         return (subtipo)
 
 
-subtipo_pj = Subtipo_pj()
+subtipo_pj = SubtipoPJ()
 
 
 def eh_data_valida(dt: str) -> str:
@@ -96,7 +94,7 @@ def eh_data_valida(dt: str) -> str:
 
 
 def jsonificar(atrib: str = '') -> dict:
-    if atrib == None or atrib == '':
+    if atrib is None or atrib == '':
         return ({})
     d = json.loads('{' + atrib + '}')
     return (d)
@@ -114,7 +112,7 @@ def definir_icone(s='')->str:
         imagem = 'icone-grafo-empresa-individual.png'
     elif s == 'PUB':
         imagem = 'icone-grafo-empresa-publica.png'
-    elif d == 'SFL':
+    elif s == 'SFL':
         imagem = 'icone-grafo-empresa-fundacao.png'
     return imagem
 
@@ -150,18 +148,22 @@ def exportar_para_template(df_entes, df_vinculos) -> dict:
     colunas_entes_exportar = ['id', 'descricao', 'camada', 'situacao_ativa', 'logradouro', 'municipio', 'uf', 'imagem',
                               'cor', 'sexo', 'nota']
     df_entes['atributos'] = df_entes['atributos'].fillna('')
-    nj = lambda a: jsonificar(a) if (a != None and 'natureza_juridica' in a) else {'natureza_juridica': ''}
-    df_entes.loc[filtro_pj, 'cod_nat_juridica'] = df_entes['atributos'].apply(lambda a: nj(a)['natureza_juridica'])
-    st = lambda s: subtipo_pj.lkp(s)
-    df_entes.loc[filtro_pj, 'subtipo'] = df_entes.loc[filtro_pj, 'cod_nat_juridica'].apply(lambda s: subtipo_pj.lkp(s))
-    df_entes.loc[filtro_pj, 'imagem'] = df_entes.loc[filtro_pj,'subtipo'].apply(lambda s: definir_icone(s))
+    def nj(a:str)->dict:
+        temp = jsonificar(a) if (a is not None and 'natureza_juridica' in a) else {'natureza_juridica': ''}
+        return temp['natureza_juridica']
+
+
+    df_entes.loc[filtro_pj, 'cod_nat_juridica'] = df_entes['atributos'].apply(nj)
+
+    df_entes.loc[filtro_pj, 'subtipo'] = df_entes.loc[filtro_pj, 'cod_nat_juridica'].apply(subtipo_pj.lkp)
+    df_entes.loc[filtro_pj, 'imagem'] = df_entes.loc[filtro_pj,'subtipo'].apply(definir_icone)
 
     df_entes['cor'] = 'red'
     df_entes['nota'] = ''
     df_entes['sexo'] = 0
     filtro_nulo = pd.notnull(df_entes.ident)
     df_entes = df_entes[filtro_nulo]
-    nos = df_entes[ colunas_entes_exportar].to_dict(orient='records')
+    nos = df_entes[colunas_entes_exportar].to_dict(orient='records')
 
     colunas_vinculos_exportar = ['origem', 'destino', 'cor', 'camada', 'tipoDescricao', 'label']
     df_vinculos['origem'] = df_vinculos['tipo_origem'] + '_' + df_vinculos['ident_origem']
@@ -321,7 +323,7 @@ if __name__ == "__main__":
 
     print('Teste2')
     teste2(conexoes_ativas)
-    lerbd(lista_entes_entrada = df_entes_entrada, qtd_camadas = 1, conexoes_ativas = conexoes_ativas)
+    lerbd(lista_entes_entrada=df_entes_entrada, qtd_camadas=1, conexoes_ativas=conexoes_ativas)
 
 class LeitorBDemCamadas:
     def __init__(self, qtdcamadas=0, conexoes_ativas=None, consultas_entes=None, consultas_vinculos=None, lista_entes_entrada=None):
@@ -336,12 +338,12 @@ class LeitorBDemCamadas:
         self.df_entes_entrada = pd.DataFrame(columns=metadados.COLUNAS_ENTES)
         self.entrada(self.lista_entes_entrada)
 
-    def entrada(self, lista_entes_entrada:list):
-        if lista_entes_entrada == None:
+    def entrada(self, lista_entes_entrada: list):
+        if lista_entes_entrada is None:
             return
         for i in lista_entes_entrada:
             item = str(i)
-            item = item.replace('.','').replace('-','').replace('/','')
+            item = item.replace('.', '').replace('-', '').replace('/', '')
             subtipo = ''
             tipo = 'PJ' if len(item) == 14 else 'PF'
             if tipo == 'PF' and item.find('*'):
@@ -354,9 +356,10 @@ class LeitorBDemCamadas:
         self.df_entes_entrada['camada'] = 0
     def lerbd(self):
         self.nos, self.ligacoes = irradiar.visitar(lista_entes_entrada=self.df_entes_entrada, qtd_camadas=self.camadas,
-                                         conexoes_ativas=self.conexoes_ativas, dfentes=self.consultas_entes, dfvinc=self.consultas_vinculos)
+                                                   conexoes_ativas=self.conexoes_ativas, dfentes=self.consultas_entes, dfvinc=self.consultas_vinculos)
         self.redejson = exportar_para_template(self.nos, self.ligacoes)
         return (self.redejson)
+
 
 
 
